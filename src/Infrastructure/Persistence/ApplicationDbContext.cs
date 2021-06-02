@@ -32,6 +32,7 @@ namespace FinanceServices.Infrastructure.Persistence
         }
 
         public DbSet<TodoItem> TodoItems { get; set; }
+        public DbSet<UserInfo> UserInformation { get; set; }
 
         public DbSet<TodoList> TodoLists { get; set; }
 

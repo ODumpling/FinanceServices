@@ -10,6 +10,7 @@ namespace FinanceServices.Application.Common.Interfaces
         DbSet<TodoList> TodoLists { get; set; }
 
         DbSet<TodoItem> TodoItems { get; set; }
+        DbSet<UserInfo> UserInformation { get; set; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
