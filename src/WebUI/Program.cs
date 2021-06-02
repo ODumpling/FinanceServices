@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace FinanceServices.WebUI
 {
@@ -40,7 +41,7 @@ namespace FinanceServices.WebUI
                 {
                     var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
-                    logger.LogError(ex, "An error occurred while migrating or seeding the database.");
+                    logger.LogError(ex, "An error occurred while migrating or seeding the database");
 
                     throw;
                 }
@@ -53,6 +54,17 @@ namespace FinanceServices.WebUI
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    webBuilder.ConfigureAppConfiguration((hostingContext, config) =>
+                    {
+                        var env = hostingContext.HostingEnvironment;
+
+                        config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                            .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: false,
+                                reloadOnChange: true)
+                            .AddJsonFile("appsettings.Local.json", optional: false, reloadOnChange: true);
+
+                        config.AddEnvironmentVariables();
+                    });
                     webBuilder.UseStartup<Startup>();
                 });
     }
