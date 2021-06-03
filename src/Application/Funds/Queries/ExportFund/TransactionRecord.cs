@@ -1,14 +1,13 @@
 ﻿using System;
-using FinanceServices.Domain.Common;
+using FinanceServices.Application.Common.Mappings;
+using FinanceServices.Domain.Entities;
 using FinanceServices.Domain.Enums;
 
-namespace FinanceServices.Domain.Entities
+namespace FinanceServices.Application.Funds.Queries.ExportFund
 {
-    public class Transaction : AuditableEntity
+    public class TransactionRecord : IMapFrom<Transaction>
     {
         public Guid Id { get; set; }
-        public Guid FundId { get; set; }
-        public Fund Fund { get; set; }
         public TransactionType Type { get; set; }
         public decimal Amount { get; set; }
         public string Description { get; set; }
