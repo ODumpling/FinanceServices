@@ -1,0 +1,9 @@
+<p>{{funds | json}}</p>
+
+<div *ngFor="let item of funds.items" class="card" style="width: 18rem;">
+  <div class="card-body">
+    <h5 class="card-title">{{ item.name }}</h5>
+    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+    <a href="{{'/funds/' + item.id}}" class="btn btn-primary">Go somewhere</a>
+  </div>
+</div>

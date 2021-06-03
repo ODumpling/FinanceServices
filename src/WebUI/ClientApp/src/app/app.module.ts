@@ -16,6 +16,9 @@ import { AuthorizeGuard } from 'src/api-authorization/authorize.guard';
 import { AuthorizeInterceptor } from 'src/api-authorization/authorize.interceptor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import {routes} from './routes';
+import { FundComponent } from './fund/fund.component';
+import { ListFundComponent } from './list-fund/list-fund.component';
 
 @NgModule({
   declarations: [
@@ -24,22 +27,19 @@ import { ModalModule } from 'ngx-bootstrap/modal';
     HomeComponent,
     CounterComponent,
     FetchDataComponent,
-    TodoComponent
+    TodoComponent,
+    FundComponent,
+    ListFundComponent
   ],
   imports: [
-    BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
+    BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),
     FontAwesomeModule,
     HttpClientModule,
     FormsModule,
     ApiAuthorizationModule,
-    RouterModule.forRoot([
-      { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'counter', component: CounterComponent },
-      { path: 'fetch-data', component: FetchDataComponent },
-      { path: 'todo', component: TodoComponent, canActivate: [AuthorizeGuard] },
-    ]),
+    RouterModule.forRoot(routes),
     BrowserAnimationsModule,
-    ModalModule.forRoot()
+    ModalModule.forRoot(),
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true },

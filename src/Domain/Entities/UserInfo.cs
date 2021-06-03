@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace FinanceServices.Domain.Entities
 {
@@ -26,6 +27,8 @@ namespace FinanceServices.Domain.Entities
         public string LastName { get; set; }
         public string FullName { get; set; }
         public string Email { get; set; }
+        public IList<Fund> Funds { get; set; } = new List<Fund>();
+        public IList<Fund> ManagingFunds { get; set; } = new List<Fund>();
 
 
         public void UpdateName(string firstName, string lastName)

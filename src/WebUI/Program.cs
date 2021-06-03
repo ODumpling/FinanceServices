@@ -34,8 +34,8 @@ namespace FinanceServices.WebUI
                     var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
                     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
-                    await ApplicationDbContextSeed.SeedDefaultUserAsync(userManager, roleManager);
-                    await ApplicationDbContextSeed.SeedSampleDataAsync(context);
+                    await ApplicationDbContextSeed.SeedDefaultUserAsync(userManager, roleManager, context);
+                    await ApplicationDbContextSeed.SeedSampleDataAsync(userManager, context);
                 }
                 catch (Exception ex)
                 {

@@ -1,0 +1,20 @@
+<p>{{fund | json}}</p>
+<p>{{TransactionType | json}}</p>
+
+<table class="table">
+  <thead>
+  <tr>
+    <th scope="col">#</th>
+    <th scope="col">Type</th>
+    <th scope="col">Amount</th>
+    <th scope="col">Description</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let item of transactions" [ngClass]="item.type == 1 ? 'table-success': 'table-danger'">
+    <th scope="row">{{fund.transactions.indexOf(item) + 1 }}</th>
+    <td>{{TransactionType[item.type]}}</td>
+    <td>{{item.amount}}</td>
+    <td>{{item.description}}</td>
+  </tr>
+</table>
