@@ -755,7 +755,7 @@ export class TodoListsClient implements ITodoListsClient {
 }
 
 export interface ITransactionsClient {
-    createTransaction(command: CreateTransactionCommand): Observable<FileResponse>;
+    createTransaction(command: CreateTransactionCommand): Observable<string>;
 }
 
 @Injectable({
@@ -771,7 +771,7 @@ export class TransactionsClient implements ITransactionsClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    createTransaction(command: CreateTransactionCommand): Observable<FileResponse> {
+    createTransaction(command: CreateTransactionCommand): Observable<string> {
         let url_ = this.baseUrl + "/api/Transactions";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -783,7 +783,7 @@ export class TransactionsClient implements ITransactionsClient {
             responseType: "blob",
             headers: new HttpHeaders({
                 "Content-Type": "application/json",
-                "Accept": "application/octet-stream"
+                "Accept": "application/json"
             })
         };
 
@@ -794,31 +794,33 @@ export class TransactionsClient implements ITransactionsClient {
                 try {
                     return this.processCreateTransaction(<any>response_);
                 } catch (e) {
-                    return <Observable<FileResponse>><any>_observableThrow(e);
+                    return <Observable<string>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<FileResponse>><any>_observableThrow(response_);
+                return <Observable<string>><any>_observableThrow(response_);
         }));
     }
 
-    protected processCreateTransaction(response: HttpResponseBase): Observable<FileResponse> {
+    protected processCreateTransaction(response: HttpResponseBase): Observable<string> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
             (<any>response).error instanceof Blob ? (<any>response).error : undefined;
 
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200 || status === 206) {
-            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
-            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
-            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
-            return _observableOf({ fileName: fileName, data: <any>responseBlob, status: status, headers: _headers });
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return _observableOf(result200);
+            }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<FileResponse>(<any>null);
+        return _observableOf<string>(<any>null);
     }
 }
 
@@ -1034,6 +1036,7 @@ export interface IFundDto {
 
 export class FundVm implements IFundVm {
     fund?: FundDto2 | undefined;
+    transactionTypes?: TypeDto[] | undefined;
 
     constructor(data?: IFundVm) {
         if (data) {
@@ -1047,6 +1050,11 @@ export class FundVm implements IFundVm {
     init(_data?: any) {
         if (_data) {
             this.fund = _data["fund"] ? FundDto2.fromJS(_data["fund"]) : <any>undefined;
+            if (Array.isArray(_data["transactionTypes"])) {
+                this.transactionTypes = [] as any;
+                for (let item of _data["transactionTypes"])
+                    this.transactionTypes!.push(TypeDto.fromJS(item));
+            }
         }
     }
 
@@ -1060,12 +1068,18 @@ export class FundVm implements IFundVm {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["fund"] = this.fund ? this.fund.toJSON() : <any>undefined;
+        if (Array.isArray(this.transactionTypes)) {
+            data["transactionTypes"] = [];
+            for (let item of this.transactionTypes)
+                data["transactionTypes"].push(item.toJSON());
+        }
         return data; 
     }
 }
 
 export interface IFundVm {
     fund?: FundDto2 | undefined;
+    transactionTypes?: TypeDto[] | undefined;
 }
 
 export class FundDto2 implements IFundDto2 {
@@ -1166,6 +1180,46 @@ export interface ITransactionDto {
     type?: string | undefined;
     amount?: number;
     description?: string | undefined;
+}
+
+export class TypeDto implements ITypeDto {
+    value?: number;
+    name?: string | undefined;
+
+    constructor(data?: ITypeDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.value = _data["value"];
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): TypeDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new TypeDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["value"] = this.value;
+        data["name"] = this.name;
+        return data; 
+    }
+}
+
+export interface ITypeDto {
+    value?: number;
+    name?: string | undefined;
 }
 
 export class CreateFundCommand implements ICreateFundCommand {
