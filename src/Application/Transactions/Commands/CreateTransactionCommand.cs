@@ -9,14 +9,14 @@ using MediatR;
 
 namespace FinanceServices.Application.Transactions.Commands
 {
-    public class CreateTransactionCommand : IRequest<Guid>
+    public class CreateTransactionCommand : IRequest<string>
     {
         public Guid FundId { get; set; }
         public decimal Amount { get; set; }
         public TransactionType Type { get; set; }
         public string Description { get; set; }
 
-        public class CreateTransactionCommandHandler : IRequestHandler<CreateTransactionCommand, Guid>
+        public class CreateTransactionCommandHandler : IRequestHandler<CreateTransactionCommand, string>
         {
             private readonly IApplicationDbContext _context;
 
@@ -25,7 +25,7 @@ namespace FinanceServices.Application.Transactions.Commands
                 _context = context;
             }
 
-            public async Task<Guid> Handle(CreateTransactionCommand request, CancellationToken cancellationToken)
+            public async Task<string> Handle(CreateTransactionCommand request, CancellationToken cancellationToken)
             {
                 var fund = await _context.Funds.FindAsync(request.FundId);
 
@@ -45,7 +45,7 @@ namespace FinanceServices.Application.Transactions.Commands
 
                 await _context.SaveChangesAsync(cancellationToken);
 
-                return transaction.Id;
+                return transaction.Id.ToString();
             }
         }
     }

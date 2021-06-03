@@ -10,6 +10,14 @@ namespace FinanceServices.Application.Funds.Queries.GetFund
     {
         public FundDto Fund { get; set; }
 
+        public IList<TypeDto> TransactionTypes { get; set; }
+
+        public class TypeDto
+        {
+            public int Value { get; set; }
+            public string Name { get; set; }
+        }
+
         public class FundDto : IMapFrom<Fund>
         {
             public Guid Id { get; set; }
@@ -26,7 +34,7 @@ namespace FinanceServices.Application.Funds.Queries.GetFund
             public void Mapping(Profile profile)
             {
                 profile.CreateMap<Transaction, TransactionDto>()
-                    .ForMember(x => x.Type, x => x.MapFrom(x => (int) x.Type));
+                    .ForMember(x => x.Type, x => x.MapFrom(transaction => (int)transaction.Type));
             }
         }
     }

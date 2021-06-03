@@ -1,6 +1,15 @@
-<p>{{fund | json}}</p>
-<p>{{TransactionType | json}}</p>
+<div *ngIf="debug">
+  <p>{{fund | json}}</p>
+  <p>{{transactionType | json}}</p>
+</div>
 
+
+<div *ngIf="fund">
+<h1>{{fund.name}} Fund</h1>
+
+<div class="text-right pb-2">
+  <button type="button" class="btn btn-primary" (click)="openModal(newTransaction)">New Transaction</button>
+</div>
 <table class="table">
   <thead>
   <tr>
@@ -13,8 +22,55 @@
   <tbody>
   <tr *ngFor="let item of transactions" [ngClass]="item.type == 1 ? 'table-success': 'table-danger'">
     <th scope="row">{{fund.transactions.indexOf(item) + 1 }}</th>
-    <td>{{TransactionType[item.type]}}</td>
+    <td>{{transactionType[item.type].name}}</td>
     <td>{{item.amount}}</td>
     <td>{{item.description}}</td>
   </tr>
 </table>
+
+
+<ng-template #newTransaction>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Create Transaction</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="form">
+      <div class="form-group">
+        <label for="type">Type</label>
+        <select class="form-control" id="type" [(ngModel)]="newTransactionForm.type">
+          <option [ngValue]="item.value" *ngFor="let item of transactionType">{{ item.name }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="amount">Amount</label>
+        <input type="text" class="form-control" id="amount" [(ngModel)]="newTransactionForm.amount"
+               [ngClass]="{ 'is-invalid': newTransactionForm.error }"/>
+        <div *ngIf="newTransactionForm.error" class="invalid-feedback">
+          {{ newTransactionForm.error }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description</label>
+        <input type="text" class="form-control" id="description" [(ngModel)]="newTransactionForm.description"
+               [ngClass]="{ 'is-invalid': newTransactionForm.error }"/>
+        <div *ngIf="newTransactionForm.error" class="invalid-feedback">
+          {{ newTransactionForm.error }}
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <div class="text-right btn-group">
+          <button type="button" class="btn btn-danger" (click)="modalRef.hide()">Cancel</button>
+          <button type="button" class="btn btn-primary" (click)="addTransaction()">Submit</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</ng-template>
+</div>

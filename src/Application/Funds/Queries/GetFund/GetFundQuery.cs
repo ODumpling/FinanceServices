@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using FinanceServices.Application.Common.Interfaces;
+using FinanceServices.Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,6 +32,11 @@ namespace FinanceServices.Application.Funds.Queries.GetFund
                     Fund = await _context.Funds.Where(x => x.Id == request.FundId)
                         .ProjectTo<FundVm.FundDto>(_mapper.ConfigurationProvider)
                         .SingleOrDefaultAsync(),
+
+                    TransactionTypes = Enum.GetValues(typeof(TransactionType))
+                    .Cast<TransactionType>()
+                    .Select(p => new FundVm.TypeDto() { Value = (int)p, Name = p.ToString() })
+                    .ToList(),
                 };
             }
         }
