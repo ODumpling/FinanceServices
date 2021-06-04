@@ -11,21 +11,21 @@
     <div class="card" style="width: 18rem;">
       <div class="card-body">
         <h5 class="card-title">Income</h5>
-        <p class="card-text">Total: 10000</p>
+        <p class="card-text">£10000</p>
       </div>
     </div>
 
     <div class="card" style="width: 18rem;">
       <div class="card-body">
         <h5 class="card-title">Expenses</h5>
-        <p class="card-text">Total: 10000</p>
+        <p class="card-text">£10000</p>
       </div>
     </div>
 
     <div class="card" style="width: 18rem;">
       <div class="card-body">
-        <h5 class="card-title">Total</h5>
-        <p class="card-text">Total: 10000</p>
+        <h5 class="card-title">Balance</h5>
+        <p class="card-text">£10000</p>
       </div>
     </div>
   </div>
@@ -54,7 +54,7 @@
     </table>
 
     <!--pagination-->
-    <div class="d-flex justify-content-center">
+    <div *ngIf="transactions.hasNextPage" class="d-flex justify-content-center">
       <pagination [totalItems]="transactions.totalCount" [(ngModel)]="page" [maxSize]="10" (pageChanged)="pageChanged($event)" ></pagination>
     </div>
   </div>

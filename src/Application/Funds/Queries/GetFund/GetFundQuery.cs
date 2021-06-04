@@ -31,7 +31,6 @@ namespace FinanceServices.Application.Funds.Queries.GetFund
 
             public async Task<FundVm> Handle(GetFundQuery request, CancellationToken cancellationToken)
             {
-
                 var transactions = await _context.Transactions
                     .Where(x => x.FundId == request.Id)
                     .OrderBy(x => x.Created)
@@ -44,17 +43,16 @@ namespace FinanceServices.Application.Funds.Queries.GetFund
                     .ProjectTo<FundVm.FundDto>(_mapper.ConfigurationProvider)
                     .SingleOrDefaultAsync();
 
-                
 
                 return new FundVm
-                    {
-                        Fund = funds,
+                {
+                    Fund = funds,
 
-                        Transactions = transactions,
+                    Transactions = transactions,
 
-                        TransactionTypes = Enum.GetValues(typeof(TransactionType))
+                    TransactionTypes = Enum.GetValues(typeof(TransactionType))
                         .Cast<TransactionType>()
-                        .Select(p => new FundVm.TypeDto() { Value = (int)p, Name = p.ToString() }).ToList(),
+                        .Select(p => new FundVm.TypeDto() {Value = (int) p, Name = p.ToString()}).ToList(),
                 };
             }
         }
