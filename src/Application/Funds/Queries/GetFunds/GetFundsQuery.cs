@@ -33,13 +33,15 @@ namespace FinanceServices.Application.Funds.Queries.GetFunds
             {
                 var id = Guid.Parse(_userService.UserId);
                 var user = await _context.UserInformation.FindAsync(id);
+                var funds = await _context.Funds
+                    .Where(x => x.Users.Contains(user))
+                    .OrderBy(x => x.Created)
+                    .ProjectTo<FundsVm.FundDto>(_mapper.ConfigurationProvider)
+                    .PaginatedListAsync(request.PageNumber, request.PageSize);
+
                 return new FundsVm
                 {
-                    Funds = await _context.Funds
-                        .Where(x => x.Users.Contains(user))
-                        .OrderByDescending(x => x.Created)
-                        .ProjectTo<FundsVm.FundDto>(_mapper.ConfigurationProvider)
-                        .PaginatedListAsync(request.PageNumber, request.PageSize),
+                    Funds = funds,
                 };
             }
         }

@@ -12,13 +12,13 @@ import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { TodoComponent } from './todo/todo.component';
 import { ApiAuthorizationModule } from 'src/api-authorization/api-authorization.module';
-import { AuthorizeGuard } from 'src/api-authorization/authorize.guard';
 import { AuthorizeInterceptor } from 'src/api-authorization/authorize.interceptor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import {routes} from './routes';
 import { FundComponent } from './fund/fund.component';
 import { ListFundComponent } from './list-fund/list-fund.component';
+import {PaginationModule} from "ngx-bootstrap";
 
 @NgModule({
   declarations: [
@@ -31,16 +31,17 @@ import { ListFundComponent } from './list-fund/list-fund.component';
     FundComponent,
     ListFundComponent
   ],
-  imports: [
-    BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),
-    FontAwesomeModule,
-    HttpClientModule,
-    FormsModule,
-    ApiAuthorizationModule,
-    RouterModule.forRoot(routes),
-    BrowserAnimationsModule,
-    ModalModule.forRoot(),
-  ],
+    imports: [
+        BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),
+        FontAwesomeModule,
+        HttpClientModule,
+        FormsModule,
+        ApiAuthorizationModule,
+        RouterModule.forRoot(routes),
+        BrowserAnimationsModule,
+        ModalModule.forRoot(),
+        PaginationModule.forRoot(),
+    ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true },
   ],

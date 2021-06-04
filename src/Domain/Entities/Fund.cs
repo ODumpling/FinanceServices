@@ -4,7 +4,7 @@ using FinanceServices.Domain.Common;
 
 namespace FinanceServices.Domain.Entities
 {
-    public class Fund : AuditableEntity
+    public class Fund : AuditableEntity, IHasDomainEvent
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
@@ -12,5 +12,7 @@ namespace FinanceServices.Domain.Entities
         public UserInfo Manager { get; set; }
         public IList<Transaction> Transactions { get; set; } = new List<Transaction>();
         public IList<UserInfo> Users { get; set; } = new List<UserInfo>();
+        public IList<Membership> Memberships { get; set; } = new List<Membership>();
+        public List<DomainEvent> DomainEvents { get; set; } = new List<DomainEvent>();
     }
 }

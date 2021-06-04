@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FinanceServices.Application.Common.Interfaces;
 using FinanceServices.Domain.Entities;
+using FinanceServices.Domain.Events;
 using MediatR;
 
 namespace FinanceServices.Application.Funds.Commands
@@ -30,6 +31,7 @@ namespace FinanceServices.Application.Funds.Commands
                     Name = request.Name
                 };
 
+                fund.DomainEvents.Add(new FundCreatedEvent(fund));
                 _context.Funds.Add(fund);
                 await _context.SaveChangesAsync(cancellationToken);
 

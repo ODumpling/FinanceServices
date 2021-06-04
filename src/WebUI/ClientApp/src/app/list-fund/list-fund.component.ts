@@ -1,12 +1,7 @@
 import {Component, OnInit, TemplateRef} from '@angular/core';
-import {
-  CreateFundCommand,
-  CreateTransactionCommand, FundDto,
-  FundsClient,
-  PaginatedListOfFundDto,
-  TransactionDto
-} from '../web-api-client';
+import {CreateFundCommand, FundDto, FundsClient, PaginatedListOfFundDto} from '../web-api-client';
 import {BsModalRef, BsModalService} from "ngx-bootstrap/modal";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-list-fund',
@@ -14,18 +9,27 @@ import {BsModalRef, BsModalService} from "ngx-bootstrap/modal";
   styleUrls: ['./list-fund.component.css']
 })
 export class ListFundComponent implements OnInit {
-  public funds: PaginatedListOfFundDto;
-  public pageNumber: number;
-  public pageSize: number;
-  public modalRef: BsModalRef;
-  public newFundForm: any = {};
-  constructor(private client: FundsClient, private modalService:BsModalService) {
-    client.listFunds(this.pageNumber, this.pageSize).subscribe(res => {
-      this.funds = res.funds;
-    });
+  funds: PaginatedListOfFundDto;
+  pageNumber: number;
+  pageSize = 9;
+  modalRef: BsModalRef;
+  newFundForm: any = {};
+  debug = true;
+
+  constructor(private client: FundsClient, private modalService: BsModalService, private route: ActivatedRoute, private router: Router) {
+    this.loadFunds();
   }
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      this.pageNumber = params['page'];
+    });
+  }
+
+  loadFunds() {
+    this.client.listFunds(this.pageNumber, this.pageSize).subscribe(res => {
+      this.funds = res.funds;
+    });
   }
 
   openModal(template: TemplateRef<any>) {
@@ -34,8 +38,8 @@ export class ListFundComponent implements OnInit {
 
   addFund() {
     const fund = FundDto.fromJS({
-      id         : 0,
-      name     : this.newFundForm.name,
+      id: 0,
+      name: this.newFundForm.name,
     });
 
     this.client.createFund(<CreateFundCommand>{
@@ -55,4 +59,18 @@ export class ListFundComponent implements OnInit {
     this.modalRef.hide();
   }
 
+  pageChanged(event: any) {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        page: event.page
+      },
+      queryParamsHandling: 'merge',
+      // preserve the existing query params in the route
+      // skipLocationChange: true
+      // do not trigger navigation
+    }).then(() => {
+      this.loadFunds()
+    });
+  }
 }

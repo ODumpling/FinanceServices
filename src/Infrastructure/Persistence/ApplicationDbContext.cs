@@ -35,6 +35,7 @@ namespace FinanceServices.Infrastructure.Persistence
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<UserInfo> UserInformation { get; set; }
         public DbSet<Fund> Funds { get; set; }
+        public DbSet<Membership> Memberships { get; set; }
         public DbSet<TodoList> TodoLists { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
