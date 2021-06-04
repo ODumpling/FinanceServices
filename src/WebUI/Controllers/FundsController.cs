@@ -22,11 +22,9 @@ namespace FinanceServices.WebUI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateFund(CreateFundCommand command)
+        public async Task<ActionResult<Guid>> CreateFund(CreateFundCommand command)
         {
-            await Mediator.Send(command);
-
-            return NoContent();
+           return await Mediator.Send(command);
         }
 
         // [HttpPatch]

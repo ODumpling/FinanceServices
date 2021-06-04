@@ -18,7 +18,10 @@ export class FundComponent implements OnInit {
   public modalRef: BsModalRef;
   public newTransactionForm: any = {};
 
-  constructor(private route: ActivatedRoute, private client: FundsClient, private tclient: TransactionsClient, private modalService: BsModalService) {
+  constructor(private route: ActivatedRoute,
+              private client: FundsClient,
+              private tclient: TransactionsClient,
+              private modalService: BsModalService) {
     const id: Observable<string> = route.params.pipe(map(p => p.id));
     id.subscribe(res => {
       client.getFund(res).subscribe(result => {

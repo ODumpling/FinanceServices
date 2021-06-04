@@ -1,9 +1,49 @@
 <p>{{funds | json}}</p>
 
-<div *ngFor="let item of funds.items" class="card" style="width: 18rem;">
-  <div class="card-body">
-    <h5 class="card-title">{{ item.name }}</h5>
-    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-    <a href="{{'/funds/' + item.id}}" class="btn btn-primary">Go somewhere</a>
-  </div>
+<div class="text-right">
+  <button class="btn btn-primary" (click)="openModal(newFund)">Create Fund</button>
 </div>
+
+<div *ngIf="funds">
+
+  <div *ngFor="let item of funds.items" class="card" style="width: 18rem;">
+    <div class="card-body">
+      <h5 class="card-title">{{ item.name }} Fund</h5>
+      <a href="{{'/funds/' + item.id}}" class="btn btn-primary">Go to Fund</a>
+    </div>
+  </div>
+
+
+
+</div>
+
+
+<ng-template #newFund>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Create Transaction</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="form">
+
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" class="form-control" id="name" [(ngModel)]="newFundForm.name"
+               [ngClass]="{ 'is-invalid': newFundForm.error }"/>
+        <div *ngIf="newFundForm.error" class="invalid-feedback">
+          {{ newFundForm.error }}
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <div class="text-right btn-group">
+          <button type="button" class="btn btn-danger" (click)="modalRef.hide()">Cancel</button>
+          <button type="button" class="btn btn-primary" (click)="addFund()">Submit</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</ng-template>
