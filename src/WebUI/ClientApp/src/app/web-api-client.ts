@@ -17,7 +17,7 @@ export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 export interface IFundsClient {
     listFunds(pageNumber: number | undefined, pageSize: number | undefined): Observable<FundsVm>;
     createFund(command: CreateFundCommand): Observable<string>;
-    getFund(id: string): Observable<FundVm>;
+    getFund(id: string, page: number | undefined, pageSize: number | undefined): Observable<FundVm>;
 }
 
 @Injectable({
@@ -141,11 +141,19 @@ export class FundsClient implements IFundsClient {
         return _observableOf<string>(<any>null);
     }
 
-    getFund(id: string): Observable<FundVm> {
-        let url_ = this.baseUrl + "/api/Funds/{id}";
+    getFund(id: string, page: number | undefined, pageSize: number | undefined): Observable<FundVm> {
+        let url_ = this.baseUrl + "/api/Funds/{id}?";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (page === null)
+            throw new Error("The parameter 'page' cannot be null.");
+        else if (page !== undefined)
+            url_ += "page=" + encodeURIComponent("" + page) + "&";
+        if (pageSize === null)
+            throw new Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "pageSize=" + encodeURIComponent("" + pageSize) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -1038,6 +1046,7 @@ export interface IFundDto {
 
 export class FundVm implements IFundVm {
     fund?: FundDto2 | undefined;
+    transactions?: PaginatedListOfTransactionDto | undefined;
     transactionTypes?: TypeDto[] | undefined;
 
     constructor(data?: IFundVm) {
@@ -1052,6 +1061,7 @@ export class FundVm implements IFundVm {
     init(_data?: any) {
         if (_data) {
             this.fund = _data["fund"] ? FundDto2.fromJS(_data["fund"]) : <any>undefined;
+            this.transactions = _data["transactions"] ? PaginatedListOfTransactionDto.fromJS(_data["transactions"]) : <any>undefined;
             if (Array.isArray(_data["transactionTypes"])) {
                 this.transactionTypes = [] as any;
                 for (let item of _data["transactionTypes"])
@@ -1070,6 +1080,7 @@ export class FundVm implements IFundVm {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["fund"] = this.fund ? this.fund.toJSON() : <any>undefined;
+        data["transactions"] = this.transactions ? this.transactions.toJSON() : <any>undefined;
         if (Array.isArray(this.transactionTypes)) {
             data["transactionTypes"] = [];
             for (let item of this.transactionTypes)
@@ -1081,13 +1092,13 @@ export class FundVm implements IFundVm {
 
 export interface IFundVm {
     fund?: FundDto2 | undefined;
+    transactions?: PaginatedListOfTransactionDto | undefined;
     transactionTypes?: TypeDto[] | undefined;
 }
 
 export class FundDto2 implements IFundDto2 {
     id?: string;
     name?: string | undefined;
-    transactions?: TransactionDto[] | undefined;
 
     constructor(data?: IFundDto2) {
         if (data) {
@@ -1102,11 +1113,6 @@ export class FundDto2 implements IFundDto2 {
         if (_data) {
             this.id = _data["id"];
             this.name = _data["name"];
-            if (Array.isArray(_data["transactions"])) {
-                this.transactions = [] as any;
-                for (let item of _data["transactions"])
-                    this.transactions!.push(TransactionDto.fromJS(item));
-            }
         }
     }
 
@@ -1121,11 +1127,6 @@ export class FundDto2 implements IFundDto2 {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
         data["name"] = this.name;
-        if (Array.isArray(this.transactions)) {
-            data["transactions"] = [];
-            for (let item of this.transactions)
-                data["transactions"].push(item.toJSON());
-        }
         return data; 
     }
 }
@@ -1133,7 +1134,70 @@ export class FundDto2 implements IFundDto2 {
 export interface IFundDto2 {
     id?: string;
     name?: string | undefined;
-    transactions?: TransactionDto[] | undefined;
+}
+
+export class PaginatedListOfTransactionDto implements IPaginatedListOfTransactionDto {
+    items?: TransactionDto[] | undefined;
+    pageIndex?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+
+    constructor(data?: IPaginatedListOfTransactionDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(TransactionDto.fromJS(item));
+            }
+            this.pageIndex = _data["pageIndex"];
+            this.totalPages = _data["totalPages"];
+            this.totalCount = _data["totalCount"];
+            this.hasPreviousPage = _data["hasPreviousPage"];
+            this.hasNextPage = _data["hasNextPage"];
+        }
+    }
+
+    static fromJS(data: any): PaginatedListOfTransactionDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PaginatedListOfTransactionDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["pageIndex"] = this.pageIndex;
+        data["totalPages"] = this.totalPages;
+        data["totalCount"] = this.totalCount;
+        data["hasPreviousPage"] = this.hasPreviousPage;
+        data["hasNextPage"] = this.hasNextPage;
+        return data; 
+    }
+}
+
+export interface IPaginatedListOfTransactionDto {
+    items?: TransactionDto[] | undefined;
+    pageIndex?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
 }
 
 export class TransactionDto implements ITransactionDto {

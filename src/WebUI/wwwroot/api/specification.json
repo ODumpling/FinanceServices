@@ -93,6 +93,26 @@
               "format": "guid"
             },
             "x-position": 1
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            },
+            "x-position": 2
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            },
+            "x-position": 3
           }
         ],
         "responses": {
@@ -646,6 +666,14 @@
               }
             ]
           },
+          "transactions": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PaginatedListOfTransactionDto"
+              }
+            ]
+          },
           "transactionTypes": {
             "type": "array",
             "nullable": true,
@@ -666,13 +694,37 @@
           "name": {
             "type": "string",
             "nullable": true
-          },
-          "transactions": {
+          }
+        }
+      },
+      "PaginatedListOfTransactionDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
             "type": "array",
             "nullable": true,
             "items": {
               "$ref": "#/components/schemas/TransactionDto"
             }
+          },
+          "pageIndex": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hasPreviousPage": {
+            "type": "boolean"
+          },
+          "hasNextPage": {
+            "type": "boolean"
           }
         }
       },

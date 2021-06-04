@@ -16,15 +16,20 @@ namespace FinanceServices.WebUI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<FundVm>> GetFund(Guid id)
+        public async Task<ActionResult<FundVm>> GetFund(Guid id, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
-            return await Mediator.Send(new GetFundQuery{FundId = id});
+            return await Mediator.Send(new GetFundQuery
+            {
+                Id = id,
+                PageNumber = page,
+                PageSize = pageSize
+            });
         }
 
         [HttpPost]
         public async Task<ActionResult<Guid>> CreateFund(CreateFundCommand command)
         {
-           return await Mediator.Send(command);
+            return await Mediator.Send(command);
         }
 
         // [HttpPatch]

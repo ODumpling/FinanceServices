@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using AutoMapper;
 using FinanceServices.Application.Common.Mappings;
+using FinanceServices.Application.Common.Models;
 using FinanceServices.Domain.Entities;
 
 namespace FinanceServices.Application.Funds.Queries.GetFund
@@ -9,7 +10,7 @@ namespace FinanceServices.Application.Funds.Queries.GetFund
     public class FundVm
     {
         public FundDto Fund { get; set; }
-
+        public PaginatedList<TransactionDto> Transactions { get; set; }
         public IList<TypeDto> TransactionTypes { get; set; }
 
         public class TypeDto
@@ -22,8 +23,8 @@ namespace FinanceServices.Application.Funds.Queries.GetFund
         {
             public Guid Id { get; set; }
             public string Name { get; set; }
-            public IList<TransactionDto> Transactions { get; set; }
         }
+        
         public class TransactionDto : IMapFrom<Transaction>
         { 
             public Guid Id { get; set; }

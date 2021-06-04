@@ -5,72 +5,102 @@
 
 
 <div *ngIf="fund">
-<h1>{{fund.name}} Fund</h1>
+  <h1>{{fund.name}} Fund</h1>
 
-<div class="text-right pb-2">
-  <button type="button" class="btn btn-primary" (click)="openModal(newTransaction)">New Transaction</button>
-</div>
-<table class="table">
-  <thead>
-  <tr>
-    <th scope="col">#</th>
-    <th scope="col">Type</th>
-    <th scope="col">Amount</th>
-    <th scope="col">Description</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr *ngFor="let item of transactions" [ngClass]="item.type == 1 ? 'table-success': 'table-danger'">
-    <th scope="row">{{fund.transactions.indexOf(item) + 1 }}</th>
-    <td>{{transactionType[item.type].name}}</td>
-    <td>{{item.amount}}</td>
-    <td>{{item.description}}</td>
-  </tr>
-</table>
-
-
-<ng-template #newTransaction>
-  <div class="modal-header">
-    <h4 class="modal-title pull-left">Create Transaction</h4>
-    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    <div class="form">
-      <div class="form-group">
-        <label for="type">Type</label>
-        <select class="form-control" id="type" [(ngModel)]="newTransactionForm.type">
-          <option [ngValue]="item.value" *ngFor="let item of transactionType">{{ item.name }}</option>
-        </select>
+  <div class="d-flex justify-content-between pb-3">
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title">Income</h5>
+        <p class="card-text">Total: 10000</p>
       </div>
+    </div>
 
-      <div class="form-group">
-        <label for="amount">Amount</label>
-        <input type="text" class="form-control" id="amount" [(ngModel)]="newTransactionForm.amount"
-               [ngClass]="{ 'is-invalid': newTransactionForm.error }"/>
-        <div *ngIf="newTransactionForm.error" class="invalid-feedback">
-          {{ newTransactionForm.error }}
-        </div>
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title">Expenses</h5>
+        <p class="card-text">Total: 10000</p>
       </div>
+    </div>
 
-      <div class="form-group">
-        <label for="description">Description</label>
-        <input type="text" class="form-control" id="description" [(ngModel)]="newTransactionForm.description"
-               [ngClass]="{ 'is-invalid': newTransactionForm.error }"/>
-        <div *ngIf="newTransactionForm.error" class="invalid-feedback">
-          {{ newTransactionForm.error }}
-        </div>
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title">Total</h5>
+        <p class="card-text">Total: 10000</p>
       </div>
-
-      <div class="modal-footer">
-        <div class="text-right btn-group">
-          <button type="button" class="btn btn-danger" (click)="modalRef.hide()">Cancel</button>
-          <button type="button" class="btn btn-primary" (click)="addTransaction()">Submit</button>
-        </div>
-      </div>
-
     </div>
   </div>
-</ng-template>
+
+
+  <div class="text-right pb-2">
+    <button type="button" class="btn btn-primary" (click)="openModal(newTransaction)">New Transaction</button>
+  </div>
+  <div *ngIf="transactions">
+    <table class="table">
+      <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Type</th>
+        <th scope="col">Amount</th>
+        <th scope="col">Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let item of transactions.items" [ngClass]="item.type == 1 ? 'table-success': 'table-danger'">
+        <th scope="row">{{transactions.items.indexOf(item) + 1 }}</th>
+        <td>{{transactionType[item.type].name}}</td>
+        <td>{{item.amount}}</td>
+        <td>{{item.description}}</td>
+      </tr>
+    </table>
+
+    <!--pagination-->
+    <div class="d-flex justify-content-center">
+      <pagination [totalItems]="transactions.totalCount" [(ngModel)]="page" [maxSize]="10" (pageChanged)="pageChanged($event)" ></pagination>
+    </div>
+  </div>
+
+  <ng-template #newTransaction>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">Create Transaction</h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form">
+        <div class="form-group">
+          <label for="type">Type</label>
+          <select class="form-control" id="type" [(ngModel)]="newTransactionForm.type">
+            <option [ngValue]="item.value" *ngFor="let item of transactionType">{{ item.name }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="amount">Amount</label>
+          <input type="text" class="form-control" id="amount" [(ngModel)]="newTransactionForm.amount"
+                 [ngClass]="{ 'is-invalid': newTransactionForm.error }"/>
+          <div *ngIf="newTransactionForm.error" class="invalid-feedback">
+            {{ newTransactionForm.error }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description</label>
+          <input type="text" class="form-control" id="description" [(ngModel)]="newTransactionForm.description"
+                 [ngClass]="{ 'is-invalid': newTransactionForm.error }"/>
+          <div *ngIf="newTransactionForm.error" class="invalid-feedback">
+            {{ newTransactionForm.error }}
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <div class="text-right btn-group">
+            <button type="button" class="btn btn-danger" (click)="modalRef.hide()">Cancel</button>
+            <button type="button" class="btn btn-primary" (click)="addTransaction()">Submit</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </ng-template>
 </div>

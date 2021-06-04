@@ -14,7 +14,7 @@ export class ListFundComponent implements OnInit {
   pageSize = 9;
   modalRef: BsModalRef;
   newFundForm: any = {};
-  debug = true;
+  debug = false;
 
   constructor(private client: FundsClient, private modalService: BsModalService, private route: ActivatedRoute, private router: Router) {
     this.loadFunds();
@@ -70,6 +70,7 @@ export class ListFundComponent implements OnInit {
       // skipLocationChange: true
       // do not trigger navigation
     }).then(() => {
+      console.log(event.page)
       this.loadFunds()
     });
   }

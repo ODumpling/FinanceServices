@@ -1,38 +1,56 @@
 import {Component, OnInit, TemplateRef} from '@angular/core';
-import {CreateFundCommand, CreateTransactionCommand, FundDto, FundDto2, FundsClient, TransactionDto, TransactionsClient, TransactionType, TypeDto} from '../web-api-client';
+import {
+  CreateTransactionCommand,
+  FundDto2,
+  FundsClient,
+  PaginatedListOfTransactionDto,
+  TransactionDto,
+  TransactionsClient,
+  TypeDto
+} from '../web-api-client';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
 import {BsModalRef, BsModalService} from 'ngx-bootstrap/modal';
 
 @Component({
-  selector   : 'app-fund',
+  selector: 'app-fund',
   templateUrl: './fund.component.html',
-  styleUrls  : ['./fund.component.css']
+  styleUrls: ['./fund.component.css']
 })
 export class FundComponent implements OnInit {
-  public debug = false;
-  public fund: FundDto2;
-  public transactions: TransactionDto[];
-  public transactionType: TypeDto[];
-  public modalRef: BsModalRef;
-  public newTransactionForm: any = {};
+  debug = false;
+  fund: FundDto2;
+  transactions: PaginatedListOfTransactionDto;
+  transactionType: TypeDto[];
+  modalRef: BsModalRef;
+  newTransactionForm: any = {};
+  id: string;
+  page: number;
+  pageSize = 10;
 
   constructor(private route: ActivatedRoute,
+              private router: Router,
               private client: FundsClient,
-              private tclient: TransactionsClient,
+              private transactionsClient: TransactionsClient,
               private modalService: BsModalService) {
-    const id: Observable<string> = route.params.pipe(map(p => p.id));
-    id.subscribe(res => {
-      client.getFund(res).subscribe(result => {
-        this.fund = result.fund;
-        this.transactions = result.fund.transactions;
-        this.transactionType = result.transactionTypes;
-      });
+
+    this.route.params.subscribe(params => {
+      this.id = params.id;
     });
+    this.loadFunds();
   }
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      this.page = params['page'];
+    })
+  }
+
+  loadFunds() {
+    this.client.getFund(this.id, this.page, this.pageSize).subscribe((data) => {
+      this.fund = data.fund;
+      this.transactions = data.transactions;
+      this.transactionType = data.transactionTypes;
+    });
   }
 
 
@@ -43,19 +61,20 @@ export class FundComponent implements OnInit {
   addTransaction() {
 
     const transaction = TransactionDto.fromJS({
-      id         : 0,
-      type       : this.newTransactionForm.type,
+      id: 0,
+      type: this.newTransactionForm.type,
       description: this.newTransactionForm.description,
-      amount     : this.newTransactionForm.amount,
+      amount: this.newTransactionForm.amount,
     });
 
-    this.tclient.createTransaction(<CreateTransactionCommand>{
+    this.transactionsClient.createTransaction(<CreateTransactionCommand>{
       fundId: this.fund.id,
       type: this.newTransactionForm.type,
       amount: this.newTransactionForm.amount,
-      description: this.newTransactionForm.description }).subscribe(result => {
-        transaction.id = result;
-        this.transactions.push(transaction);
+      description: this.newTransactionForm.description
+    }).subscribe(result => {
+      transaction.id = result;
+      this.transactions.items.push(transaction);
     }, error => {
       const errors = JSON.parse(error.response);
 
@@ -67,4 +86,16 @@ export class FundComponent implements OnInit {
     this.newTransactionForm = {};
     this.modalRef.hide();
   }
+
+  pageChanged(event: any) {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        page: event.page
+      },
+      // preserve the existing query params in the route
+      queryParamsHandling: 'merge',
+    }).then(()=> this.loadFunds());
+  }
+
 }
