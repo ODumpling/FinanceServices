@@ -1,10 +1,10 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Runtime.Serialization;
+using AutoMapper;
 using FinanceServices.Application.Common.Mappings;
-using FinanceServices.Application.TodoLists.Queries.GetTodos;
+using FinanceServices.Application.Funds.Queries.GetFund;
 using FinanceServices.Domain.Entities;
 using NUnit.Framework;
-using System;
-using System.Runtime.Serialization;
 
 namespace FinanceServices.Application.UnitTests.Common.Mappings
 {
@@ -30,8 +30,8 @@ namespace FinanceServices.Application.UnitTests.Common.Mappings
         }
         
         [Test]
-        [TestCase(typeof(TodoList), typeof(TodoListDto))]
-        [TestCase(typeof(TodoItem), typeof(TodoItemDto))]
+        [TestCase(typeof(Fund), typeof(FundVm.FundDto))]
+        [TestCase(typeof(Transaction), typeof(FundVm.TransactionDto))]
         public void ShouldSupportMappingFromSourceToDestination(Type source, Type destination)
         {
             var instance = GetInstanceOf(source);
