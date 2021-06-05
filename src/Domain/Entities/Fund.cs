@@ -8,6 +8,9 @@ namespace FinanceServices.Domain.Entities
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public decimal Expenses { get; set; }
+        public decimal Income { get; set; }
+        public decimal Balance { get; set; }
         public Guid ManagerId { get; set; }
         public UserInfo Manager { get; set; }
         public IList<Transaction> Transactions { get; set; } = new List<Transaction>();

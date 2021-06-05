@@ -28,7 +28,10 @@ namespace FinanceServices.Application.Funds.Commands
                 var fund = new Fund
                 {
                     ManagerId = Guid.Parse(_userService.UserId),
-                    Name = request.Name
+                    Name = request.Name,
+                    Balance = 0,
+                    Expenses = 0,
+                    Income = 0,
                 };
 
                 fund.DomainEvents.Add(new FundCreatedEvent(fund));

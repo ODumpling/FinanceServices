@@ -3,13 +3,12 @@ using FinanceServices.Domain.Entities;
 
 namespace FinanceServices.Domain.Events
 {
-    public class TodoItemCompletedEvent : DomainEvent
+    public class TransactionCreatedEvent : DomainEvent
     {
-        public TodoItemCompletedEvent(TodoItem item)
+        public TransactionCreatedEvent(Transaction item)
         {
             Item = item;
         }
-
-        public TodoItem Item { get; }
+        public Transaction Item { get; set; }
     }
 }

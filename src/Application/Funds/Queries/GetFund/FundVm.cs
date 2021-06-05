@@ -23,6 +23,9 @@ namespace FinanceServices.Application.Funds.Queries.GetFund
         {
             public Guid Id { get; set; }
             public string Name { get; set; }
+            public decimal Expenses { get; set; }
+            public decimal Income { get; set; }
+            public decimal Balance { get; set; }
         }
         
         public class TransactionDto : IMapFrom<Transaction>
@@ -31,6 +34,7 @@ namespace FinanceServices.Application.Funds.Queries.GetFund
             public string Type { get; set; }
             public decimal Amount { get; set; }
             public string Description { get; set; }
+            public DateTime Date { get; set; }
 
             public void Mapping(Profile profile)
             {

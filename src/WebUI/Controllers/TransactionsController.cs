@@ -8,8 +8,7 @@ namespace FinanceServices.WebUI.Controllers
     public class TransactionsController : ApiControllerBase
     {
         [HttpPost]
-        [Produces("application/json")]
-        public async Task<ActionResult<string>> CreateTransaction(CreateTransactionCommand command)
+        public async Task<ActionResult<Guid>> CreateTransaction(CreateTransactionCommand command)
         {
             return await Mediator.Send(command);
         }

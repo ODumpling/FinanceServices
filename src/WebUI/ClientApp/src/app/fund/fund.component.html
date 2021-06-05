@@ -11,21 +11,21 @@
     <div class="card" style="width: 18rem;">
       <div class="card-body">
         <h5 class="card-title">Income</h5>
-        <p class="card-text">£10000</p>
+        <p class="card-text">{{fund.income | currency:'GBP'}}</p>
       </div>
     </div>
 
     <div class="card" style="width: 18rem;">
       <div class="card-body">
         <h5 class="card-title">Expenses</h5>
-        <p class="card-text">£10000</p>
+        <p class="card-text">{{fund.expenses | currency:'GBP'}}</p>
       </div>
     </div>
 
     <div class="card" style="width: 18rem;">
       <div class="card-body">
         <h5 class="card-title">Balance</h5>
-        <p class="card-text">£10000</p>
+        <p class="card-text">{{fund.balance | currency:'GBP'}}</p>
       </div>
     </div>
   </div>
@@ -42,20 +42,23 @@
         <th scope="col">Type</th>
         <th scope="col">Amount</th>
         <th scope="col">Description</th>
+        <th scope="col">Date</th>
       </tr>
       </thead>
       <tbody>
       <tr *ngFor="let item of transactions.items" [ngClass]="item.type == 1 ? 'table-success': 'table-danger'">
-        <th scope="row">{{transactions.items.indexOf(item) + 1 }}</th>
+        <th scope="row">{{loadId(item)}}</th>
         <td>{{transactionType[item.type].name}}</td>
         <td>{{item.amount}}</td>
         <td>{{item.description}}</td>
+        <td>{{item.date | date : 'shortDate' }}</td>
       </tr>
     </table>
 
     <!--pagination-->
-    <div *ngIf="transactions.hasNextPage" class="d-flex justify-content-center">
-      <pagination [totalItems]="transactions.totalCount" [(ngModel)]="page" [maxSize]="10" (pageChanged)="pageChanged($event)" ></pagination>
+    <div *ngIf="transactions.totalCount > 10" class="d-flex justify-content-center">
+      <pagination [totalItems]="transactions.totalCount" [(ngModel)]="page" [maxSize]="10"
+                  (pageChanged)="pageChanged($event)"></pagination>
     </div>
   </div>
 

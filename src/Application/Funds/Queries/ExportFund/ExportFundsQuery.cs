@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using FinanceServices.Application.Common.Interfaces;
-using FinanceServices.Application.TodoLists.Queries.ExportTodos;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

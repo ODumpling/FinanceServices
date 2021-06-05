@@ -53,31 +53,27 @@ export class FundComponent implements OnInit {
     });
   }
 
+  loadId(item) {
+    if (this.page > 1) {
+      return this.transactions.items.indexOf(item) + 1 + (this.page * 10)
+    }
+    return this.transactions.items.indexOf(item) + 1
+  }
 
   openModal(template: TemplateRef<any>) {
     this.modalRef = this.modalService.show(template);
   }
 
   addTransaction() {
-
-    const transaction = TransactionDto.fromJS({
-      id: 0,
-      type: this.newTransactionForm.type,
-      description: this.newTransactionForm.description,
-      amount: this.newTransactionForm.amount,
-    });
-
     this.transactionsClient.createTransaction(<CreateTransactionCommand>{
       fundId: this.fund.id,
       type: this.newTransactionForm.type,
       amount: this.newTransactionForm.amount,
       description: this.newTransactionForm.description
-    }).subscribe(result => {
-      transaction.id = result;
-      this.transactions.items.push(transaction);
+    }).subscribe(() => {
+      this.loadFunds()
     }, error => {
       const errors = JSON.parse(error.response);
-
       if (errors && errors.Title) {
         this.newTransactionForm.error = errors.Title[0];
       }
@@ -95,7 +91,7 @@ export class FundComponent implements OnInit {
       },
       // preserve the existing query params in the route
       queryParamsHandling: 'merge',
-    }).then(()=> this.loadFunds());
+    }).then(() => this.loadFunds());
   }
 
 }
