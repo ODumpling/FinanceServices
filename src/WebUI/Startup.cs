@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using FinanceServices.Application;
 using FinanceServices.Application.Common.Interfaces;
 using FinanceServices.Infrastructure;
@@ -15,6 +16,10 @@ using Microsoft.Extensions.Hosting;
 using NSwag;
 using NSwag.Generation.Processors.Security;
 using System.Linq;
+using FinanceServices.Infrastructure.Hangfire;
+using Hangfire;
+using Hangfire.Dashboard;
+using Microsoft.AspNetCore.Http;
 
 namespace FinanceServices.WebUI
 {
@@ -43,22 +48,29 @@ namespace FinanceServices.WebUI
                 .AddDbContextCheck<ApplicationDbContext>();
 
             services.AddControllersWithViews(options =>
-                options.Filters.Add<ApiExceptionFilterAttribute>())
-                    .AddFluentValidation();
+                    options.Filters.Add<ApiExceptionFilterAttribute>())
+                .AddFluentValidation();
+
+            services.AddAuthorization(options =>
+            {
+                // Policy to be applied to hangfire endpoint
+                options.AddPolicy("HangfirePolicy", builder =>
+                {
+                    builder
+                        .RequireAuthenticatedUser()
+                        .RequireRole("Administrator");
+                });
+            });
 
             services.AddRazorPages();
+            // Add framework services for Hangfire.
+            services.AddMvc();
 
             // Customise default API behaviour
-            services.Configure<ApiBehaviorOptions>(options =>
-            {
-                options.SuppressModelStateInvalidFilter = true;
-            });
+            services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
 
             // In production, the Angular files will be served from this directory
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "ClientApp/dist";
-            });
+            services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/dist"; });
 
             services.AddOpenApiDocument(configure =>
             {
@@ -109,12 +121,21 @@ namespace FinanceServices.WebUI
             app.UseAuthentication();
             app.UseIdentityServer();
             app.UseAuthorization();
+            app.UseHangfireDashboard();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
+                endpoints.MapHangfireDashboard("/jobs", new DashboardOptions
+                {
+                    Authorization = new List<IDashboardAuthorizationFilter>
+                    {
+                        new HangfireAuthorizationFilter(),
+                    }
+                });
             });
 
             app.UseSpa(spa =>

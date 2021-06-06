@@ -10,6 +10,7 @@ import {
 } from '../web-api-client';
 import {ActivatedRoute, Router} from '@angular/router';
 import {BsModalRef, BsModalService} from 'ngx-bootstrap/modal';
+import {formatDate} from "ngx-bootstrap";
 
 @Component({
   selector: 'app-fund',
@@ -65,11 +66,14 @@ export class FundComponent implements OnInit {
   }
 
   addTransaction() {
+    this.newTransactionForm.date.setHours(12);
+
     this.transactionsClient.createTransaction(<CreateTransactionCommand>{
       fundId: this.fund.id,
       type: this.newTransactionForm.type,
       amount: this.newTransactionForm.amount,
-      description: this.newTransactionForm.description
+      description: this.newTransactionForm.description,
+      date: this.newTransactionForm.date,
     }).subscribe(() => {
       this.loadFunds()
     }, error => {
