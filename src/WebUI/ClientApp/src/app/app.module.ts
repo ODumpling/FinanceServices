@@ -15,8 +15,9 @@ import {ModalModule} from 'ngx-bootstrap/modal';
 import {routes} from './routes';
 import {FundComponent} from './fund/fund.component';
 import {ListFundComponent} from './list-fund/list-fund.component';
-import { PaginationModule} from "ngx-bootstrap";
-import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import {PaginationModule} from "ngx-bootstrap";
+import {BsDatepickerModule} from 'ngx-bootstrap/datepicker';
+import {TabsModule} from "ngx-bootstrap/tabs";
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
     ModalModule.forRoot(),
     PaginationModule.forRoot(),
     BsDatepickerModule.forRoot(),
+    TabsModule.forRoot(),
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true},

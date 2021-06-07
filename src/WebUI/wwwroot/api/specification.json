@@ -162,6 +162,91 @@
         }
       }
     },
+    "/api/Transactions/subscription": {
+      "post": {
+        "tags": [
+          "Transactions"
+        ],
+        "operationId": "Transactions_CreateTransactionSubscription",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTransactionSubscription"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Transactions/subscriptions/{id}": {
+      "get": {
+        "tags": [
+          "Transactions"
+        ],
+        "operationId": "Transactions_ListRecurringTransactions",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            },
+            "x-position": 2
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            },
+            "x-position": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecurringTransactionsVm"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/WeatherForecast": {
       "get": {
         "tags": [
@@ -419,6 +504,95 @@
           0,
           1
         ]
+      },
+      "CreateTransactionSubscription": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "type": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "RecurringTransactionsVm": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "transactions": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PaginatedListOfTransactionDto2"
+              }
+            ]
+          }
+        }
+      },
+      "PaginatedListOfTransactionDto2": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/TransactionDto2"
+            }
+          },
+          "pageIndex": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hasPreviousPage": {
+            "type": "boolean"
+          },
+          "hasNextPage": {
+            "type": "boolean"
+          }
+        }
+      },
+      "TransactionDto2": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "fundId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "amount": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
       },
       "WeatherForecast": {
         "type": "object",

@@ -31,36 +31,68 @@
   </div>
 
 
-  <div class="text-right pb-2">
-    <button type="button" class="btn btn-primary" (click)="openModal(newTransaction)">New Transaction</button>
-  </div>
-  <div *ngIf="transactions">
-    <table class="table">
-      <thead>
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">Type</th>
-        <th scope="col">Amount</th>
-        <th scope="col">Description</th>
-        <th scope="col">Date</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let item of transactions.items" [ngClass]="item.type == 1 ? 'table-success': 'table-danger'">
-        <th scope="row">{{loadId(item)}}</th>
-        <td>{{transactionType[item.type].name}}</td>
-        <td>{{item.amount}}</td>
-        <td>{{item.description}}</td>
-        <td>{{item.date | date : 'shortDate' }}</td>
-      </tr>
-    </table>
+  <tabset>
+    <tab heading="Transactions">
+      <!--Transaction Table and Button-->
+      <div class="text-right py-2">
+        <button type="button" class="btn btn-primary" (click)="openModal(newTransaction)">New Transaction</button>
+      </div>
+      <div *ngIf="transactions">
+        <table class="table">
+          <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Type</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Description</th>
+            <th scope="col">Date</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let item of transactions.items" [ngClass]="item.type == 1 ? 'table-success': 'table-danger'">
+            <th scope="row">{{loadId(item)}}</th>
+            <td>{{transactionType[item.type].name}}</td>
+            <td>{{item.amount}}</td>
+            <td>{{item.description}}</td>
+            <td>{{item.date | date : 'shortDate' }}</td>
+          </tr>
+        </table>
 
-    <!--pagination-->
-    <div *ngIf="transactions.totalCount > 10" class="d-flex justify-content-center">
-      <pagination [totalItems]="transactions.totalCount" [(ngModel)]="page" [maxSize]="10"
-                  (pageChanged)="pageChanged($event)"></pagination>
-    </div>
-  </div>
+        <!--pagination-->
+        <div *ngIf="transactions.totalCount > 10" class="d-flex justify-content-center">
+          <pagination [totalItems]="transactions.totalCount" [(ngModel)]="page" [maxSize]="10"
+                      (pageChanged)="pageChanged($event)"></pagination>
+        </div>
+      </div>
+
+    </tab>
+    <tab heading="Recurring Transactions">
+
+      <div *ngIf="recurringTransactions" class="mt-5">
+        <table class="table">
+          <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Type</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Description</th>
+            <th scope="col">Date</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let item of recurringTransactions.items" [ngClass]="item.type == 1 ? 'table-success': 'table-danger'">
+            <th scope="row">{{loadId(item)}}</th>
+            <td>{{transactionType[item.type].name}}</td>
+            <td>{{item.amount}}</td>
+            <td>{{item.description}}</td>
+            <td>{{item.date | date : 'shortDate' }}</td>
+          </tr>
+        </table>
+      </div>
+
+    </tab>
+  </tabset>
+
 
   <ng-template #newTransaction>
     <div class="modal-header">
@@ -105,6 +137,16 @@
             {{ newTransactionForm.error }}
           </div>
         </div>
+      </div>
+
+
+      <div class="form-group">
+        <label for="sub">Subscription Type</label>
+        <select class="form-control" id="sub" [(ngModel)]="newTransactionForm.sub">
+          <option [ngValue]="''"></option>
+          <option [ngValue]="'Weekly'">Weekly</option>
+          <option [ngValue]="'Monthly'">Monthly</option>
+        </select>
       </div>
 
       <div class="modal-footer">

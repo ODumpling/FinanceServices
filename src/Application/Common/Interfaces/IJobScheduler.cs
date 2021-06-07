@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FinanceServices.Application.Common.Interfaces
@@ -7,5 +8,6 @@ namespace FinanceServices.Application.Common.Interfaces
     {
         Task CreateWeeklyTransaction(Guid transactionId);
         Task CreateMonthlyTransaction(Guid transactionId);
+        Task<List<string>> GetListOfJobs();
     }
 }

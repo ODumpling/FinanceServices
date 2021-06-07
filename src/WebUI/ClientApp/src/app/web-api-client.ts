@@ -203,6 +203,8 @@ export class FundsClient implements IFundsClient {
 
 export interface ITransactionsClient {
     createTransaction(command: CreateTransactionCommand): Observable<string>;
+    createTransactionSubscription(command: CreateTransactionSubscription): Observable<FileResponse>;
+    listRecurringTransactions(id: string, page: number | undefined, pageSize: number | undefined): Observable<RecurringTransactionsVm>;
 }
 
 @Injectable({
@@ -268,6 +270,115 @@ export class TransactionsClient implements ITransactionsClient {
             }));
         }
         return _observableOf<string>(<any>null);
+    }
+
+    createTransactionSubscription(command: CreateTransactionSubscription): Observable<FileResponse> {
+        let url_ = this.baseUrl + "/api/Transactions/subscription";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/octet-stream"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateTransactionSubscription(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateTransactionSubscription(<any>response_);
+                } catch (e) {
+                    return <Observable<FileResponse>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<FileResponse>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreateTransactionSubscription(response: HttpResponseBase): Observable<FileResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return _observableOf({ fileName: fileName, data: <any>responseBlob, status: status, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<FileResponse>(<any>null);
+    }
+
+    listRecurringTransactions(id: string, page: number | undefined, pageSize: number | undefined): Observable<RecurringTransactionsVm> {
+        let url_ = this.baseUrl + "/api/Transactions/subscriptions/{id}?";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (page === null)
+            throw new Error("The parameter 'page' cannot be null.");
+        else if (page !== undefined)
+            url_ += "page=" + encodeURIComponent("" + page) + "&";
+        if (pageSize === null)
+            throw new Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "pageSize=" + encodeURIComponent("" + pageSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processListRecurringTransactions(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processListRecurringTransactions(<any>response_);
+                } catch (e) {
+                    return <Observable<RecurringTransactionsVm>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<RecurringTransactionsVm>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processListRecurringTransactions(response: HttpResponseBase): Observable<RecurringTransactionsVm> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = RecurringTransactionsVm.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<RecurringTransactionsVm>(<any>null);
     }
 }
 
@@ -834,6 +945,202 @@ export enum TransactionType {
     Income = 1,
 }
 
+export class CreateTransactionSubscription implements ICreateTransactionSubscription {
+    id?: string;
+    type?: string | undefined;
+
+    constructor(data?: ICreateTransactionSubscription) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.type = _data["type"];
+        }
+    }
+
+    static fromJS(data: any): CreateTransactionSubscription {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateTransactionSubscription();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["type"] = this.type;
+        return data; 
+    }
+}
+
+export interface ICreateTransactionSubscription {
+    id?: string;
+    type?: string | undefined;
+}
+
+export class RecurringTransactionsVm implements IRecurringTransactionsVm {
+    transactions?: PaginatedListOfTransactionDto2 | undefined;
+
+    constructor(data?: IRecurringTransactionsVm) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.transactions = _data["transactions"] ? PaginatedListOfTransactionDto2.fromJS(_data["transactions"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): RecurringTransactionsVm {
+        data = typeof data === 'object' ? data : {};
+        let result = new RecurringTransactionsVm();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["transactions"] = this.transactions ? this.transactions.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IRecurringTransactionsVm {
+    transactions?: PaginatedListOfTransactionDto2 | undefined;
+}
+
+export class PaginatedListOfTransactionDto2 implements IPaginatedListOfTransactionDto2 {
+    items?: TransactionDto2[] | undefined;
+    pageIndex?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+
+    constructor(data?: IPaginatedListOfTransactionDto2) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(TransactionDto2.fromJS(item));
+            }
+            this.pageIndex = _data["pageIndex"];
+            this.totalPages = _data["totalPages"];
+            this.totalCount = _data["totalCount"];
+            this.hasPreviousPage = _data["hasPreviousPage"];
+            this.hasNextPage = _data["hasNextPage"];
+        }
+    }
+
+    static fromJS(data: any): PaginatedListOfTransactionDto2 {
+        data = typeof data === 'object' ? data : {};
+        let result = new PaginatedListOfTransactionDto2();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["pageIndex"] = this.pageIndex;
+        data["totalPages"] = this.totalPages;
+        data["totalCount"] = this.totalCount;
+        data["hasPreviousPage"] = this.hasPreviousPage;
+        data["hasNextPage"] = this.hasNextPage;
+        return data; 
+    }
+}
+
+export interface IPaginatedListOfTransactionDto2 {
+    items?: TransactionDto2[] | undefined;
+    pageIndex?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+}
+
+export class TransactionDto2 implements ITransactionDto2 {
+    id?: string;
+    fundId?: string;
+    type?: string | undefined;
+    amount?: number;
+    description?: string | undefined;
+    date?: Date;
+
+    constructor(data?: ITransactionDto2) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.fundId = _data["fundId"];
+            this.type = _data["type"];
+            this.amount = _data["amount"];
+            this.description = _data["description"];
+            this.date = _data["date"] ? new Date(_data["date"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): TransactionDto2 {
+        data = typeof data === 'object' ? data : {};
+        let result = new TransactionDto2();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["fundId"] = this.fundId;
+        data["type"] = this.type;
+        data["amount"] = this.amount;
+        data["description"] = this.description;
+        data["date"] = this.date ? this.date.toISOString() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface ITransactionDto2 {
+    id?: string;
+    fundId?: string;
+    type?: string | undefined;
+    amount?: number;
+    description?: string | undefined;
+    date?: Date;
+}
+
 export class WeatherForecast implements IWeatherForecast {
     date?: Date;
     temperatureC?: number;
@@ -880,6 +1187,13 @@ export interface IWeatherForecast {
     temperatureC?: number;
     temperatureF?: number;
     summary?: string | undefined;
+}
+
+export interface FileResponse {
+    data: Blob;
+    status: number;
+    fileName?: string;
+    headers?: { [name: string]: any };
 }
 
 export class SwaggerException extends Error {

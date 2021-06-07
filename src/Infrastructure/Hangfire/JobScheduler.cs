@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FinanceServices.Application.Common.Interfaces;
 using FinanceServices.Application.Transactions.Commands;
 using Hangfire;
+using Hangfire.Common;
+using Hangfire.Storage;
+using Hangfire.Storage.Monitoring;
 using MediatR;
 
 namespace FinanceServices.Infrastructure.Hangfire
@@ -20,17 +25,30 @@ namespace FinanceServices.Infrastructure.Hangfire
 
         public Task CreateWeeklyTransaction(Guid transactionId)
         {
-            RecurringJob.AddOrUpdate(() => GenerateTransaction(transactionId), Cron.Weekly);
+            RecurringJob.AddOrUpdate(transactionId.ToString(), () => GenerateTransaction(transactionId),
+                Cron.Weekly);
 
             return Task.CompletedTask;
         }
 
         public Task CreateMonthlyTransaction(Guid transactionId)
         {
-            RecurringJob.AddOrUpdate(() => GenerateTransaction(transactionId), Cron.Monthly);
+            RecurringJob.AddOrUpdate(transactionId.ToString(), () => GenerateTransaction(transactionId), Cron.Monthly);
 
             return Task.CompletedTask;
         }
+
+        public Task<List<string>> GetListOfJobs()
+        {
+            var api = JobStorage.Current.GetConnection();
+
+            var jobs = api.GetRecurringJobs();
+
+            var result = Task.FromResult(jobs.Select(x => x.Id).ToList());
+
+            return result;
+        }
+
 
         public async Task GenerateTransaction(Guid transactionId)
         {
