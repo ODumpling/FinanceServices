@@ -16,6 +16,8 @@ import {routes} from './routes';
 import {FundComponent} from './fund/fund.component';
 import {ListFundComponent} from './list-fund/list-fund.component';
 import {PaginationModule} from "ngx-bootstrap";
+import {BsDatepickerModule} from 'ngx-bootstrap/datepicker';
+import {TabsModule} from "ngx-bootstrap/tabs";
 
 @NgModule({
   declarations: [
@@ -25,20 +27,23 @@ import {PaginationModule} from "ngx-bootstrap";
     FundComponent,
     ListFundComponent
   ],
-    imports: [
-        BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),
-        FontAwesomeModule,
-        HttpClientModule,
-        FormsModule,
-        ApiAuthorizationModule,
-        RouterModule.forRoot(routes),
-        BrowserAnimationsModule,
-        ModalModule.forRoot(),
-        PaginationModule.forRoot(),
-    ],
+  imports: [
+    BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),
+    FontAwesomeModule,
+    HttpClientModule,
+    FormsModule,
+    ApiAuthorizationModule,
+    RouterModule.forRoot(routes),
+    BrowserAnimationsModule,
+    ModalModule.forRoot(),
+    PaginationModule.forRoot(),
+    BsDatepickerModule.forRoot(),
+    TabsModule.forRoot(),
+  ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true },
+    {provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true},
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}
