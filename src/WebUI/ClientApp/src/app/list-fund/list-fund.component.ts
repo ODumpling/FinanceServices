@@ -11,7 +11,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 export class ListFundComponent implements OnInit {
   funds: PaginatedListOfFundDto;
   pageNumber: number;
-  pageSize = 9;
+  pageSize = 6;
   modalRef: BsModalRef;
   newFundForm: any = {};
   debug = false;
