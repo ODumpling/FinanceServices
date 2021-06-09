@@ -33,7 +33,7 @@ import {TabsModule} from "ngx-bootstrap/tabs";
     HttpClientModule,
     FormsModule,
     ApiAuthorizationModule,
-    RouterModule.forRoot(routes),
+    RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' }),
     BrowserAnimationsModule,
     ModalModule.forRoot(),
     PaginationModule.forRoot(),
