@@ -20,7 +20,7 @@ import { Link } from "react-router-dom";
 import { ProfileMenu } from "../auth/ProfileMenu";
 
 const navigation = [
-  { name: "Home", href: "#", icon: HomeIcon, current: true },
+  { name: "Home", href: "/", icon: HomeIcon, current: true },
   { name: "History", href: "#", icon: ClockIcon, current: false },
   { name: "Balances", href: "#", icon: ScaleIcon, current: false },
   { name: "Cards", href: "#", icon: CreditCardIcon, current: false },
