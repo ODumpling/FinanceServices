@@ -1,13 +1,22 @@
-import { Client } from "./web-api-client";
+import {Client} from "./web-api-client";
 import axios from "axios";
 import authService from "../components/auth/AuthorizeService";
 
 export async function fsapi() {
-  const token = await authService.getAccessToken();
+    const token = await authService.getAccessToken();
 
-  const instance = axios.create({});
+    const instance = axios.create({});
 
-  instance.defaults.headers.common["Authorization"] = "bearer " + token;
+    instance.defaults.headers.common["Authorization"] = "bearer " + token;
 
-  return new Client(undefined, instance);
+    instance.interceptors.response.use(request => {
+        return request
+    }, error => {
+        if (error.response.status === 401) {
+            authService.signIn({returnUrl: "https://localhost:5001/"})
+        }
+
+    })
+
+    return new Client(undefined, instance);
 }

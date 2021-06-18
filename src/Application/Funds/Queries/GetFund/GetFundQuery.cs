@@ -6,12 +6,14 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using FinanceServices.Application.Common.Interfaces;
 using FinanceServices.Application.Common.Mappings;
+using FinanceServices.Application.Common.Security;
 using FinanceServices.Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace FinanceServices.Application.Funds.Queries.GetFund
 {
+    [Authorize]
     public class GetFundQuery : IRequest<FundVm>
     {
         public Guid Id { get; set; }

@@ -7,10 +7,12 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using FinanceServices.Application.Common.Interfaces;
 using FinanceServices.Application.Common.Mappings;
+using FinanceServices.Application.Common.Security;
 using MediatR;
 
 namespace FinanceServices.Application.Funds.Queries.GetFunds
 {
+    [Authorize]
     public class GetFundsQuery : IRequest<FundsVm>
     {
         public int PageNumber { get; set; } = 1;
