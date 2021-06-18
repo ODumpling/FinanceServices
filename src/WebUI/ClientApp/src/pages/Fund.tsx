@@ -1,22 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { useHistory, useParams } from "react-router-dom";
-import { fsapi } from "../api/fsapi";
-import {
-  CreateTransactionCommand,
-  IFundDto2,
-  IPaginatedListOfTransactionDto,
-  ITypeDto,
-  TransactionType,
-} from "../api/web-api-client";
-import { ScaleIcon } from "@heroicons/react/solid";
+import React, {useEffect, useState} from "react";
+import {useHistory, useParams} from "react-router-dom";
+import {fsapi} from "../api/fsapi";
+import {CreateTransactionCommand, IFundDto2, IPaginatedListOfTransactionDto, ITypeDto, TransactionType,} from "../api/web-api-client";
+import {ScaleIcon} from "@heroicons/react/solid";
 import Slideover from "../components/Slideover";
-import { object, string, z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import {object, string, z} from "zod";
+import {useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
 import moment from "moment";
-import { useQuery } from "../hooks/useQuery";
+import {useQuery} from "../hooks/useQuery";
 import Pagination from "../components/Pagination";
-import { PageHeader } from "../components/PageHeader";
+import {PageHeader} from "../components/PageHeader";
 
 //TODO:: form state needs to be change but requires Controller component
 export const transactionFormSchema = object({
@@ -143,6 +137,90 @@ export function Fund() {
     }
 
     return cards;
+  }
+
+
+  function createTransactionForm() {
+    return (
+        <Slideover
+            title="New Transaction"
+            description="Create a new transaction."
+            isOpen={isOpen}
+            handleClose={() => setIsOpen(false)}
+            formName="createTransaction"
+        >
+          <div className="px-3 py-2">
+            <form
+                id="createTransaction"
+                onSubmit={handleSubmit(createTransaction)}
+            >
+              <label
+                  htmlFor="amount"
+                  className="block text-sm font-medium text-gray-700"
+              >
+                Amount
+              </label>
+              <input
+                  {...register("amount")}
+                  type="text"
+                  id="price"
+                  className="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                  placeholder="0.00"
+                  aria-describedby="transaction-amount"
+              />
+              <p>{errors.amount?.message}</p>
+              <label
+                  htmlFor="description"
+                  className="block text-sm font-medium text-gray-700"
+              >
+                Description
+              </label>
+              <input
+                  {...register("description")}
+                  type="text"
+                  id="description"
+                  className="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                  aria-describedby="transaction-description"
+              />
+              <p>{errors.description?.message}</p>
+
+              <label
+                  htmlFor="date"
+                  className="block text-sm font-medium text-gray-700"
+              >
+                Date
+              </label>
+              <input
+                  {...register("date")}
+                  type="date"
+                  id="date"
+                  className="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                  aria-describedby="transaction-date"
+              />
+              <p>{errors.date?.message}</p>
+              <label
+                  htmlFor="type"
+                  className="block text-sm font-medium text-gray-700"
+              >
+                Type
+              </label>
+              <select
+                  {...register("type")}
+                  id="type"
+                  className="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                  aria-describedby="transaction type"
+              >
+                {transactionTypes?.map((type) => (
+                    <option key={type.value} value={type.value}>
+                      {type.name}
+                    </option>
+                ))}
+              </select>
+              <p>{errors.type?.message}</p>
+            </form>
+          </div>
+        </Slideover>
+    )
   }
 
   return (
@@ -289,84 +367,7 @@ export function Fund() {
         </div>
       </div>
 
-      <Slideover
-        title="New Transaction"
-        description="Create a new transaction."
-        isOpen={isOpen}
-        handleClose={() => setIsOpen(false)}
-        formName="createTransaction"
-      >
-        <div className="px-3 py-2">
-          <form
-            id="createTransaction"
-            onSubmit={handleSubmit(createTransaction)}
-          >
-            <label
-              htmlFor="amount"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Amount
-            </label>
-            <input
-              {...register("amount")}
-              type="text"
-              id="price"
-              className="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-              placeholder="0.00"
-              aria-describedby="transaction-amount"
-            />
-            <p>{errors.amount?.message}</p>
-            <label
-              htmlFor="description"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Description
-            </label>
-            <input
-              {...register("description")}
-              type="text"
-              id="description"
-              className="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-              aria-describedby="transaction-description"
-            />
-            <p>{errors.description?.message}</p>
-
-            <label
-              htmlFor="date"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Date
-            </label>
-            <input
-              {...register("date")}
-              type="date"
-              id="date"
-              className="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-              aria-describedby="transaction-date"
-            />
-            <p>{errors.date?.message}</p>
-            <label
-              htmlFor="type"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Type
-            </label>
-            <select
-              {...register("type")}
-              id="type"
-              className="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-              aria-describedby="transaction type"
-            >
-              {transactionTypes?.map((type) => (
-                <option key={type.value} value={type.value}>
-                  {type.name}
-                </option>
-              ))}
-            </select>
-            <p>{errors.type?.message}</p>
-          </form>
-        </div>
-      </Slideover>
+      {createTransactionForm()}
     </div>
   );
 }
