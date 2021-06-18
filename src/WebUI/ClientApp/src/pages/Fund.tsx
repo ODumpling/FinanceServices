@@ -63,7 +63,6 @@ export function Fund() {
     }
 
     const currentPage = page ? parseInt(page) : 1;
-    console.log(currentPage);
     getFund(id, currentPage).catch((e) =>
       console.error("Fund Page has Error", e)
     );
@@ -258,7 +257,7 @@ export function Fund() {
                               {"£" + transaction.amount}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {transaction.type}
+                              { TransactionType[parseInt(transaction.type!)] }
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                               {transaction.description}
