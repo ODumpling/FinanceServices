@@ -51,7 +51,6 @@ export class ProfileMenu extends Component<IProps, IState> {
 
   render() {
     const { isAuthenticated, userName, user } = this.state;
-    console.log(user);
     if (!isAuthenticated) {
       const registerPath = `${ApplicationPaths.Register}`;
       const loginPath = `${ApplicationPaths.Login}`;

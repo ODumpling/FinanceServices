@@ -1,24 +1,10 @@
-import { Fragment, ReactNode, useState } from "react";
-import { Dialog, Transition } from "@headlessui/react";
-import {
-  BellIcon,
-  ClockIcon,
-  CogIcon,
-  CreditCardIcon,
-  DocumentReportIcon,
-  HomeIcon,
-  MenuAlt1Icon,
-  QuestionMarkCircleIcon,
-  ScaleIcon,
-  ShieldCheckIcon,
-  UserGroupIcon,
-  XIcon,
-} from "@heroicons/react/outline";
-import { SearchIcon } from "@heroicons/react/solid";
-import { classNames } from "../utils";
-import { Link } from "react-router-dom";
-import { ProfileMenu } from "../auth/ProfileMenu";
-import authService from "../auth/AuthorizeService";
+import {Fragment, ReactNode, useState} from "react";
+import {Dialog, Transition} from "@headlessui/react";
+import {BellIcon, ClockIcon, CogIcon, CreditCardIcon, DocumentReportIcon, HomeIcon, MenuAlt1Icon, QuestionMarkCircleIcon, ScaleIcon, ShieldCheckIcon, UserGroupIcon, XIcon,} from "@heroicons/react/outline";
+import {SearchIcon} from "@heroicons/react/solid";
+import {classNames} from "../utils";
+import {Link} from "react-router-dom";
+import {ProfileMenu} from "../auth/ProfileMenu";
 
 const navigation = [
   { name: "Home", href: "/", icon: HomeIcon, current: true },

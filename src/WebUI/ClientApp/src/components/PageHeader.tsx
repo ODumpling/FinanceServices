@@ -1,9 +1,4 @@
-import React, { Fragment, ReactNode } from "react";
-import {
-  CheckCircleIcon,
-  OfficeBuildingIcon,
-  UserIcon,
-} from "@heroicons/react/solid";
+import React, {Fragment, ReactNode} from "react";
 
 interface IProps {
   title?: string;
