@@ -46,7 +46,6 @@ export class AuthorizeService {
   // 3) If the two methods above fail, we redirect the browser to the IdP to perform a traditional
   //    redirect flow.
   async signIn(state: any) {
-    console.log(state);
     await this.ensureUserManagerInitialized();
     try {
       const silentUser = await this.userManager.signinSilent(

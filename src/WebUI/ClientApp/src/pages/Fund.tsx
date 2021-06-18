@@ -3,7 +3,9 @@ import { useHistory, useParams } from "react-router-dom";
 import { fsapi } from "../api/fsapi";
 import {
   CreateTransactionCommand,
-  IFundVm,
+  IFundDto2,
+  IPaginatedListOfTransactionDto,
+  ITypeDto,
   TransactionType,
 } from "../api/web-api-client";
 import { ScaleIcon } from "@heroicons/react/solid";
@@ -14,6 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import moment from "moment";
 import { useQuery } from "../hooks/useQuery";
 import Pagination from "../components/Pagination";
+import { PageHeader } from "../components/PageHeader";
 
 //TODO:: form state needs to be change but requires Controller component
 export const transactionFormSchema = object({
@@ -28,29 +31,39 @@ export const transactionFormSchema = object({
 type transactionSubmission = z.infer<typeof transactionFormSchema>;
 
 export function Fund() {
-  const [vm, setVm] = useState<IFundVm>();
+  const [fund, setFund] = useState<IFundDto2>();
+  const [transactions, setTransactions] =
+    useState<IPaginatedListOfTransactionDto>();
+  const [transactionTypes, setTransactionTypes] = useState<ITypeDto[]>();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const query = useQuery();
   const history = useHistory();
+  const page = query.get("page");
 
   const {
     register,
+    reset,
     handleSubmit,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(transactionFormSchema),
   });
 
-  const { id, page } = useParams<{ id: string; page?: string }>();
+  const { id } = useParams<{ id: string }>();
 
   useEffect(() => {
     async function getFund(id: string, page: number = 1, size: number = 10) {
       const client = await fsapi();
 
-      client.funds_GetFund(id, page, size).then((data) => setVm(data));
+      client.funds_GetFund(id, page, size).then((data) => {
+        setTransactions(data.transactions);
+        setTransactionTypes(data.transactionTypes);
+        setFund(data.fund);
+      });
     }
 
     const currentPage = page ? parseInt(page) : 1;
+    console.log(currentPage);
     getFund(id, currentPage).catch((e) =>
       console.error("Fund Page has Error", e)
     );
@@ -71,33 +84,58 @@ export function Fund() {
   }
 
   async function createTransaction(data: transactionSubmission) {
+    setIsOpen(false);
     const client = await fsapi();
     const command = CreateTransactionCommand.fromJS(data);
     command.type = parseInt(data.type);
     command.amount = parseInt(data.amount);
-    command.fundId = vm?.fund?.id;
-    client.transactions_CreateTransaction(command).then();
+    command.fundId = fund?.id;
+    client.transactions_CreateTransaction(command).then((res) => {
+      reset({ amount: "", date: "", type: "", description: "" });
+      setTransactions({
+        ...transactions,
+        items: [
+          ...transactions?.items!,
+          {
+            id: res,
+            type: command.type!.toString(),
+            date: command.date,
+            amount: command.amount,
+            description: command.description,
+          },
+        ],
+      });
+      if (command.type === TransactionType.Expense) {
+        const balance = (fund!.balance! -= command.amount!);
+        const expenses = (fund!.expenses! += command.amount!);
+        setFund({ ...fund, balance, expenses });
+      }
+      if (command.type === TransactionType.Income) {
+        const balance = (fund!.balance! += command.amount!);
+        const income = (fund!.income! += command.amount!);
+        setFund({ ...fund, balance, income });
+      }
+    });
   }
 
   function getCards() {
-    const fund = vm?.fund;
     const cards = [];
     if (fund) {
       cards.push(
         {
-          name: "Account Balance",
+          name: "Total Account Balance",
           href: "#",
           icon: ScaleIcon,
           amount: "£" + fund.balance,
         },
         {
-          name: "Account Income",
+          name: "Total Account Income",
           href: "#",
           icon: ScaleIcon,
           amount: "£" + fund.income,
         },
         {
-          name: "Account Expense",
+          name: "Total Account Expense",
           href: "#",
           icon: ScaleIcon,
           amount: "£" + fund.expenses,
@@ -110,6 +148,8 @@ export function Fund() {
 
   return (
     <div>
+      <PageHeader title={fund?.name + " Fund"} />
+
       <div className="mt-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-lg leading-6 font-medium text-gray-900">
@@ -142,16 +182,6 @@ export function Fund() {
                         </dd>
                       </dl>
                     </div>
-                  </div>
-                </div>
-                <div className="bg-gray-50 px-5 py-3">
-                  <div className="text-sm">
-                    <a
-                      href={card.href}
-                      className="font-medium text-cyan-700 hover:text-cyan-900"
-                    >
-                      View all
-                    </a>
                   </div>
                 </div>
               </div>
@@ -211,7 +241,7 @@ export function Fund() {
                       </tr>
                     </thead>
                     <tbody>
-                      {vm?.transactions?.items?.map(
+                      {transactions?.items?.map(
                         (transaction, transactionIdx) => (
                           <tr
                             key={transaction.id}
@@ -243,11 +273,11 @@ export function Fund() {
                       )}
                     </tbody>
                   </table>
-                  {vm?.transactions?.totalCount! > 10 ? (
+                  {transactions?.totalCount! > 10 ? (
                     <Pagination
-                      currentPage={vm?.transactions?.pageIndex}
-                      totalPages={vm?.transactions?.totalPages}
-                      totalCount={vm?.transactions?.totalCount}
+                      currentPage={transactions?.pageIndex}
+                      totalPages={transactions?.totalPages}
+                      totalCount={transactions?.totalCount}
                       onPageChange={(data) => changePage(data)}
                     />
                   ) : (
@@ -327,8 +357,11 @@ export function Fund() {
               className="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
               aria-describedby="transaction type"
             >
-              <option value={TransactionType.Income}>Income</option>
-              <option value={TransactionType.Expense}>Expense</option>
+              {transactionTypes?.map((type) => (
+                <option key={type.value} value={type.value}>
+                  {type.name}
+                </option>
+              ))}
             </select>
             <p>{errors.type?.message}</p>
           </form>

@@ -329,6 +329,10 @@
           "name": {
             "type": "string",
             "nullable": true
+          },
+          "balance": {
+            "type": "number",
+            "format": "decimal"
           }
         }
       },

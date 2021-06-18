@@ -18,6 +18,7 @@ import { SearchIcon } from "@heroicons/react/solid";
 import { classNames } from "../utils";
 import { Link } from "react-router-dom";
 import { ProfileMenu } from "../auth/ProfileMenu";
+import authService from "../auth/AuthorizeService";
 
 const navigation = [
   { name: "Home", href: "/", icon: HomeIcon, current: true },
@@ -39,7 +40,6 @@ interface IProps {
 
 export default function Layout({ children }: IProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
   return (
     <div className="h-screen flex overflow-hidden bg-gray-100">
       <Transition.Root show={sidebarOpen} as={Fragment}>

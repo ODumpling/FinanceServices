@@ -645,6 +645,7 @@ export interface IPaginatedListOfFundDto {
 export class FundDto implements IFundDto {
   id?: string;
   name?: string | undefined;
+  balance?: number;
 
   constructor(data?: IFundDto) {
     if (data) {
@@ -659,6 +660,7 @@ export class FundDto implements IFundDto {
     if (_data) {
       this.id = _data["id"];
       this.name = _data["name"];
+      this.balance = _data["balance"];
     }
   }
 
@@ -673,6 +675,7 @@ export class FundDto implements IFundDto {
     data = typeof data === "object" ? data : {};
     data["id"] = this.id;
     data["name"] = this.name;
+    data["balance"] = this.balance;
     return data;
   }
 }
@@ -680,6 +683,7 @@ export class FundDto implements IFundDto {
 export interface IFundDto {
   id?: string;
   name?: string | undefined;
+  balance?: number;
 }
 
 export class FundVm implements IFundVm {

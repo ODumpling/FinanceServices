@@ -5,12 +5,14 @@ import { ApplicationPaths } from "./ApiAuthorizationConstants";
 import { Menu, Transition } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/solid";
 import { classNames } from "../utils";
+import { Avatar } from "../Avatar";
 
 interface IProps {}
 
 interface IState {
   isAuthenticated: boolean;
   userName: string | null;
+  user: any;
 }
 
 export class ProfileMenu extends Component<IProps, IState> {
@@ -22,6 +24,7 @@ export class ProfileMenu extends Component<IProps, IState> {
     this.state = {
       isAuthenticated: false,
       userName: null,
+      user: null,
     };
   }
 
@@ -42,11 +45,13 @@ export class ProfileMenu extends Component<IProps, IState> {
     this.setState({
       isAuthenticated,
       userName: user && user.name,
+      user: user,
     });
   }
 
   render() {
-    const { isAuthenticated, userName } = this.state;
+    const { isAuthenticated, userName, user } = this.state;
+    console.log(user);
     if (!isAuthenticated) {
       const registerPath = `${ApplicationPaths.Register}`;
       const loginPath = `${ApplicationPaths.Login}`;
@@ -57,11 +62,16 @@ export class ProfileMenu extends Component<IProps, IState> {
         pathname: `${ApplicationPaths.LogOut}`,
         state: { local: true },
       };
-      return this.authenticatedView(userName, profilePath, logoutPath);
+      return this.authenticatedView(userName, profilePath, logoutPath, user);
     }
   }
 
-  authenticatedView(userName: any, profilePath: any, logoutPath: any) {
+  authenticatedView(
+    userName: any,
+    profilePath: any,
+    logoutPath: any,
+    user?: any
+  ) {
     return (
       <Fragment>
         <Menu as="div" className="ml-3 relative">
@@ -69,11 +79,14 @@ export class ProfileMenu extends Component<IProps, IState> {
             <>
               <div>
                 <Menu.Button className="max-w-xs bg-white rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 lg:p-2 lg:rounded-md lg:hover:bg-gray-50">
-                  <img
-                    className="h-8 w-8 rounded-full"
-                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                    alt=""
-                  />
+                  {user ? (
+                    <Avatar
+                      firstname={user.given_name}
+                      lastname={user.family_name}
+                    />
+                  ) : (
+                    ""
+                  )}
                   <span className="hidden ml-3 text-gray-700 text-sm font-medium lg:block">
                     <span className="sr-only">Open user menu for </span>
                     {userName}
