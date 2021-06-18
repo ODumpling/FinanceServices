@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {useHistory, useParams} from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { fsapi } from "../api/fsapi";
 import {
   CreateTransactionCommand,
@@ -12,7 +12,7 @@ import { object, string, z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import moment from "moment";
-import {useQuery} from "../hooks/useQuery";
+import { useQuery } from "../hooks/useQuery";
 import Pagination from "../components/Pagination";
 
 //TODO:: form state needs to be change but requires Controller component
@@ -57,18 +57,16 @@ export function Fund() {
   }, [id, page]);
 
   function changePage(page: number | string) {
-    if (page === "..")
-    {
+    if (page === "..") {
       const current = query.get("page");
       page = parseInt(current! ? current! : "1") - 2;
     }
 
-    if (page === "...")
-    {
+    if (page === "...") {
       const current = query.get("page");
       page = parseInt(current! ? current! : "1") + 3;
     }
-    query.set('page', page.toString());
+    query.set("page", page.toString());
     history.push("?" + query.toString());
   }
 
@@ -236,9 +234,7 @@ export function Fund() {
                               {transaction.description}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                              <button
-                                className="text-indigo-600 hover:text-indigo-900"
-                              >
+                              <button className="text-indigo-600 hover:text-indigo-900">
                                 Edit
                               </button>
                             </td>
@@ -247,8 +243,16 @@ export function Fund() {
                       )}
                     </tbody>
                   </table>
-                  {vm?.transactions?.totalCount! > 10 ? <Pagination currentPage={vm?.transactions?.pageIndex} totalPages={vm?.transactions?.totalPages}
-                               totalCount={vm?.transactions?.totalCount} onPageChange={data => changePage(data)}/> : ""}
+                  {vm?.transactions?.totalCount! > 10 ? (
+                    <Pagination
+                      currentPage={vm?.transactions?.pageIndex}
+                      totalPages={vm?.transactions?.totalPages}
+                      totalCount={vm?.transactions?.totalCount}
+                      onPageChange={(data) => changePage(data)}
+                    />
+                  ) : (
+                    ""
+                  )}
                 </div>
               </div>
             </div>
