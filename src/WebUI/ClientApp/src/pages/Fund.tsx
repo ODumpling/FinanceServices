@@ -291,6 +291,7 @@ export function Fund() {
 
       <Slideover
         title="New Transaction"
+        description="Create a new transaction."
         isOpen={isOpen}
         handleClose={() => setIsOpen(false)}
         formName="createTransaction"

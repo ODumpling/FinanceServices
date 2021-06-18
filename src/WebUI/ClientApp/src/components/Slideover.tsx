@@ -61,7 +61,7 @@ export default function Slideover({
                         </div>
                       </div>
                       <div className="mt-1">
-                        <p className="text-sm text-indigo-300">{description}</p>
+                        <p className="text-sm text-cyan-300">{description}</p>
                       </div>
                     </div>
                     {children}
