@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using FinanceServices.Infrastructure.Identity;
+using IdentityModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -25,29 +26,39 @@ namespace FinanceServices.WebUI.Areas.Identity.Pages.Account.Manage
 
         public string Username { get; set; }
 
-        [TempData]
-        public string StatusMessage { get; set; }
 
-        [BindProperty]
-        public InputModel Input { get; set; }
+        [TempData] public string StatusMessage { get; set; }
+
+        [BindProperty] public InputModel Input { get; set; }
 
         public class InputModel
         {
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
+
+            [DataType(DataType.Text)]
+            [Display(Name = "First Name")]
+            public string FirstName { get; set; }
+
+            [DataType(DataType.Text)]
+            [Display(Name = "Last Name")]
+            public string LastName { get; set; }
         }
 
         private async Task LoadAsync(ApplicationUser user)
         {
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            var claims = await _userManager.GetClaimsAsync(user);
 
             Username = userName;
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                FirstName = claims.Where(x => x.Type == JwtClaimTypes.GivenName).Select(x => x.Value).FirstOrDefault(),
+                LastName = claims.Where(x => x.Type == JwtClaimTypes.FamilyName).Select(x => x.Value).FirstOrDefault(),
             };
         }
 
