@@ -14,13 +14,6 @@ namespace FinanceServices.Domain.Entities
             Email = email;
         }
 
-        public UserInfo(string firstName, string lastName, string email)
-        {
-            FirstName = firstName;
-            LastName = lastName;
-            FullName = $"{firstName} {lastName}";
-            Email = email;
-        }
 
         public Guid Id { get; set; }
         public string FirstName { get; set; }

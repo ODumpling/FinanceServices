@@ -36,9 +36,10 @@ namespace FinanceServices.Application.UserInfos.Commands
 
             public async Task<Guid> Handle(CreateUserInfoCommand request, CancellationToken cancellationToken)
             {
-                var userInfo = new UserInfo(request.FirstName, request.LastName, request.Email);
+                var userInfo = new UserInfo(request.Id,request.FirstName, request.LastName, request.Email);
 
-                userInfo.UpdateName(request.FirstName, request.LastName);
+                _context.UserInformation.Add(userInfo);
+
                 await _context.SaveChangesAsync(cancellationToken);
 
                 return userInfo.Id;

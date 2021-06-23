@@ -1,14 +1,13 @@
-import React from "react";
-import { Component } from "react";
-import authService from "./AuthorizeService";
-import { AuthenticationResultStatus } from "./AuthorizeService";
+import React, { Component } from "react";
+import authService, { AuthenticationResultStatus } from "./AuthorizeService";
 import {
-  QueryParameterNames,
-  LogoutActions,
   ApplicationPaths,
+  LogoutActions,
+  QueryParameterNames,
 } from "./ApiAuthorizationConstants";
+import { RouteComponentProps, withRouter } from "react-router-dom";
 
-interface IProps {
+interface IProps extends RouteComponentProps<any> {
   action: any;
 }
 
@@ -21,7 +20,7 @@ interface IState {
 // The main responsibility of this component is to handle the user's logout process.
 // This is the starting point for the logout process, which is usually initiated when a
 // user clicks on the logout button on the LoginMenu component.
-export class Logout extends Component<IProps, IState> {
+class Logout extends Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
 
@@ -150,3 +149,5 @@ export class Logout extends Component<IProps, IState> {
     return window.location.replace(returnUrl);
   }
 }
+
+export default withRouter(Logout);

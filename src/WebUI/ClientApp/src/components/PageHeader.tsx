@@ -1,4 +1,4 @@
-import React, {Fragment, ReactNode} from "react";
+import React, { Fragment, ReactNode } from "react";
 
 interface IProps {
   title?: string;
