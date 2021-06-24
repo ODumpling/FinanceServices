@@ -8,6 +8,7 @@ using FinanceServices.Application.Common.Security;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace FinanceServices.Application.Funds.Commands
 {
@@ -16,9 +17,9 @@ namespace FinanceServices.Application.Funds.Commands
     {
         public Guid Id { get; set; }
 
-        public class DeleteFundValidtor : AbstractValidator<DeleteFundCommand>
+        public class DeleteFundValidator : AbstractValidator<DeleteFundCommand>
         {
-            public DeleteFundValidtor()
+            public DeleteFundValidator()
             {
                 RuleFor(x => x.Id)
                     .NotNull();
@@ -29,10 +30,14 @@ namespace FinanceServices.Application.Funds.Commands
         {
             private readonly IApplicationDbContext _context;
             private readonly ICurrentUserService _userService;
-            public DeleteFundCommandHandler(IApplicationDbContext context, ICurrentUserService userService)
+            private readonly ILogger<DeleteFundCommandHandler> _logger;
+
+            public DeleteFundCommandHandler(IApplicationDbContext context, ICurrentUserService userService,
+                ILogger<DeleteFundCommandHandler> logger)
             {
                 _context = context;
                 _userService = userService;
+                _logger = logger;
             }
 
             public async Task<Unit> Handle(DeleteFundCommand request, CancellationToken cancellationToken)
@@ -50,6 +55,7 @@ namespace FinanceServices.Application.Funds.Commands
 
                 _context.Funds.Remove(fund);
                 await _context.SaveChangesAsync(cancellationToken);
+                _logger.LogInformation("User with Id:{Id} has deleted the fund with Id:{FundId}", userguid, fund.Id);
 
                 return Unit.Value;
             }

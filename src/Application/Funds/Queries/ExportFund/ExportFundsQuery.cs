@@ -7,6 +7,7 @@ using AutoMapper.QueryableExtensions;
 using FinanceServices.Application.Common.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace FinanceServices.Application.Funds.Queries.ExportFund
 {
@@ -18,13 +19,17 @@ namespace FinanceServices.Application.Funds.Queries.ExportFund
         {
             private readonly IApplicationDbContext _context;
             private readonly IMapper _mapper;
+            private readonly ICurrentUserService _currentUser;
             private readonly ICsvFileBuilder _fileBuilder;
+            private readonly ILogger<ExportFundsQueryHandler> _logger;
 
-            public ExportFundsQueryHandler(IApplicationDbContext context, IMapper mapper, ICsvFileBuilder fileBuilder)
+            public ExportFundsQueryHandler(IApplicationDbContext context, IMapper mapper, ICsvFileBuilder fileBuilder, ILogger<ExportFundsQueryHandler> logger, ICurrentUserService currentUser)
             {
                 _context = context;
                 _mapper = mapper;
                 _fileBuilder = fileBuilder;
+                _logger = logger;
+                _currentUser = currentUser;
             }
 
             public async Task<ExportFundVm> Handle(ExportFundsQuery request, CancellationToken cancellationToken)
@@ -42,6 +47,7 @@ namespace FinanceServices.Application.Funds.Queries.ExportFund
                 vm.ContentType = "text/csv";
                 vm.FileName = $"Fund-{fund.Name}-{DateTime.Now}.csv";
 
+                _logger.LogInformation("User with Id:{Id} has exported data from Fund with Id:{FundId}", _currentUser.UserId, request.Id);
                 return await Task.FromResult(vm);
             }
 

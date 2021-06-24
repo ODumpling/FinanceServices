@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FinanceServices.Application.Common.Interfaces;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace FinanceServices.Application.Transactions.Commands
 {
@@ -27,7 +28,7 @@ namespace FinanceServices.Application.Transactions.Commands
                 switch (subType)
                 {
                     case "WEEKLY" :
-                       await _scheduler.CreateWeeklyTransaction(request.Id);
+                        await _scheduler.CreateWeeklyTransaction(request.Id);
                         break;
 
                     case "MONTHLY" :

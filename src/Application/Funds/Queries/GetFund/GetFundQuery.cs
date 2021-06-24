@@ -10,6 +10,7 @@ using FinanceServices.Application.Common.Security;
 using FinanceServices.Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace FinanceServices.Application.Funds.Queries.GetFund
 {
@@ -24,11 +25,13 @@ namespace FinanceServices.Application.Funds.Queries.GetFund
         {
             private readonly IApplicationDbContext _context;
             private readonly IMapper _mapper;
+            private readonly ILogger<GetFundQueryHandler> _logger;
 
-            public GetFundQueryHandler(IApplicationDbContext context, IMapper mapper)
+            public GetFundQueryHandler(IApplicationDbContext context, IMapper mapper, ILogger<GetFundQueryHandler> logger)
             {
                 _context = context;
                 _mapper = mapper;
+                _logger = logger;
             }
 
             public async Task<FundVm> Handle(GetFundQuery request, CancellationToken cancellationToken)
@@ -44,7 +47,6 @@ namespace FinanceServices.Application.Funds.Queries.GetFund
                     .OrderBy(x => x.Created)
                     .ProjectTo<FundVm.FundDto>(_mapper.ConfigurationProvider)
                     .SingleOrDefaultAsync();
-
 
                 return new FundVm
                 {

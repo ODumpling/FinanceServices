@@ -9,6 +9,7 @@ using Hangfire.Common;
 using Hangfire.Storage;
 using Hangfire.Storage.Monitoring;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace FinanceServices.Infrastructure.Hangfire
 {
@@ -16,11 +17,13 @@ namespace FinanceServices.Infrastructure.Hangfire
     {
         private readonly ISender _meaditor;
         private readonly IApplicationDbContext _context;
+        private readonly ILogger<JobScheduler> _logger;
 
-        public JobScheduler(ISender meaditor, IApplicationDbContext context)
+        public JobScheduler(ISender meaditor, IApplicationDbContext context, ILogger<JobScheduler> logger)
         {
             _meaditor = meaditor;
             _context = context;
+            _logger = logger;
         }
 
         public Task CreateWeeklyTransaction(Guid transactionId)
@@ -28,12 +31,15 @@ namespace FinanceServices.Infrastructure.Hangfire
             RecurringJob.AddOrUpdate(transactionId.ToString(), () => GenerateTransaction(transactionId),
                 Cron.Weekly);
 
+            _logger.LogInformation("transaction with Id:{Id} has been scheduled for weekly occurrence", transactionId);
+
             return Task.CompletedTask;
         }
 
         public Task CreateMonthlyTransaction(Guid transactionId)
         {
             RecurringJob.AddOrUpdate(transactionId.ToString(), () => GenerateTransaction(transactionId), Cron.Monthly);
+            _logger.LogInformation("transaction with Id:{Id} has been scheduled for monthly occurrence", transactionId);
 
             return Task.CompletedTask;
         }
