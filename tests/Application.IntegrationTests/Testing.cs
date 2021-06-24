@@ -14,7 +14,9 @@ using Respawn;
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using FinanceServices.Domain.Entities;
 
 [SetUpFixture]
 public class Testing
@@ -61,7 +63,7 @@ public class Testing
 
         _checkpoint = new Checkpoint
         {
-            TablesToIgnore = new[] { "__EFMigrationsHistory" }
+            TablesToIgnore = new[] {"__EFMigrationsHistory"}
         };
 
         EnsureDatabase();
@@ -92,7 +94,7 @@ public class Testing
 
     public static async Task<string> RunAsAdministratorAsync()
     {
-        return await RunAsUserAsync("administrator@local", "Administrator1234!", new[] { "Administrator" });
+        return await RunAsUserAsync("administrator@local", "Administrator1234!", new[] {"Administrator"});
     }
 
     public static async Task<string> RunAsUserAsync(string userName, string password, string[] roles)
@@ -100,8 +102,9 @@ public class Testing
         using var scope = _scopeFactory.CreateScope();
 
         var userManager = scope.ServiceProvider.GetService<UserManager<ApplicationUser>>();
+        var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
 
-        var user = new ApplicationUser { UserName = userName, Email = userName };
+        var user = new ApplicationUser {UserName = userName, Email = userName};
 
         var result = await userManager.CreateAsync(user, password);
 
@@ -119,6 +122,13 @@ public class Testing
 
         if (result.Succeeded)
         {
+            if (context != null)
+            {
+                context.UserInformation.Add(new UserInfo(Guid.Parse(user.Id), userName, userName, userName));
+
+                await context.SaveChangesAsync(cancellationToken: CancellationToken.None);
+            }
+
             _currentUserId = user.Id;
 
             return _currentUserId;

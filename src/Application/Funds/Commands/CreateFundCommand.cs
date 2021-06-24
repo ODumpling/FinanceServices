@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using FinanceServices.Application.Common.Interfaces;
 using FinanceServices.Domain.Entities;
 using FinanceServices.Domain.Events;
+using FluentValidation;
 using MediatR;
 
 namespace FinanceServices.Application.Funds.Commands
@@ -11,6 +12,17 @@ namespace FinanceServices.Application.Funds.Commands
     public class CreateFundCommand : IRequest<Guid>
     {
         public string Name { get; set; }
+
+        public class CreateFundCommandValidator : AbstractValidator<CreateFundCommand>
+        {
+            public CreateFundCommandValidator()
+            {
+                RuleFor(x => x.Name)
+                    .MinimumLength(3)
+                    .MaximumLength(20)
+                    .NotNull();
+            }
+        }
 
         public class CreateFundCommandHandler : IRequestHandler<CreateFundCommand, Guid>
         {
