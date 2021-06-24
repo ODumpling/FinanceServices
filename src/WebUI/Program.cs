@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Serilog;
 
 namespace FinanceServices.WebUI
 {
@@ -17,6 +18,7 @@ namespace FinanceServices.WebUI
         public async static Task Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
+
 
             using (var scope = host.Services.CreateScope())
             {
@@ -29,7 +31,7 @@ namespace FinanceServices.WebUI
                     if (context.Database.IsSqlServer())
                     {
                         context.Database.Migrate();
-                    }                   
+                    }
 
                     var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
                     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
@@ -47,6 +49,7 @@ namespace FinanceServices.WebUI
                 }
             }
 
+
             await host.RunAsync();
         }
 
@@ -54,18 +57,18 @@ namespace FinanceServices.WebUI
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.ConfigureAppConfiguration((hostingContext, config) =>
-                    {
-                        var env = hostingContext.HostingEnvironment;
-
-                        config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                            .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: false,
-                                reloadOnChange: true)
-                            .AddJsonFile("appsettings.Local.json", optional: false, reloadOnChange: true);
-
-                        config.AddEnvironmentVariables();
-                    });
-                    webBuilder.UseStartup<Startup>();
+                    webBuilder.UseStartup<Startup>()
+                        .ConfigureAppConfiguration(config =>
+                        {
+                            config.AddJsonFile("appsettings.Local.json", optional: false, reloadOnChange: true);
+                        }).UseSerilog((hostContext, config) =>
+                        {
+                            config
+                                 .ReadFrom.Configuration(hostContext.Configuration)
+                                .Enrich.FromLogContext()
+                                .Enrich.WithProperty("ApplicationName", typeof(Program).Assembly.GetName().Name)
+                                .Enrich.WithProperty("Environment", hostContext.HostingEnvironment);
+                        });
                 });
     }
 }

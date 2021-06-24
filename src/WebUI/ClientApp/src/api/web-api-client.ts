@@ -16,7 +16,6 @@ export interface IClient {
     transactions_CreateTransaction(command: CreateTransactionCommand): Promise<string>;
     transactions_CreateTransactionSubscription(command: CreateTransactionSubscription): Promise<FileResponse>;
     transactions_ListRecurringTransactions(id: string, page: number | undefined, pageSize: number | undefined): Promise<RecurringTransactionsVm>;
-    weatherForecast_Get(): Promise<WeatherForecast[]>;
 }
 
 export class Client implements IClient {
@@ -351,60 +350,6 @@ export class Client implements IClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return Promise.resolve<RecurringTransactionsVm>(<any>null);
-    }
-
-    weatherForecast_Get(  cancelToken?: CancelToken | undefined): Promise<WeatherForecast[]> {
-        let url_ = this.baseUrl + "/api/WeatherForecast";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ = <AxiosRequestConfig>{
-            method: "GET",
-            url: url_,
-            headers: {
-                "Accept": "application/json"
-            },
-            cancelToken
-        };
-
-        return this.instance.request(options_).catch((_error: any) => {
-            if (isAxiosError(_error) && _error.response) {
-                return _error.response;
-            } else {
-                throw _error;
-            }
-        }).then((_response: AxiosResponse) => {
-            return this.processWeatherForecast_Get(_response);
-        });
-    }
-
-    protected processWeatherForecast_Get(response: AxiosResponse): Promise<WeatherForecast[]> {
-        const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (let k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
-        if (status === 200) {
-            const _responseText = response.data;
-            let result200: any = null;
-            let resultData200  = _responseText;
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(WeatherForecast.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return result200;
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<WeatherForecast[]>(<any>null);
     }
 }
 
@@ -1131,54 +1076,6 @@ export interface ITransactionDto2 {
     amount?: number;
     description?: string | undefined;
     date?: Date;
-}
-
-export class WeatherForecast implements IWeatherForecast {
-    date?: Date;
-    temperatureC?: number;
-    temperatureF?: number;
-    summary?: string | undefined;
-
-    constructor(data?: IWeatherForecast) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.date = _data["date"] ? new Date(_data["date"].toString()) : <any>undefined;
-            this.temperatureC = _data["temperatureC"];
-            this.temperatureF = _data["temperatureF"];
-            this.summary = _data["summary"];
-        }
-    }
-
-    static fromJS(data: any): WeatherForecast {
-        data = typeof data === 'object' ? data : {};
-        let result = new WeatherForecast();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["date"] = this.date ? this.date.toISOString() : <any>undefined;
-        data["temperatureC"] = this.temperatureC;
-        data["temperatureF"] = this.temperatureF;
-        data["summary"] = this.summary;
-        return data; 
-    }
-}
-
-export interface IWeatherForecast {
-    date?: Date;
-    temperatureC?: number;
-    temperatureF?: number;
-    summary?: string | undefined;
 }
 
 export interface FileResponse {

@@ -20,6 +20,7 @@ using FinanceServices.Infrastructure.Hangfire;
 using Hangfire;
 using Hangfire.Dashboard;
 using Microsoft.AspNetCore.Http;
+using Serilog;
 
 namespace FinanceServices.WebUI
 {
@@ -102,6 +103,8 @@ namespace FinanceServices.WebUI
                 app.UseHsts();
             }
 
+            // This will make the HTTP requests log as rich logs instead of plain text.
+            app.UseSerilogRequestLogging();
             app.UseHealthChecks("/health");
             app.UseHttpsRedirection();
             app.UseStaticFiles();
