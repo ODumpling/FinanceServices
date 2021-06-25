@@ -37,7 +37,7 @@ namespace FinanceServices.WebUI.Controllers
         // {
         //     throw new NotImplementedException();
         // }
-        //
+
         [HttpDelete]
         public async Task<ActionResult> DeleteFund(DeleteFundCommand command)
         {
