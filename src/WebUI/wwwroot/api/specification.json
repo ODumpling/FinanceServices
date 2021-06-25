@@ -75,6 +75,37 @@
             }
           }
         }
+      },
+      "delete": {
+        "tags": [
+          "Funds"
+        ],
+        "operationId": "Funds_DeleteFund",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteFundCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/Funds/{id}": {
@@ -446,6 +477,16 @@
           "name": {
             "type": "string",
             "nullable": true
+          }
+        }
+      },
+      "DeleteFundCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
           }
         }
       },

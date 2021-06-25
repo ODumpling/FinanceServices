@@ -12,6 +12,7 @@ import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, Ca
 export interface IClient {
     funds_ListFunds(pageNumber: number | undefined, pageSize: number | undefined): Promise<FundsVm>;
     funds_CreateFund(command: CreateFundCommand): Promise<string>;
+    funds_DeleteFund(command: DeleteFundCommand): Promise<FileResponse>;
     funds_GetFund(id: string, page: number | undefined, pageSize: number | undefined): Promise<FundVm>;
     transactions_CreateTransaction(command: CreateTransactionCommand): Promise<string>;
     transactions_CreateTransactionSubscription(command: CreateTransactionSubscription): Promise<FileResponse>;
@@ -132,6 +133,57 @@ export class Client implements IClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return Promise.resolve<string>(<any>null);
+    }
+
+    funds_DeleteFund(command: DeleteFundCommand , cancelToken?: CancelToken | undefined): Promise<FileResponse> {
+        let url_ = this.baseUrl + "/api/Funds";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <AxiosRequestConfig>{
+            data: content_,
+            responseType: "blob",
+            method: "DELETE",
+            url: url_,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/octet-stream"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processFunds_DeleteFund(_response);
+        });
+    }
+
+    protected processFunds_DeleteFund(response: AxiosResponse): Promise<FileResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers["content-disposition"] : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return Promise.resolve({ fileName: fileName, status: status, data: response.data as Blob, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<FileResponse>(<any>null);
     }
 
     funds_GetFund(id: string, page: number | undefined, pageSize: number | undefined , cancelToken?: CancelToken | undefined): Promise<FundVm> {
@@ -815,6 +867,42 @@ export class CreateFundCommand implements ICreateFundCommand {
 
 export interface ICreateFundCommand {
     name?: string | undefined;
+}
+
+export class DeleteFundCommand implements IDeleteFundCommand {
+    id?: string;
+
+    constructor(data?: IDeleteFundCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+        }
+    }
+
+    static fromJS(data: any): DeleteFundCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeleteFundCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface IDeleteFundCommand {
+    id?: string;
 }
 
 export class CreateTransactionCommand implements ICreateTransactionCommand {

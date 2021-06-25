@@ -38,10 +38,12 @@ namespace FinanceServices.WebUI.Controllers
         //     throw new NotImplementedException();
         // }
         //
-        // [HttpDelete]
-        // public Task<ActionResult> DeleteFund()
-        // {
-        //     throw new NotImplementedException();
-        // }
+        [HttpDelete]
+        public async Task<ActionResult> DeleteFund(DeleteFundCommand command)
+        {
+            await Mediator.Send(command);
+
+            return NoContent();
+        }
     }
 }
