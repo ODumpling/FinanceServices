@@ -11,8 +11,8 @@ interface FundState {
 
 // Define the initial state using that type
 const initialState: FundState = {
-    funds  : {},
-    fundVm : {},
+    funds: {},
+    fundVm: {},
 }
 
 interface IPaginationProps {
@@ -24,20 +24,27 @@ interface IFetchFundProps extends IPaginationProps {
     id: string
 }
 
-export const fetchFunds = createAsyncThunk("funds/fetchFunds", async function ({page, size}: IPaginationProps, thunkAPI) {
+export const fetchFunds = createAsyncThunk("funds/fetchFunds", async function ({
+                                                                                   page,
+                                                                                   size
+                                                                               }: IPaginationProps, thunkAPI) {
     const response = await financeApi().then(client => client.funds_ListFunds(page, size));
     return response.funds;
 })
 
-export const fetchFund = createAsyncThunk("funds/fetchFunds", async function ({id, page, size}: IFetchFundProps, thunkAPI) {
+export const fetchFund = createAsyncThunk("funds/fetchFunds", async function ({
+                                                                                  id,
+                                                                                  page,
+                                                                                  size
+                                                                              }: IFetchFundProps, thunkAPI) {
     return await financeApi().then(client => client.funds_GetFund(id, page, size));
 })
 
 
 export const fundsSlice = createSlice({
-    name         : 'funds',
+    name: 'funds',
     initialState,
-    reducers     : {
+    reducers: {
         setFunds: (state, action: PayloadAction<IPaginatedListOfFundDto>) => {
             state.funds = action.payload
         },
@@ -46,9 +53,9 @@ export const fundsSlice = createSlice({
         builder.addCase(fetchFunds.fulfilled, ((state, action) => {
             state.funds = action.payload
         }))
-        builder.addCase(fetchFund.fulfilled, ((state, action) => {
-            state.fundVm = action.payload;
-        }))
+        // builder.addCase(fetchFund.fulfilled, ((state, action) => {
+        //     state.fundVm = action.payload;
+        // }))
     }
 })
 

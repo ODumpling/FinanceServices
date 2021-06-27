@@ -518,14 +518,6 @@
               }
             ]
           },
-          "transactions": {
-            "nullable": true,
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/PaginatedListOfTransactionDto"
-              }
-            ]
-          },
           "transactionTypes": {
             "type": "array",
             "nullable": true,
@@ -558,37 +550,13 @@
           "balance": {
             "type": "number",
             "format": "decimal"
-          }
-        }
-      },
-      "PaginatedListOfTransactionDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "items": {
+          },
+          "transactions": {
             "type": "array",
             "nullable": true,
             "items": {
               "$ref": "#/components/schemas/TransactionDto"
             }
-          },
-          "pageIndex": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "totalPages": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "totalCount": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "hasPreviousPage": {
-            "type": "boolean"
-          },
-          "hasNextPage": {
-            "type": "boolean"
           }
         }
       },
@@ -757,13 +725,13 @@
             "nullable": true,
             "oneOf": [
               {
-                "$ref": "#/components/schemas/PaginatedListOfTransactionDto2"
+                "$ref": "#/components/schemas/PaginatedListOfTransactionDto"
               }
             ]
           }
         }
       },
-      "PaginatedListOfTransactionDto2": {
+      "PaginatedListOfTransactionDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {

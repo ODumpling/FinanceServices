@@ -31,12 +31,12 @@ export function Fund() {
     useEffect(() => {
         async function getFund(id: string, page: number = 1, size: number = 10) {
             const client = await financeApi();
-
-            client.funds_GetFund(id, page, size).then((data) => {
-                setTransactions(data.transactions);
-                setFund(data.fund);
-                setLoading(false)
-            });
+            
+            // client.funds_GetFund(id, page, size).then((data) => {
+            //     setTransactions(data.transactions);
+            //     setFund(data.fund);
+            //     setLoading(false)
+            // });
 
             client.funds_GetFundMembers(id).then((data) => setMembers(data))
         }

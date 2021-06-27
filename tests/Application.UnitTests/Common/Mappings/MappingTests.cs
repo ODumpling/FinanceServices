@@ -31,7 +31,6 @@ namespace FinanceServices.Application.UnitTests.Common.Mappings
         
         [Test]
         [TestCase(typeof(Fund), typeof(FundVm.FundDto))]
-        [TestCase(typeof(Transaction), typeof(FundVm.TransactionDto))]
         public void ShouldSupportMappingFromSourceToDestination(Type source, Type destination)
         {
             var instance = GetInstanceOf(source);
