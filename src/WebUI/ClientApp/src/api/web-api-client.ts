@@ -14,7 +14,12 @@ export interface IClient {
     funds_CreateFund(command: CreateFundCommand): Promise<string>;
     funds_DeleteFund(command: DeleteFundCommand): Promise<FileResponse>;
     funds_GetFund(id: string, page: number | undefined, pageSize: number | undefined): Promise<FundVm>;
+    funds_GetFundMembers(id: string): Promise<MemberDto[]>;
+    memberships_GetMembers(name: string | null | undefined): Promise<MemberDto[]>;
+    memberships_CreateMembership(command: CreateMembershipCommand): Promise<FileResponse>;
+    memberships_DeleteMembership(command: DeleteMembershipCommand): Promise<FileResponse>;
     transactions_CreateTransaction(command: CreateTransactionCommand): Promise<string>;
+    transactions_DeleteTransaction(command: DeleteTransactionCommand): Promise<FileResponse>;
     transactions_CreateTransactionSubscription(command: CreateTransactionSubscription): Promise<FileResponse>;
     transactions_ListRecurringTransactions(id: string, page: number | undefined, pageSize: number | undefined): Promise<RecurringTransactionsVm>;
 }
@@ -244,6 +249,221 @@ export class Client implements IClient {
         return Promise.resolve<FundVm>(<any>null);
     }
 
+    funds_GetFundMembers(id: string , cancelToken?: CancelToken | undefined): Promise<MemberDto[]> {
+        let url_ = this.baseUrl + "/api/Funds/{id}/Members";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <AxiosRequestConfig>{
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "application/json"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processFunds_GetFundMembers(_response);
+        });
+    }
+
+    protected processFunds_GetFundMembers(response: AxiosResponse): Promise<MemberDto[]> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(MemberDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<MemberDto[]>(<any>null);
+    }
+
+    memberships_GetMembers(name: string | null | undefined , cancelToken?: CancelToken | undefined): Promise<MemberDto[]> {
+        let url_ = this.baseUrl + "/api/Memberships?";
+        if (name !== undefined && name !== null)
+            url_ += "Name=" + encodeURIComponent("" + name) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <AxiosRequestConfig>{
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "application/json"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processMemberships_GetMembers(_response);
+        });
+    }
+
+    protected processMemberships_GetMembers(response: AxiosResponse): Promise<MemberDto[]> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(MemberDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<MemberDto[]>(<any>null);
+    }
+
+    memberships_CreateMembership(command: CreateMembershipCommand , cancelToken?: CancelToken | undefined): Promise<FileResponse> {
+        let url_ = this.baseUrl + "/api/Memberships";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <AxiosRequestConfig>{
+            data: content_,
+            responseType: "blob",
+            method: "POST",
+            url: url_,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/octet-stream"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processMemberships_CreateMembership(_response);
+        });
+    }
+
+    protected processMemberships_CreateMembership(response: AxiosResponse): Promise<FileResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers["content-disposition"] : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return Promise.resolve({ fileName: fileName, status: status, data: response.data as Blob, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<FileResponse>(<any>null);
+    }
+
+    memberships_DeleteMembership(command: DeleteMembershipCommand , cancelToken?: CancelToken | undefined): Promise<FileResponse> {
+        let url_ = this.baseUrl + "/api/Memberships";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <AxiosRequestConfig>{
+            data: content_,
+            responseType: "blob",
+            method: "DELETE",
+            url: url_,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/octet-stream"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processMemberships_DeleteMembership(_response);
+        });
+    }
+
+    protected processMemberships_DeleteMembership(response: AxiosResponse): Promise<FileResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers["content-disposition"] : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return Promise.resolve({ fileName: fileName, status: status, data: response.data as Blob, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<FileResponse>(<any>null);
+    }
+
     transactions_CreateTransaction(command: CreateTransactionCommand , cancelToken?: CancelToken | undefined): Promise<string> {
         let url_ = this.baseUrl + "/api/Transactions";
         url_ = url_.replace(/[?&]$/, "");
@@ -293,6 +513,57 @@ export class Client implements IClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return Promise.resolve<string>(<any>null);
+    }
+
+    transactions_DeleteTransaction(command: DeleteTransactionCommand , cancelToken?: CancelToken | undefined): Promise<FileResponse> {
+        let url_ = this.baseUrl + "/api/Transactions";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <AxiosRequestConfig>{
+            data: content_,
+            responseType: "blob",
+            method: "DELETE",
+            url: url_,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/octet-stream"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processTransactions_DeleteTransaction(_response);
+        });
+    }
+
+    protected processTransactions_DeleteTransaction(response: AxiosResponse): Promise<FileResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers["content-disposition"] : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return Promise.resolve({ fileName: fileName, status: status, data: response.data as Blob, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<FileResponse>(<any>null);
     }
 
     transactions_CreateTransactionSubscription(command: CreateTransactionSubscription , cancelToken?: CancelToken | undefined): Promise<FileResponse> {
@@ -833,6 +1104,50 @@ export interface ITypeDto {
     name?: string | undefined;
 }
 
+export class MemberDto implements IMemberDto {
+    id?: string;
+    fullName?: string | undefined;
+    initials?: string | undefined;
+
+    constructor(data?: IMemberDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.fullName = _data["fullName"];
+            this.initials = _data["initials"];
+        }
+    }
+
+    static fromJS(data: any): MemberDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MemberDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["fullName"] = this.fullName;
+        data["initials"] = this.initials;
+        return data; 
+    }
+}
+
+export interface IMemberDto {
+    id?: string;
+    fullName?: string | undefined;
+    initials?: string | undefined;
+}
+
 export class CreateFundCommand implements ICreateFundCommand {
     name?: string | undefined;
 
@@ -903,6 +1218,86 @@ export class DeleteFundCommand implements IDeleteFundCommand {
 
 export interface IDeleteFundCommand {
     id?: string;
+}
+
+export class CreateMembershipCommand implements ICreateMembershipCommand {
+    userId?: string;
+    fundId?: string;
+
+    constructor(data?: ICreateMembershipCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userId = _data["userId"];
+            this.fundId = _data["fundId"];
+        }
+    }
+
+    static fromJS(data: any): CreateMembershipCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateMembershipCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userId"] = this.userId;
+        data["fundId"] = this.fundId;
+        return data; 
+    }
+}
+
+export interface ICreateMembershipCommand {
+    userId?: string;
+    fundId?: string;
+}
+
+export class DeleteMembershipCommand implements IDeleteMembershipCommand {
+    fundId?: string;
+    userId?: string;
+
+    constructor(data?: IDeleteMembershipCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.fundId = _data["fundId"];
+            this.userId = _data["userId"];
+        }
+    }
+
+    static fromJS(data: any): DeleteMembershipCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeleteMembershipCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["fundId"] = this.fundId;
+        data["userId"] = this.userId;
+        return data; 
+    }
+}
+
+export interface IDeleteMembershipCommand {
+    fundId?: string;
+    userId?: string;
 }
 
 export class CreateTransactionCommand implements ICreateTransactionCommand {
@@ -1164,6 +1559,42 @@ export interface ITransactionDto2 {
     amount?: number;
     description?: string | undefined;
     date?: Date;
+}
+
+export class DeleteTransactionCommand implements IDeleteTransactionCommand {
+    id?: string;
+
+    constructor(data?: IDeleteTransactionCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+        }
+    }
+
+    static fromJS(data: any): DeleteTransactionCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeleteTransactionCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface IDeleteTransactionCommand {
+    id?: string;
 }
 
 export interface FileResponse {

@@ -160,6 +160,137 @@
         }
       }
     },
+    "/api/Funds/{id}/Members": {
+      "get": {
+        "tags": [
+          "Funds"
+        ],
+        "operationId": "Funds_GetFundMembers",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MemberDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Memberships": {
+      "get": {
+        "tags": [
+          "Memberships"
+        ],
+        "operationId": "Memberships_GetMembers",
+        "parameters": [
+          {
+            "name": "Name",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MemberDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Memberships"
+        ],
+        "operationId": "Memberships_CreateMembership",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMembershipCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Memberships"
+        ],
+        "operationId": "Memberships_DeleteMembership",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteMembershipCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Transactions": {
       "post": {
         "tags": [
@@ -186,6 +317,37 @@
                 "schema": {
                   "type": "string",
                   "format": "guid"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Transactions"
+        ],
+        "operationId": "Transactions_DeleteTransaction",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteTransactionCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
                 }
               }
             }
@@ -470,6 +632,24 @@
           }
         }
       },
+      "MemberDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "fullName": {
+            "type": "string",
+            "nullable": true
+          },
+          "initials": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
       "CreateFundCommand": {
         "type": "object",
         "additionalProperties": false,
@@ -485,6 +665,34 @@
         "additionalProperties": false,
         "properties": {
           "id": {
+            "type": "string",
+            "format": "guid"
+          }
+        }
+      },
+      "CreateMembershipCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "fundId": {
+            "type": "string",
+            "format": "guid"
+          }
+        }
+      },
+      "DeleteMembershipCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "fundId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "userId": {
             "type": "string",
             "format": "guid"
           }
@@ -613,6 +821,16 @@
           "date": {
             "type": "string",
             "format": "date-time"
+          }
+        }
+      },
+      "DeleteTransactionCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
           }
         }
       }
