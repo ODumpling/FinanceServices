@@ -12,6 +12,7 @@ import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, Ca
 export interface IClient {
     funds_ListFunds(pageNumber: number | undefined, pageSize: number | undefined): Promise<FundsVm>;
     funds_CreateFund(command: CreateFundCommand): Promise<string>;
+    funds_UpdateFund(command: UpdateFundCommand): Promise<FileResponse>;
     funds_DeleteFund(command: DeleteFundCommand): Promise<FileResponse>;
     funds_GetFund(id: string, page: number | undefined, pageSize: number | undefined): Promise<FundVm>;
     funds_GetFundMembers(id: string): Promise<MemberDto[]>;
@@ -19,6 +20,7 @@ export interface IClient {
     memberships_CreateMembership(command: CreateMembershipCommand): Promise<FileResponse>;
     memberships_DeleteMembership(command: DeleteMembershipCommand): Promise<FileResponse>;
     transactions_CreateTransaction(command: CreateTransactionCommand): Promise<string>;
+    transactions_UpdateTransaction(command: UpdateTransactionCommand): Promise<FileResponse>;
     transactions_DeleteTransaction(command: DeleteTransactionCommand): Promise<FileResponse>;
     transactions_CreateTransactionSubscription(command: CreateTransactionSubscription): Promise<FileResponse>;
     transactions_ListRecurringTransactions(id: string, page: number | undefined, pageSize: number | undefined): Promise<RecurringTransactionsVm>;
@@ -138,6 +140,57 @@ export class Client implements IClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return Promise.resolve<string>(<any>null);
+    }
+
+    funds_UpdateFund(command: UpdateFundCommand , cancelToken?: CancelToken | undefined): Promise<FileResponse> {
+        let url_ = this.baseUrl + "/api/Funds";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <AxiosRequestConfig>{
+            data: content_,
+            responseType: "blob",
+            method: "PATCH",
+            url: url_,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/octet-stream"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processFunds_UpdateFund(_response);
+        });
+    }
+
+    protected processFunds_UpdateFund(response: AxiosResponse): Promise<FileResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers["content-disposition"] : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return Promise.resolve({ fileName: fileName, status: status, data: response.data as Blob, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<FileResponse>(<any>null);
     }
 
     funds_DeleteFund(command: DeleteFundCommand , cancelToken?: CancelToken | undefined): Promise<FileResponse> {
@@ -513,6 +566,57 @@ export class Client implements IClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return Promise.resolve<string>(<any>null);
+    }
+
+    transactions_UpdateTransaction(command: UpdateTransactionCommand , cancelToken?: CancelToken | undefined): Promise<FileResponse> {
+        let url_ = this.baseUrl + "/api/Transactions";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <AxiosRequestConfig>{
+            data: content_,
+            responseType: "blob",
+            method: "PATCH",
+            url: url_,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/octet-stream"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processTransactions_UpdateTransaction(_response);
+        });
+    }
+
+    protected processTransactions_UpdateTransaction(response: AxiosResponse): Promise<FileResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers["content-disposition"] : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return Promise.resolve({ fileName: fileName, status: status, data: response.data as Blob, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<FileResponse>(<any>null);
     }
 
     transactions_DeleteTransaction(command: DeleteTransactionCommand , cancelToken?: CancelToken | undefined): Promise<FileResponse> {
@@ -1127,6 +1231,46 @@ export interface ICreateFundCommand {
     name?: string | undefined;
 }
 
+export class UpdateFundCommand implements IUpdateFundCommand {
+    id?: string;
+    name?: string | undefined;
+
+    constructor(data?: IUpdateFundCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): UpdateFundCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateFundCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        return data; 
+    }
+}
+
+export interface IUpdateFundCommand {
+    id?: string;
+    name?: string | undefined;
+}
+
 export class DeleteFundCommand implements IDeleteFundCommand {
     id?: string;
 
@@ -1500,6 +1644,58 @@ export interface ITransactionDto2 {
     fundId?: string;
     type?: string | undefined;
     amount?: number;
+    description?: string | undefined;
+    date?: Date;
+}
+
+export class UpdateTransactionCommand implements IUpdateTransactionCommand {
+    id?: string;
+    amount?: number;
+    type?: TransactionType;
+    description?: string | undefined;
+    date?: Date;
+
+    constructor(data?: IUpdateTransactionCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.amount = _data["amount"];
+            this.type = _data["type"];
+            this.description = _data["description"];
+            this.date = _data["date"] ? new Date(_data["date"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): UpdateTransactionCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateTransactionCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["amount"] = this.amount;
+        data["type"] = this.type;
+        data["description"] = this.description;
+        data["date"] = this.date ? this.date.toISOString() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IUpdateTransactionCommand {
+    id?: string;
+    amount?: number;
+    type?: TransactionType;
     description?: string | undefined;
     date?: Date;
 }

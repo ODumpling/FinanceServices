@@ -48,7 +48,7 @@ namespace FinanceServices.Application.Transactions.Commands
                     Date = request.Date,
                 };
 
-                transaction.DomainEvents.Add(new TransactionCreatedEvent(transaction));
+                transaction.DomainEvents.Add(new TransactionUpsertedEvent(transaction));
 
                 fund.Transactions.Add(transaction);
 

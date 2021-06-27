@@ -43,11 +43,13 @@ namespace FinanceServices.WebUI.Controllers
             return await Mediator.Send(command);
         }
 
-        // [HttpPatch]
-        // public Task<ActionResult> UpdateFund()
-        // {
-        //     throw new NotImplementedException();
-        // }
+        [HttpPatch]
+        public async Task<ActionResult> UpdateFund(UpdateFundCommand command)
+        {
+            await Mediator.Send(command);
+
+            return NoContent();
+        }
 
         [HttpDelete]
         public async Task<ActionResult> DeleteFund(DeleteFundCommand command)

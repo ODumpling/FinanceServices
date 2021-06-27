@@ -2,15 +2,14 @@
 using System.Threading.Tasks;
 using FinanceServices.Application.Common.Interfaces;
 using FinanceServices.Application.Common.Models;
-using FinanceServices.Application.Funds.EventHandlers.FundCreatedEvents;
 using FinanceServices.Domain.Enums;
 using FinanceServices.Domain.Events;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace FinanceServices.Application.Transactions.EventHandlers.TransactionCreatedEvents
+namespace FinanceServices.Application.Transactions.EventHandlers.TransactionUpsertEvents
 {
-    public class UpdateFundStats : INotificationHandler<DomainEventNotification<TransactionCreatedEvent>>
+    public class UpdateFundStats : INotificationHandler<DomainEventNotification<TransactionUpsertedEvent>>
     {
 
         private readonly IApplicationDbContext _context;
@@ -22,7 +21,7 @@ namespace FinanceServices.Application.Transactions.EventHandlers.TransactionCrea
             _logger = logger;
         }
 
-        public async Task Handle(DomainEventNotification<TransactionCreatedEvent> notification, CancellationToken cancellationToken)
+        public async Task Handle(DomainEventNotification<TransactionUpsertedEvent> notification, CancellationToken cancellationToken)
         {
             var domainEvent = notification.DomainEvent;
             _logger.LogInformation("FinanceServices Domain Event: {DomainEvent}", domainEvent.GetType().Name);

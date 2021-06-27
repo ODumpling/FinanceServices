@@ -3,9 +3,9 @@ using FinanceServices.Domain.Entities;
 
 namespace FinanceServices.Domain.Events
 {
-    public class TransactionCreatedEvent : DomainEvent
+    public class TransactionUpsertedEvent : DomainEvent
     {
-        public TransactionCreatedEvent(Transaction item)
+        public TransactionUpsertedEvent(Transaction item)
         {
             Item = item;
         }

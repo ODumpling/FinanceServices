@@ -40,12 +40,14 @@ namespace FinanceServices.WebUI.Controllers
         //     throw new NotImplementedException();
         // }
 
-        // [HttpPatch]
-        // public Task<ActionResult> UpdateTransaction()
-        // {
-        //     throw new NotImplementedException();
-        // }
-        //
+        [HttpPatch]
+        public async Task<ActionResult> UpdateTransaction(UpdateTransactionCommand command)
+        {
+            await Mediator.Send(command);
+
+            return NoContent();
+        }
+
         [HttpDelete]
         public async Task<ActionResult> DeleteTransaction(DeleteTransactionCommand command)
         {
