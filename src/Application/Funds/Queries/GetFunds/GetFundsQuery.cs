@@ -33,10 +33,9 @@ namespace FinanceServices.Application.Funds.Queries.GetFunds
 
             public async Task<FundsVm> Handle(GetFundsQuery request, CancellationToken cancellationToken)
             {
-                var id = Guid.Parse(_userService.UserId);
-                var user = await _context.UserInformation.FindAsync(id);
+                var userId = Guid.Parse(_userService.UserId);
                 var funds = await _context.Funds
-                    .Where(x => x.Users.Contains(user))
+                    .Where(x => x.Memberships.Any(x=> x.UserId == userId))
                     .OrderBy(x => x.Created)
                     .ProjectTo<FundsVm.FundDto>(_mapper.ConfigurationProvider)
                     .PaginatedListAsync(request.PageNumber, request.PageSize);

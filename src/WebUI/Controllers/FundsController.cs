@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using FinanceServices.Application.Funds.Commands;
 using FinanceServices.Application.Funds.Queries.GetFund;
 using FinanceServices.Application.Funds.Queries.GetFunds;
+using FinanceServices.Application.Memberships.Queries;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FinanceServices.WebUI.Controllers
@@ -23,6 +25,15 @@ namespace FinanceServices.WebUI.Controllers
                 Id = id,
                 PageNumber = page,
                 PageSize = pageSize
+            });
+        }
+
+        [HttpGet("{id}/Members")]
+        public async Task<IList<MemberDto>> GetFundMembers(Guid id)
+        {
+            return await Mediator.Send(new GetFundMembersQuery
+            {
+                FundId = id
             });
         }
 

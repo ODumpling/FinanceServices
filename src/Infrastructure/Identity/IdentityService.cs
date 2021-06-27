@@ -1,10 +1,10 @@
-﻿using FinanceServices.Application.Common.Interfaces;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using FinanceServices.Application.Common.Interfaces;
 using FinanceServices.Application.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FinanceServices.Infrastructure.Identity
 {
@@ -27,7 +27,6 @@ namespace FinanceServices.Infrastructure.Identity
         public async Task<string> GetUserNameAsync(string userId)
         {
             var user = await _userManager.Users.FirstAsync(u => u.Id == userId);
-
             return user.UserName;
         }
 

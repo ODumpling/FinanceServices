@@ -1,4 +1,6 @@
-﻿using FinanceServices.Application.Common.Models;
+﻿using System.Collections.Generic;
+using System.Security.Claims;
+using FinanceServices.Application.Common.Models;
 using System.Threading.Tasks;
 
 namespace FinanceServices.Application.Common.Interfaces
