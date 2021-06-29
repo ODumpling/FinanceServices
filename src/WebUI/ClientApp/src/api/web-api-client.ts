@@ -16,6 +16,7 @@ export interface IClient {
     funds_DeleteFund(command: DeleteFundCommand): Promise<FileResponse>;
     funds_GetFund(id: string, page: number | undefined, pageSize: number | undefined): Promise<FundVm>;
     funds_GetFundMembers(id: string): Promise<MemberDto[]>;
+    funds_UploadTransactionToFund(id: string, file: FileParameter | null | undefined): Promise<FileResponse>;
     memberships_GetMembers(name: string | null | undefined): Promise<MemberDto[]>;
     memberships_CreateMembership(command: CreateMembershipCommand): Promise<FileResponse>;
     memberships_DeleteMembership(command: DeleteMembershipCommand): Promise<FileResponse>;
@@ -357,6 +358,61 @@ export class Client implements IClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return Promise.resolve<MemberDto[]>(<any>null);
+    }
+
+    funds_UploadTransactionToFund(id: string, file: FileParameter | null | undefined , cancelToken?: CancelToken | undefined): Promise<FileResponse> {
+        let url_ = this.baseUrl + "/api/Funds/{id}/Upload";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = new FormData();
+        if (file !== null && file !== undefined)
+            content_.append("file", file.data, file.fileName ? file.fileName : "file");
+
+        let options_ = <AxiosRequestConfig>{
+            data: content_,
+            responseType: "blob",
+            method: "POST",
+            url: url_,
+            headers: {
+                "Accept": "application/octet-stream"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processFunds_UploadTransactionToFund(_response);
+        });
+    }
+
+    protected processFunds_UploadTransactionToFund(response: AxiosResponse): Promise<FileResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers["content-disposition"] : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return Promise.resolve({ fileName: fileName, status: status, data: response.data as Blob, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<FileResponse>(<any>null);
     }
 
     memberships_GetMembers(name: string | null | undefined , cancelToken?: CancelToken | undefined): Promise<MemberDto[]> {
@@ -1734,6 +1790,11 @@ export class DeleteTransactionCommand implements IDeleteTransactionCommand {
 
 export interface IDeleteTransactionCommand {
     id?: string;
+}
+
+export interface FileParameter {
+    data: any;
+    fileName: string;
 }
 
 export interface FileResponse {

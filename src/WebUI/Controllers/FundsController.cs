@@ -5,6 +5,8 @@ using FinanceServices.Application.Funds.Commands;
 using FinanceServices.Application.Funds.Queries.GetFund;
 using FinanceServices.Application.Funds.Queries.GetFunds;
 using FinanceServices.Application.Memberships.Queries;
+using FinanceServices.Application.Transactions.Commands;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FinanceServices.WebUI.Controllers
@@ -18,7 +20,8 @@ namespace FinanceServices.WebUI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<FundVm>> GetFund(Guid id, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        public async Task<ActionResult<FundVm>> GetFund(Guid id, [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10)
         {
             return await Mediator.Send(new GetFundQuery
             {
@@ -41,6 +44,19 @@ namespace FinanceServices.WebUI.Controllers
         public async Task<ActionResult<Guid>> CreateFund(CreateFundCommand command)
         {
             return await Mediator.Send(command);
+        }
+
+        [HttpPost("{id:guid}/Upload/{type}")]
+        public async Task<ActionResult> UploadTransactionToFund(Guid id, string type, IFormFile file)
+        {
+            await Mediator.Send(new UploadTransactionCommand
+            {
+                File = file,
+                FundId = id,
+                Type = type.ToUpper()
+            });
+
+            return NoContent();
         }
 
         [HttpPatch]
