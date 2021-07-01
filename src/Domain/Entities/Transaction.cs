@@ -14,6 +14,8 @@ namespace FinanceServices.Domain.Entities
         public decimal Amount { get; set; }
         public string Description { get; set; }
         public DateTime Date { get; set; }
+        public IList<Category> Categories { get; set; } = new List<Category>();
+        public IList<CategoryTransaction> CategoryTransactions { get; set; } = new List<CategoryTransaction>();
 
         public List<DomainEvent> DomainEvents { get; set; } = new List<DomainEvent>();
     }

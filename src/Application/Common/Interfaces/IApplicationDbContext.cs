@@ -8,6 +8,8 @@ namespace FinanceServices.Application.Common.Interfaces
 {
     public interface IApplicationDbContext
     {
+        DbSet<Category> Categories { get; set; }
+        DbSet<CategoryTransaction> CategoryTransactions { get; set; }
         DbSet<Fund> Funds { get; set; }
         DbSet<Membership> Memberships { get; set; }
         DbSet<Transaction> Transactions { get; set; }

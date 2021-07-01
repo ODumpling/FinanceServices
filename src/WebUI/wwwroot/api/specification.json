@@ -226,7 +226,7 @@
         }
       }
     },
-    "/api/Funds/{id}/Upload": {
+    "/api/Funds/{id}/Upload/{type}": {
       "post": {
         "tags": [
           "Funds"
@@ -238,9 +238,20 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "guid"
             },
             "x-position": 1
+          },
+          {
+            "name": "type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
           }
         ],
         "requestBody": {

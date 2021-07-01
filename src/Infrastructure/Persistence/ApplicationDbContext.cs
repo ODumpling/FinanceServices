@@ -1,16 +1,16 @@
-﻿using FinanceServices.Application.Common.Interfaces;
+﻿using System.Linq;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
+using FinanceServices.Application.Common.Interfaces;
 using FinanceServices.Domain.Common;
 using FinanceServices.Domain.Entities;
 using FinanceServices.Infrastructure.Identity;
 using IdentityServer4.EntityFramework.Options;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Options;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
 
 namespace FinanceServices.Infrastructure.Persistence
 {
@@ -34,12 +34,14 @@ namespace FinanceServices.Infrastructure.Persistence
 
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<UserInfo> UserInformation { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<CategoryTransaction> CategoryTransactions { get; set; }
         public DbSet<Fund> Funds { get; set; }
         public DbSet<Membership> Memberships { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
-            foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<AuditableEntity> entry in ChangeTracker.Entries<AuditableEntity>())
+            foreach (EntityEntry<AuditableEntity> entry in ChangeTracker.Entries<AuditableEntity>())
             {
                 switch (entry.State)
                 {

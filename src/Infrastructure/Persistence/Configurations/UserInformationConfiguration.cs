@@ -11,8 +11,12 @@ namespace FinanceServices.Infrastructure.Persistence.Configurations
             builder.HasMany(x => x.Funds)
                 .WithMany(x => x.Users)
                 .UsingEntity<Membership>(
-                    x => x.HasOne(x => x.Fund).WithMany(x=> x.Memberships).HasForeignKey(x=>x.FundId),
-                    x=>x.HasOne(x=> x.User).WithMany(x => x.Memberships).HasForeignKey(x=>x.UserId));
+                    m => m.HasOne(m => m.Fund)
+                        .WithMany(f=> f.Memberships)
+                        .HasForeignKey(m=>m.FundId),
+                    m=>m.HasOne(m=> m.User)
+                        .WithMany(u => u.Memberships)
+                        .HasForeignKey(m=>m.UserId));
         }
     }
 }

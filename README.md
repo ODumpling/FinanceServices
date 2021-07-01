@@ -42,4 +42,19 @@ But for Development you will need to use SQL Server, you will need to create **s
   }
 }
 ```
-This will ensure your local development environment doesnt cause conflict during commits.
+This will ensure your local development environment is separate for each dev and doesnt get uploaded.
+
+### Database Migrations
+Make sure you have [efcore tools](https://docs.microsoft.com/en-us/ef/core/cli/dotnet).
+
+If you need to generate a new migration please use the below as an example.
+This will create the necessary files within the Infrastructure project.
+
+```powershell
+dotnet ef migrations add "REPLACE_WITH_MIGRATION_NAME" --project src/Infrastructure --startup-project src/WebUI --output-dir Persistence/Migrations
+```
+ 
+To roll back the previous migration the following could be used.
+```powershell
+ dotnet ef migrations remove --project src/Infrastructure --startup-project src/WebUI
+```

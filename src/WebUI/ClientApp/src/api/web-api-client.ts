@@ -16,7 +16,7 @@ export interface IClient {
     funds_DeleteFund(command: DeleteFundCommand): Promise<FileResponse>;
     funds_GetFund(id: string, page: number | undefined, pageSize: number | undefined): Promise<FundVm>;
     funds_GetFundMembers(id: string): Promise<MemberDto[]>;
-    funds_UploadTransactionToFund(id: string, file: FileParameter | null | undefined): Promise<FileResponse>;
+    funds_UploadTransactionToFund(id: string, type: string | null, file: FileParameter | null | undefined): Promise<FileResponse>;
     memberships_GetMembers(name: string | null | undefined): Promise<MemberDto[]>;
     memberships_CreateMembership(command: CreateMembershipCommand): Promise<FileResponse>;
     memberships_DeleteMembership(command: DeleteMembershipCommand): Promise<FileResponse>;
@@ -360,11 +360,14 @@ export class Client implements IClient {
         return Promise.resolve<MemberDto[]>(<any>null);
     }
 
-    funds_UploadTransactionToFund(id: string, file: FileParameter | null | undefined , cancelToken?: CancelToken | undefined): Promise<FileResponse> {
-        let url_ = this.baseUrl + "/api/Funds/{id}/Upload";
+    funds_UploadTransactionToFund(id: string, type: string | null, file: FileParameter | null | undefined , cancelToken?: CancelToken | undefined): Promise<FileResponse> {
+        let url_ = this.baseUrl + "/api/Funds/{id}/Upload/{type}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (type === undefined || type === null)
+            throw new Error("The parameter 'type' must be defined.");
+        url_ = url_.replace("{type}", encodeURIComponent("" + type));
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = new FormData();
