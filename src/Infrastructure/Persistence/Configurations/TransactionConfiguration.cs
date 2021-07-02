@@ -8,6 +8,8 @@ namespace FinanceServices.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Transaction> builder)
         {
+            builder.Property(x => x.Id).ValueGeneratedOnAdd();
+
             builder.Ignore(x => x.DomainEvents);
             builder.Property(x => x.Amount).HasPrecision(12, 2);
 

@@ -676,6 +676,13 @@
             "items": {
               "$ref": "#/components/schemas/TransactionDto"
             }
+          },
+          "categories": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/CategoryDto"
+            }
           }
         }
       },
@@ -702,6 +709,20 @@
           "date": {
             "type": "string",
             "format": "date-time"
+          }
+        }
+      },
+      "CategoryDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
           }
         }
       },

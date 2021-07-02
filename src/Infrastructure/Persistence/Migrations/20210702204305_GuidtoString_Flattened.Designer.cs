@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinanceServices.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210701113126_Create_Categories")]
-    partial class Create_Categories
+    [Migration("20210702204305_GuidtoString_Flattened")]
+    partial class GuidtoString_Flattened
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -32,8 +32,8 @@ namespace FinanceServices.Infrastructure.Persistence.Migrations
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("FundId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("FundId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
@@ -56,8 +56,8 @@ namespace FinanceServices.Infrastructure.Persistence.Migrations
                     b.Property<string>("CategoryId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<Guid>("TransactionId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("TransactionId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("CategoryId", "TransactionId");
 
@@ -68,9 +68,8 @@ namespace FinanceServices.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FinanceServices.Domain.Entities.Fund", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("Balance")
                         .HasPrecision(12, 2)
@@ -96,8 +95,8 @@ namespace FinanceServices.Infrastructure.Persistence.Migrations
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("ManagerId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("ManagerId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -111,11 +110,11 @@ namespace FinanceServices.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FinanceServices.Domain.Entities.Membership", b =>
                 {
-                    b.Property<Guid>("FundId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("FundId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
@@ -138,9 +137,8 @@ namespace FinanceServices.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FinanceServices.Domain.Entities.Transaction", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("Amount")
                         .HasPrecision(12, 2)
@@ -158,8 +156,8 @@ namespace FinanceServices.Infrastructure.Persistence.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("FundId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("FundId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
@@ -179,9 +177,8 @@ namespace FinanceServices.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FinanceServices.Domain.Entities.UserInfo", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
@@ -507,9 +504,7 @@ namespace FinanceServices.Infrastructure.Persistence.Migrations
                 {
                     b.HasOne("FinanceServices.Domain.Entities.Fund", "Fund")
                         .WithMany()
-                        .HasForeignKey("FundId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("FundId");
 
                     b.Navigation("Fund");
                 });
@@ -538,8 +533,7 @@ namespace FinanceServices.Infrastructure.Persistence.Migrations
                     b.HasOne("FinanceServices.Domain.Entities.UserInfo", "Manager")
                         .WithMany("ManagingFunds")
                         .HasForeignKey("ManagerId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Manager");
                 });
@@ -567,9 +561,7 @@ namespace FinanceServices.Infrastructure.Persistence.Migrations
                 {
                     b.HasOne("FinanceServices.Domain.Entities.Fund", "Fund")
                         .WithMany("Transactions")
-                        .HasForeignKey("FundId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("FundId");
 
                     b.Navigation("Fund");
                 });

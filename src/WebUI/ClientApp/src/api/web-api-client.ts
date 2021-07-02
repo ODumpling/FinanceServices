@@ -1054,6 +1054,7 @@ export class FundDto2 implements IFundDto2 {
     income?: number;
     balance?: number;
     transactions?: TransactionDto[] | undefined;
+    categories?: CategoryDto[] | undefined;
 
     constructor(data?: IFundDto2) {
         if (data) {
@@ -1066,6 +1067,13 @@ export class FundDto2 implements IFundDto2 {
                 for (let i = 0; i < data.transactions.length; i++) {
                     let item = data.transactions[i];
                     this.transactions[i] = item && !(<any>item).toJSON ? new TransactionDto(item) : <TransactionDto>item;
+                }
+            }
+            if (data.categories) {
+                this.categories = [];
+                for (let i = 0; i < data.categories.length; i++) {
+                    let item = data.categories[i];
+                    this.categories[i] = item && !(<any>item).toJSON ? new CategoryDto(item) : <CategoryDto>item;
                 }
             }
         }
@@ -1082,6 +1090,11 @@ export class FundDto2 implements IFundDto2 {
                 this.transactions = [] as any;
                 for (let item of _data["transactions"])
                     this.transactions!.push(TransactionDto.fromJS(item));
+            }
+            if (Array.isArray(_data["categories"])) {
+                this.categories = [] as any;
+                for (let item of _data["categories"])
+                    this.categories!.push(CategoryDto.fromJS(item));
             }
         }
     }
@@ -1105,6 +1118,11 @@ export class FundDto2 implements IFundDto2 {
             for (let item of this.transactions)
                 data["transactions"].push(item.toJSON());
         }
+        if (Array.isArray(this.categories)) {
+            data["categories"] = [];
+            for (let item of this.categories)
+                data["categories"].push(item.toJSON());
+        }
         return data; 
     }
 }
@@ -1116,6 +1134,7 @@ export interface IFundDto2 {
     income?: number;
     balance?: number;
     transactions?: ITransactionDto[] | undefined;
+    categories?: ICategoryDto[] | undefined;
 }
 
 export class TransactionDto implements ITransactionDto {
@@ -1168,6 +1187,46 @@ export interface ITransactionDto {
     amount?: number;
     description?: string | undefined;
     date?: Date;
+}
+
+export class CategoryDto implements ICategoryDto {
+    id?: string | undefined;
+    name?: string | undefined;
+
+    constructor(data?: ICategoryDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): CategoryDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CategoryDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        return data; 
+    }
+}
+
+export interface ICategoryDto {
+    id?: string | undefined;
+    name?: string | undefined;
 }
 
 export class TypeDto implements ITypeDto {

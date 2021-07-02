@@ -8,6 +8,8 @@ namespace FinanceServices.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Fund> builder)
         {
+            builder.Property(x => x.Id).ValueGeneratedOnAdd();
+
             builder.HasOne(x => x.Manager)
                 .WithMany(x => x.ManagingFunds)
                 .HasForeignKey(x => x.ManagerId)
