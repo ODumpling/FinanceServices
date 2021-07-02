@@ -16,7 +16,7 @@ namespace FinanceServices.Application.Funds.Queries.GetFund
     [Authorize]
     public class GetFundQuery : IRequest<FundVm>
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
 

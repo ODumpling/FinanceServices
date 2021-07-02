@@ -32,7 +32,7 @@ namespace FinanceServices.Infrastructure.Persistence
                 await userManager.CreateAsync(administrator, "Administrator1!");
                 await userManager.AddToRolesAsync(administrator, new[] {administratorRole.Name});
                 await userManager.AddClaimsAsync(administrator, claims());
-                context.UserInformation.Add(new UserInfo(Guid.Parse(administrator.Id), "App", "Admin",
+                context.UserInformation.Add(new UserInfo(administrator.Id, "App", "Admin",
                     "administrator@localhost"));
                 await context.SaveChangesAsync(CancellationToken.None);
             }

@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 namespace FinanceServices.Application.Funds.Commands
 {
     [Authorize]
-    public class CreateFundCommand : IRequest<Guid>
+    public class CreateFundCommand : IRequest<string>
     {
         public string Name { get; set; }
 
@@ -28,7 +28,7 @@ namespace FinanceServices.Application.Funds.Commands
             }
         }
 
-        public class CreateFundCommandHandler : IRequestHandler<CreateFundCommand, Guid>
+        public class CreateFundCommandHandler : IRequestHandler<CreateFundCommand, string>
         {
             private readonly ICurrentUserService _userService;
             private readonly IApplicationDbContext _context;
@@ -40,11 +40,11 @@ namespace FinanceServices.Application.Funds.Commands
                 _logger = logger;
             }
 
-            public async Task<Guid> Handle(CreateFundCommand request, CancellationToken cancellationToken)
+            public async Task<string> Handle(CreateFundCommand request, CancellationToken cancellationToken)
             {
                 var fund = new Fund
                 {
-                    ManagerId = Guid.Parse(_userService.UserId),
+                    ManagerId = _userService.UserId,
                     Name = request.Name,
                     Balance = 0,
                     Expenses = 0,

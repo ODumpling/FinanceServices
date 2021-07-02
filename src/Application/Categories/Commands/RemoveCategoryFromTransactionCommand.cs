@@ -10,7 +10,7 @@ namespace FinanceServices.Application.Categories.Commands
 {
     public class RemoveCategoryFromTransactionCommand : IRequest
     {
-        public Guid TransactionId { get; set; }
+        public string TransactionId { get; set; }
 
         public string CategoryId { get; set; }
 

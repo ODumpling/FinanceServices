@@ -20,7 +20,7 @@ namespace FinanceServices.WebUI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<FundVm>> GetFund(Guid id, [FromQuery] int page = 1,
+        public async Task<ActionResult<FundVm>> GetFund(string id, [FromQuery] int page = 1,
             [FromQuery] int pageSize = 10)
         {
             return await Mediator.Send(new GetFundQuery
@@ -32,7 +32,7 @@ namespace FinanceServices.WebUI.Controllers
         }
 
         [HttpGet("{id}/Members")]
-        public async Task<IList<MemberDto>> GetFundMembers(Guid id)
+        public async Task<IList<MemberDto>> GetFundMembers(string id)
         {
             return await Mediator.Send(new GetFundMembersQuery
             {
@@ -41,13 +41,13 @@ namespace FinanceServices.WebUI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Guid>> CreateFund(CreateFundCommand command)
+        public async Task<ActionResult<string>> CreateFund(CreateFundCommand command)
         {
             return await Mediator.Send(command);
         }
 
         [HttpPost("{id:guid}/Upload/{type}")]
-        public async Task<ActionResult> UploadTransactionToFund(Guid id, string type, IFormFile file)
+        public async Task<ActionResult> UploadTransactionToFund(string id, string type, IFormFile file)
         {
             await Mediator.Send(new UploadTransactionCommand
             {

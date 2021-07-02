@@ -103,7 +103,7 @@ namespace FinanceServices.WebUI.Areas.Identity.Pages.Account
                     _logger.LogInformation("User created a new account with password");
                     await _sender.Send(new CreateUserInfoCommand
                     {
-                        Id = Guid.Parse(user.Id),
+                        Id = user.Id,
                         FirstName = Input.FirstName,
                         LastName = Input.LastName,
                         Email = Input.Email,

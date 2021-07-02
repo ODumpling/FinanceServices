@@ -10,7 +10,7 @@ namespace FinanceServices.Application.Categories.Commands
     public class CreateCategoryCommand : IRequest
     {
         public string Name { get; set; }
-        public Guid FundId { get; set; }
+        public string FundId { get; set; }
 
         public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand>
         {

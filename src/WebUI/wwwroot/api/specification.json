@@ -68,8 +68,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "string",
-                  "format": "guid"
+                  "type": "string"
                 }
               }
             }
@@ -152,7 +151,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "format": "guid"
+              "nullable": true
             },
             "x-position": 1
           },
@@ -204,7 +203,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "format": "guid"
+              "nullable": true
             },
             "x-position": 1
           }
@@ -239,7 +238,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "format": "guid"
+              "nullable": true
             },
             "x-position": 1
           },
@@ -405,8 +404,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "string",
-                  "format": "guid"
+                  "type": "string"
                 }
               }
             }
@@ -522,7 +520,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "format": "guid"
+              "nullable": true
             },
             "x-position": 1
           },
@@ -755,7 +753,7 @@
         "properties": {
           "id": {
             "type": "string",
-            "format": "guid"
+            "nullable": true
           },
           "name": {
             "type": "string",
@@ -769,7 +767,7 @@
         "properties": {
           "id": {
             "type": "string",
-            "format": "guid"
+            "nullable": true
           }
         }
       },
@@ -779,11 +777,11 @@
         "properties": {
           "userId": {
             "type": "string",
-            "format": "guid"
+            "nullable": true
           },
           "fundId": {
             "type": "string",
-            "format": "guid"
+            "nullable": true
           }
         }
       },
@@ -793,11 +791,11 @@
         "properties": {
           "fundId": {
             "type": "string",
-            "format": "guid"
+            "nullable": true
           },
           "userId": {
             "type": "string",
-            "format": "guid"
+            "nullable": true
           }
         }
       },
@@ -807,7 +805,7 @@
         "properties": {
           "fundId": {
             "type": "string",
-            "format": "guid"
+            "nullable": true
           },
           "amount": {
             "type": "number",
@@ -933,7 +931,7 @@
         "properties": {
           "id": {
             "type": "string",
-            "format": "guid"
+            "nullable": true
           },
           "amount": {
             "type": "number",
@@ -958,7 +956,7 @@
         "properties": {
           "id": {
             "type": "string",
-            "format": "guid"
+            "nullable": true
           }
         }
       }

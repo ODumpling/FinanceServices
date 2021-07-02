@@ -5,7 +5,7 @@ namespace FinanceServices.Domain.Entities
 {
     public class UserInfo
     {
-        public UserInfo(Guid id, string firstName, string lastName, string email)
+        public UserInfo(string id, string firstName, string lastName, string email)
         {
             Id = id;
             FirstName = firstName;
@@ -15,7 +15,7 @@ namespace FinanceServices.Domain.Entities
         }
 
 
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string FullName { get; set; }

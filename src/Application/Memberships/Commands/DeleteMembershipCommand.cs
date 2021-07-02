@@ -13,8 +13,8 @@ namespace FinanceServices.Application.Memberships.Commands
 {
     public class DeleteMembershipCommand : IRequest
     {
-        public Guid FundId { get; set; }
-        public Guid UserId { get; set; }
+        public string FundId { get; set; }
+        public string UserId { get; set; }
 
         public class DeleteMembershipCommandHandler : IRequestHandler<DeleteMembershipCommand>
         {

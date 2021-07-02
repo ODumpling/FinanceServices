@@ -25,20 +25,27 @@ namespace FinanceServices.Application.Funds.Queries.GetFund
             public decimal Income { get; set; }
             public decimal Balance { get; set; }
             public IList<TransactionDto> Transactions { get; set; }
+            public IList<CategoryDto> Categories { get; set; }
+        }
 
-            public class TransactionDto : IMapFrom<Transaction>
+        public class CategoryDto : IMapFrom<Category>
+        {
+            public string Id { get; set; }
+            public string Name { get; set; }
+        }
+
+        public class TransactionDto : IMapFrom<Transaction>
+        {
+            public Guid Id { get; set; }
+            public string Type { get; set; }
+            public decimal Amount { get; set; }
+            public string Description { get; set; }
+            public DateTime Date { get; set; }
+
+            public void Mapping(Profile profile)
             {
-                public Guid Id { get; set; }
-                public string Type { get; set; }
-                public decimal Amount { get; set; }
-                public string Description { get; set; }
-                public DateTime Date { get; set; }
-
-                public void Mapping(Profile profile)
-                {
-                    profile.CreateMap<Transaction, TransactionDto>()
-                        .ForMember(x => x.Type, x => x.MapFrom(transaction => (int) transaction.Type));
-                }
+                profile.CreateMap<Transaction, TransactionDto>()
+                    .ForMember(x => x.Type, x => x.MapFrom(transaction => (int) transaction.Type));
             }
         }
     }

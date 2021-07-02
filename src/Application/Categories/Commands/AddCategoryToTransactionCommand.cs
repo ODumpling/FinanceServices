@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using FinanceServices.Application.Common.Interfaces;
 using FinanceServices.Domain.Entities;
@@ -10,7 +9,7 @@ namespace FinanceServices.Application.Categories.Commands
     public class AddCategoryToTransactionCommand : IRequest
     {
 
-        public Guid TransactionId { get; set; }
+        public string TransactionId { get; set; }
 
         public string CategoryId { get; set; }
         

@@ -124,7 +124,7 @@ public class Testing
         {
             if (context != null)
             {
-                context.UserInformation.Add(new UserInfo(Guid.Parse(user.Id), userName, userName, userName));
+                context.UserInformation.Add(new UserInfo(user.Id, userName, userName, userName));
 
                 await context.SaveChangesAsync(cancellationToken: CancellationToken.None);
             }

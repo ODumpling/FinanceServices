@@ -13,7 +13,7 @@ namespace FinanceServices.Application.Transactions.Commands
     {
         public string Type { get; set; }
         public IFormFile File { get; set; }
-        public Guid FundId { get; set; }
+        public string FundId { get; set; }
 
         public class UploadTransactionCommandHandler : IRequestHandler<UploadTransactionCommand>
         {

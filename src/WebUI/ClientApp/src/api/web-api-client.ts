@@ -14,9 +14,9 @@ export interface IClient {
     funds_CreateFund(command: CreateFundCommand): Promise<string>;
     funds_UpdateFund(command: UpdateFundCommand): Promise<FileResponse>;
     funds_DeleteFund(command: DeleteFundCommand): Promise<FileResponse>;
-    funds_GetFund(id: string, page: number | undefined, pageSize: number | undefined): Promise<FundVm>;
-    funds_GetFundMembers(id: string): Promise<MemberDto[]>;
-    funds_UploadTransactionToFund(id: string, type: string | null, file: FileParameter | null | undefined): Promise<FileResponse>;
+    funds_GetFund(id: string | null, page: number | undefined, pageSize: number | undefined): Promise<FundVm>;
+    funds_GetFundMembers(id: string | null): Promise<MemberDto[]>;
+    funds_UploadTransactionToFund(id: string | null, type: string | null, file: FileParameter | null | undefined): Promise<FileResponse>;
     memberships_GetMembers(name: string | null | undefined): Promise<MemberDto[]>;
     memberships_CreateMembership(command: CreateMembershipCommand): Promise<FileResponse>;
     memberships_DeleteMembership(command: DeleteMembershipCommand): Promise<FileResponse>;
@@ -24,7 +24,7 @@ export interface IClient {
     transactions_UpdateTransaction(command: UpdateTransactionCommand): Promise<FileResponse>;
     transactions_DeleteTransaction(command: DeleteTransactionCommand): Promise<FileResponse>;
     transactions_CreateTransactionSubscription(command: CreateTransactionSubscription): Promise<FileResponse>;
-    transactions_ListRecurringTransactions(id: string, page: number | undefined, pageSize: number | undefined): Promise<RecurringTransactionsVm>;
+    transactions_ListRecurringTransactions(id: string | null, page: number | undefined, pageSize: number | undefined): Promise<RecurringTransactionsVm>;
 }
 
 export class Client implements IClient {
@@ -245,7 +245,7 @@ export class Client implements IClient {
         return Promise.resolve<FileResponse>(<any>null);
     }
 
-    funds_GetFund(id: string, page: number | undefined, pageSize: number | undefined , cancelToken?: CancelToken | undefined): Promise<FundVm> {
+    funds_GetFund(id: string | null, page: number | undefined, pageSize: number | undefined , cancelToken?: CancelToken | undefined): Promise<FundVm> {
         let url_ = this.baseUrl + "/api/Funds/{id}?";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -303,7 +303,7 @@ export class Client implements IClient {
         return Promise.resolve<FundVm>(<any>null);
     }
 
-    funds_GetFundMembers(id: string , cancelToken?: CancelToken | undefined): Promise<MemberDto[]> {
+    funds_GetFundMembers(id: string | null , cancelToken?: CancelToken | undefined): Promise<MemberDto[]> {
         let url_ = this.baseUrl + "/api/Funds/{id}/Members";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -360,7 +360,7 @@ export class Client implements IClient {
         return Promise.resolve<MemberDto[]>(<any>null);
     }
 
-    funds_UploadTransactionToFund(id: string, type: string | null, file: FileParameter | null | undefined , cancelToken?: CancelToken | undefined): Promise<FileResponse> {
+    funds_UploadTransactionToFund(id: string | null, type: string | null, file: FileParameter | null | undefined , cancelToken?: CancelToken | undefined): Promise<FileResponse> {
         let url_ = this.baseUrl + "/api/Funds/{id}/Upload/{type}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -780,7 +780,7 @@ export class Client implements IClient {
         return Promise.resolve<FileResponse>(<any>null);
     }
 
-    transactions_ListRecurringTransactions(id: string, page: number | undefined, pageSize: number | undefined , cancelToken?: CancelToken | undefined): Promise<RecurringTransactionsVm> {
+    transactions_ListRecurringTransactions(id: string | null, page: number | undefined, pageSize: number | undefined , cancelToken?: CancelToken | undefined): Promise<RecurringTransactionsVm> {
         let url_ = this.baseUrl + "/api/Transactions/subscriptions/{id}?";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -1291,7 +1291,7 @@ export interface ICreateFundCommand {
 }
 
 export class UpdateFundCommand implements IUpdateFundCommand {
-    id?: string;
+    id?: string | undefined;
     name?: string | undefined;
 
     constructor(data?: IUpdateFundCommand) {
@@ -1326,12 +1326,12 @@ export class UpdateFundCommand implements IUpdateFundCommand {
 }
 
 export interface IUpdateFundCommand {
-    id?: string;
+    id?: string | undefined;
     name?: string | undefined;
 }
 
 export class DeleteFundCommand implements IDeleteFundCommand {
-    id?: string;
+    id?: string | undefined;
 
     constructor(data?: IDeleteFundCommand) {
         if (data) {
@@ -1363,12 +1363,12 @@ export class DeleteFundCommand implements IDeleteFundCommand {
 }
 
 export interface IDeleteFundCommand {
-    id?: string;
+    id?: string | undefined;
 }
 
 export class CreateMembershipCommand implements ICreateMembershipCommand {
-    userId?: string;
-    fundId?: string;
+    userId?: string | undefined;
+    fundId?: string | undefined;
 
     constructor(data?: ICreateMembershipCommand) {
         if (data) {
@@ -1402,13 +1402,13 @@ export class CreateMembershipCommand implements ICreateMembershipCommand {
 }
 
 export interface ICreateMembershipCommand {
-    userId?: string;
-    fundId?: string;
+    userId?: string | undefined;
+    fundId?: string | undefined;
 }
 
 export class DeleteMembershipCommand implements IDeleteMembershipCommand {
-    fundId?: string;
-    userId?: string;
+    fundId?: string | undefined;
+    userId?: string | undefined;
 
     constructor(data?: IDeleteMembershipCommand) {
         if (data) {
@@ -1442,12 +1442,12 @@ export class DeleteMembershipCommand implements IDeleteMembershipCommand {
 }
 
 export interface IDeleteMembershipCommand {
-    fundId?: string;
-    userId?: string;
+    fundId?: string | undefined;
+    userId?: string | undefined;
 }
 
 export class CreateTransactionCommand implements ICreateTransactionCommand {
-    fundId?: string;
+    fundId?: string | undefined;
     amount?: number;
     type?: TransactionType;
     description?: string | undefined;
@@ -1491,7 +1491,7 @@ export class CreateTransactionCommand implements ICreateTransactionCommand {
 }
 
 export interface ICreateTransactionCommand {
-    fundId?: string;
+    fundId?: string | undefined;
     amount?: number;
     type?: TransactionType;
     description?: string | undefined;
@@ -1708,7 +1708,7 @@ export interface ITransactionDto2 {
 }
 
 export class UpdateTransactionCommand implements IUpdateTransactionCommand {
-    id?: string;
+    id?: string | undefined;
     amount?: number;
     type?: TransactionType;
     description?: string | undefined;
@@ -1752,7 +1752,7 @@ export class UpdateTransactionCommand implements IUpdateTransactionCommand {
 }
 
 export interface IUpdateTransactionCommand {
-    id?: string;
+    id?: string | undefined;
     amount?: number;
     type?: TransactionType;
     description?: string | undefined;
@@ -1760,7 +1760,7 @@ export interface IUpdateTransactionCommand {
 }
 
 export class DeleteTransactionCommand implements IDeleteTransactionCommand {
-    id?: string;
+    id?: string | undefined;
 
     constructor(data?: IDeleteTransactionCommand) {
         if (data) {
@@ -1792,7 +1792,7 @@ export class DeleteTransactionCommand implements IDeleteTransactionCommand {
 }
 
 export interface IDeleteTransactionCommand {
-    id?: string;
+    id?: string | undefined;
 }
 
 export interface FileParameter {

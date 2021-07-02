@@ -10,8 +10,8 @@ namespace FinanceServices.Application.Memberships.Commands
 {
     public class CreateMembershipCommand : IRequest
     {
-        public Guid UserId { get; set; }
-        public Guid FundId { get; set; }
+        public string UserId { get; set; }
+        public string FundId { get; set; }
 
         public class CreateMembershipCommandHandler : IRequestHandler<CreateMembershipCommand>
         {

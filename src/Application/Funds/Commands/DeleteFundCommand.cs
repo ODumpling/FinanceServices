@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FinanceServices.Application.Common.Exceptions;
@@ -15,7 +14,7 @@ namespace FinanceServices.Application.Funds.Commands
     [Authorize]
     public class DeleteFundCommand : IRequest
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
 
         public class DeleteFundValidator : AbstractValidator<DeleteFundCommand>
         {
@@ -42,11 +41,10 @@ namespace FinanceServices.Application.Funds.Commands
 
             public async Task<Unit> Handle(DeleteFundCommand request, CancellationToken cancellationToken)
             {
-                var userguid = Guid.Parse(_userService.UserId);
-
                 var fund = await _context.Funds
                     .Where(x => x.Id == request.Id)
-                    .Where(x => x.ManagerId == userguid).FirstOrDefaultAsync(cancellationToken: cancellationToken);
+                    .Where(x => x.ManagerId == _userService.UserId)
+                    .FirstOrDefaultAsync(cancellationToken: cancellationToken);
 
                 if (fund == null)
                 {
@@ -55,7 +53,7 @@ namespace FinanceServices.Application.Funds.Commands
 
                 _context.Funds.Remove(fund);
                 await _context.SaveChangesAsync(cancellationToken);
-                _logger.LogInformation("User with Id:{Id} has deleted the fund with Id:{FundId}", userguid, fund.Id);
+                _logger.LogInformation("User with Id:{Id} has deleted the fund with Id:{FundId}",_userService.UserId, fund.Id);
 
                 return Unit.Value;
             }

@@ -11,7 +11,7 @@ namespace FinanceServices.Application.Funds.Commands
 {
     public class UpdateFundCommand : IRequest
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
 
         public class UpdateFundCommandHandler : IRequestHandler<UpdateFundCommand>

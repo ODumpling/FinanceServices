@@ -8,7 +8,7 @@ namespace FinanceServices.Domain.Entities
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public Guid FundId { get; set; }
+        public string FundId { get; set; }
         public Fund Fund { get; set; }
 
         public IList<Transaction> Transactions { get; set; } = new List<Transaction>();

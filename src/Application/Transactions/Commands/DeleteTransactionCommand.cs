@@ -12,7 +12,7 @@ namespace FinanceServices.Application.Transactions.Commands
 {
     public class DeleteTransactionCommand : IRequest
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
 
         public class DeleteTransactionCommandValidator : AbstractValidator<DeleteTransactionCommand>
         {

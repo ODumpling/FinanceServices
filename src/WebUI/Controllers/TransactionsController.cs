@@ -9,7 +9,7 @@ namespace FinanceServices.WebUI.Controllers
     public class TransactionsController : ApiControllerBase
     {
         [HttpPost]
-        public async Task<ActionResult<Guid>> CreateTransaction(CreateTransactionCommand command)
+        public async Task<ActionResult<string>> CreateTransaction(CreateTransactionCommand command)
         {
             return await Mediator.Send(command);
         }
@@ -23,7 +23,7 @@ namespace FinanceServices.WebUI.Controllers
         }
 
         [HttpGet("subscriptions/{id}")]
-        public async Task<ActionResult<RecurringTransactionsVm>> ListRecurringTransactions(Guid id,
+        public async Task<ActionResult<RecurringTransactionsVm>> ListRecurringTransactions(string id,
             [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
             return await Mediator.Send(new RecurringTransactionsQuery

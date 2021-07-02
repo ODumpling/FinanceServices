@@ -7,8 +7,8 @@ namespace FinanceServices.Domain.Entities
 {
     public class Transaction : AuditableEntity, IHasDomainEvent
     {
-        public Guid Id { get; set; }
-        public Guid FundId { get; set; }
+        public string Id { get; set; }
+        public string FundId { get; set; }
         public Fund Fund { get; set; }
         public TransactionType Type { get; set; }
         public decimal Amount { get; set; }

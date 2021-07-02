@@ -11,15 +11,15 @@ using Microsoft.Extensions.Logging;
 
 namespace FinanceServices.Application.Transactions.Commands
 {
-    public class UpdateTransactionCommand : IRequest<Guid>
+    public class UpdateTransactionCommand : IRequest<string>
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         public decimal Amount { get; set; }
         public TransactionType Type { get; set; }
         public string Description { get; set; }
         public DateTime Date { get; set; }
 
-        public class UpdateTransactionCommandHandler : IRequestHandler<UpdateTransactionCommand, Guid>
+        public class UpdateTransactionCommandHandler : IRequestHandler<UpdateTransactionCommand, string>
         {
             private readonly IApplicationDbContext _context;
             private readonly ILogger<UpdateTransactionCommandHandler> _logger;
@@ -31,7 +31,7 @@ namespace FinanceServices.Application.Transactions.Commands
                 _logger = logger;
             }
 
-            public async Task<Guid> Handle(UpdateTransactionCommand request, CancellationToken cancellationToken)
+            public async Task<string> Handle(UpdateTransactionCommand request, CancellationToken cancellationToken)
             {
                 var transaction = await _context.Transactions.FindAsync(request.Id);
 

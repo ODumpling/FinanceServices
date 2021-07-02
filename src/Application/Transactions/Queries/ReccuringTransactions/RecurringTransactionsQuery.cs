@@ -12,7 +12,7 @@ namespace FinanceServices.Application.Transactions.Queries.ReccuringTransactions
 {
     public class RecurringTransactionsQuery : IRequest<RecurringTransactionsVm>
     {
-        public Guid FundId { get; set; }
+        public string FundId { get; set; }
         public int Page { get; set; }
         public int PageSize { get; set; }
 

@@ -6,7 +6,7 @@ namespace FinanceServices.Domain.Entities
     {
         public string CategoryId { get; set; }
         public Category Category { get; set; }
-        public Guid TransactionId { get; set; }
+        public string TransactionId { get; set; }
         public Transaction Transaction { get; set; }
     }
 }

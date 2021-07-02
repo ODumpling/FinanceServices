@@ -8,9 +8,9 @@ using MediatR;
 
 namespace FinanceServices.Application.UserInfos.Commands
 {
-    public class CreateUserInfoCommand : IRequest<Guid>
+    public class CreateUserInfoCommand : IRequest<string>
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
@@ -25,7 +25,7 @@ namespace FinanceServices.Application.UserInfos.Commands
             }
         }
 
-        public class CreateUserInfoCommandHandler : IRequestHandler<CreateUserInfoCommand, Guid>
+        public class CreateUserInfoCommandHandler : IRequestHandler<CreateUserInfoCommand, string>
         {
             private readonly IApplicationDbContext _context;
 
@@ -34,7 +34,7 @@ namespace FinanceServices.Application.UserInfos.Commands
                 _context = context;
             }
 
-            public async Task<Guid> Handle(CreateUserInfoCommand request, CancellationToken cancellationToken)
+            public async Task<string> Handle(CreateUserInfoCommand request, CancellationToken cancellationToken)
             {
                 var userInfo = new UserInfo(request.Id,request.FirstName, request.LastName, request.Email);
 

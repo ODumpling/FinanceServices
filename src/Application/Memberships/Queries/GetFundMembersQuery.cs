@@ -11,7 +11,7 @@ namespace FinanceServices.Application.Memberships.Queries
 {
     public class GetFundMembersQuery : IRequest<IList<MemberDto>>
     {
-        public Guid FundId { get; set; }
+        public string FundId { get; set; }
 
         public class GetFundMemberQueryHandler : IRequestHandler<GetFundMembersQuery, IList<MemberDto>>
         {

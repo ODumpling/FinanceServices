@@ -13,7 +13,7 @@ namespace FinanceServices.Application.Funds.Queries.ExportFund
 {
     public class ExportFundsQuery : IRequest<ExportFundVm>
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
 
         public class ExportFundsQueryHandler : IRequestHandler<ExportFundsQuery, ExportFundVm>
         {
