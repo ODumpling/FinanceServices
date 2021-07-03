@@ -19,7 +19,7 @@ namespace FinanceServices.Application.Funds.Queries.GetFund
 
         public class FundDto : IMapFrom<Fund>
         {
-            public Guid Id { get; set; }
+            public string Id { get; set; }
             public string Name { get; set; }
             public decimal Expenses { get; set; }
             public decimal Income { get; set; }
@@ -30,7 +30,7 @@ namespace FinanceServices.Application.Funds.Queries.GetFund
 
         public class TransactionDto : IMapFrom<Transaction>
         {
-            public Guid Id { get; set; }
+            public string Id { get; set; }
             public string Type { get; set; }
             public decimal Amount { get; set; }
             public string Description { get; set; }

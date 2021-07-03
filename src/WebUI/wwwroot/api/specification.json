@@ -613,7 +613,7 @@
         "properties": {
           "id": {
             "type": "string",
-            "format": "guid"
+            "nullable": true
           },
           "name": {
             "type": "string",
@@ -652,7 +652,7 @@
         "properties": {
           "id": {
             "type": "string",
-            "format": "guid"
+            "nullable": true
           },
           "name": {
             "type": "string",
@@ -692,7 +692,7 @@
         "properties": {
           "id": {
             "type": "string",
-            "format": "guid"
+            "nullable": true
           },
           "type": {
             "type": "string",

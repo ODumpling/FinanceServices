@@ -948,7 +948,7 @@ export interface IPaginatedListOfFundDto {
 }
 
 export class FundDto implements IFundDto {
-    id?: string;
+    id?: string | undefined;
     name?: string | undefined;
     balance?: number;
 
@@ -986,7 +986,7 @@ export class FundDto implements IFundDto {
 }
 
 export interface IFundDto {
-    id?: string;
+    id?: string | undefined;
     name?: string | undefined;
     balance?: number;
 }
@@ -1048,7 +1048,7 @@ export interface IFundVm {
 }
 
 export class FundDto2 implements IFundDto2 {
-    id?: string;
+    id?: string | undefined;
     name?: string | undefined;
     expenses?: number;
     income?: number;
@@ -1128,7 +1128,7 @@ export class FundDto2 implements IFundDto2 {
 }
 
 export interface IFundDto2 {
-    id?: string;
+    id?: string | undefined;
     name?: string | undefined;
     expenses?: number;
     income?: number;
@@ -1138,7 +1138,7 @@ export interface IFundDto2 {
 }
 
 export class TransactionDto implements ITransactionDto {
-    id?: string;
+    id?: string | undefined;
     type?: string | undefined;
     amount?: number;
     description?: string | undefined;
@@ -1200,7 +1200,7 @@ export class TransactionDto implements ITransactionDto {
 }
 
 export interface ITransactionDto {
-    id?: string;
+    id?: string | undefined;
     type?: string | undefined;
     amount?: number;
     description?: string | undefined;
