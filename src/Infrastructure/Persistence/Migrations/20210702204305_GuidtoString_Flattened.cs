@@ -86,7 +86,7 @@ namespace FinanceServices.Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserInformation",
+                name: "DomainUsers",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -227,7 +227,7 @@ namespace FinanceServices.Infrastructure.Persistence.Migrations
                     table.ForeignKey(
                         name: "FK_Funds_UserInformation_ManagerId",
                         column: x => x.ManagerId,
-                        principalTable: "UserInformation",
+                        principalTable: "DomainUsers",
                         principalColumn: "Id");
                 });
 
@@ -277,7 +277,7 @@ namespace FinanceServices.Infrastructure.Persistence.Migrations
                     table.ForeignKey(
                         name: "FK_Memberships_UserInformation_UserId",
                         column: x => x.UserId,
-                        principalTable: "UserInformation",
+                        principalTable: "DomainUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -466,7 +466,7 @@ namespace FinanceServices.Infrastructure.Persistence.Migrations
                 name: "Funds");
 
             migrationBuilder.DropTable(
-                name: "UserInformation");
+                name: "DomainUsers");
         }
     }
 }

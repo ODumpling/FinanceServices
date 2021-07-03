@@ -1,9 +1,9 @@
 ﻿using FinanceServices.Application.Common.Exceptions;
-using FinanceServices.Application.UserInfos.Commands;
+using FinanceServices.Application.DomainUsers.Commands;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace FinanceServices.Application.IntegrationTests.UserInfos.Commands
+namespace FinanceServices.Application.IntegrationTests.DomainUsers.Commands
 {
     using static Testing;
     public class CreateUserInfoCommandTests : TestBase
@@ -11,7 +11,7 @@ namespace FinanceServices.Application.IntegrationTests.UserInfos.Commands
         [Test]
         public void ShouldRequireMinimumFields()
         {
-            var command = new CreateUserInfoCommand();
+            var command = new CreateDomainUserCommand();
 
             FluentActions.Invoking(() =>
                 SendAsync(command)).Should().Throw<ValidationException>();

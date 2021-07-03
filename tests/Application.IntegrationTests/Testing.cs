@@ -124,7 +124,10 @@ public class Testing
         {
             if (context != null)
             {
-                context.UserInformation.Add(new UserInfo(user.Id, userName, userName, userName));
+                context.DomainUsers.Add(new DomainUser
+                {
+                    Id = user.Id
+                });
 
                 await context.SaveChangesAsync(cancellationToken: CancellationToken.None);
             }

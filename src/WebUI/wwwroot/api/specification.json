@@ -709,6 +709,346 @@
           "date": {
             "type": "string",
             "format": "date-time"
+          },
+          "categories": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/Category"
+            }
+          }
+        }
+      },
+      "Category": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/AuditableEntity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "nullable": true
+              },
+              "name": {
+                "type": "string",
+                "nullable": true
+              },
+              "fundId": {
+                "type": "string",
+                "nullable": true
+              },
+              "fund": {
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/Fund"
+                  }
+                ]
+              },
+              "transactions": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/Transaction"
+                }
+              },
+              "categoryTransactions": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/CategoryTransaction"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "Fund": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/AuditableEntity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "nullable": true
+              },
+              "name": {
+                "type": "string",
+                "nullable": true
+              },
+              "expenses": {
+                "type": "number",
+                "format": "decimal"
+              },
+              "income": {
+                "type": "number",
+                "format": "decimal"
+              },
+              "balance": {
+                "type": "number",
+                "format": "decimal"
+              },
+              "managerId": {
+                "type": "string",
+                "nullable": true
+              },
+              "manager": {
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/DomainUser"
+                  }
+                ]
+              },
+              "transactions": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/Transaction"
+                }
+              },
+              "users": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/DomainUser"
+                }
+              },
+              "memberships": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/Membership"
+                }
+              },
+              "domainEvents": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/DomainEvent"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "DomainUser": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "funds": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/Fund"
+            }
+          },
+          "managingFunds": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/Fund"
+            }
+          },
+          "memberships": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/Membership"
+            }
+          }
+        }
+      },
+      "Membership": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/AuditableEntity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "fundId": {
+                "type": "string",
+                "nullable": true
+              },
+              "fund": {
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/Fund"
+                  }
+                ]
+              },
+              "userId": {
+                "type": "string",
+                "nullable": true
+              },
+              "domainUser": {
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/DomainUser"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "AuditableEntity": {
+        "type": "object",
+        "x-abstract": true,
+        "additionalProperties": false,
+        "properties": {
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastModified": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "lastModifiedBy": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "Transaction": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/AuditableEntity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "nullable": true
+              },
+              "fundId": {
+                "type": "string",
+                "nullable": true
+              },
+              "fund": {
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/Fund"
+                  }
+                ]
+              },
+              "type": {
+                "$ref": "#/components/schemas/TransactionType"
+              },
+              "amount": {
+                "type": "number",
+                "format": "decimal"
+              },
+              "description": {
+                "type": "string",
+                "nullable": true
+              },
+              "date": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "categories": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/Category"
+                }
+              },
+              "categoryTransactions": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/CategoryTransaction"
+                }
+              },
+              "domainEvents": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/DomainEvent"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "TransactionType": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "Expense",
+          "Income"
+        ],
+        "enum": [
+          0,
+          1
+        ]
+      },
+      "CategoryTransaction": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "categoryId": {
+            "type": "string",
+            "nullable": true
+          },
+          "category": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Category"
+              }
+            ]
+          },
+          "transactionId": {
+            "type": "string",
+            "nullable": true
+          },
+          "transaction": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Transaction"
+              }
+            ]
+          }
+        }
+      },
+      "DomainEvent": {
+        "type": "object",
+        "x-abstract": true,
+        "additionalProperties": false,
+        "properties": {
+          "isPublished": {
+            "type": "boolean"
+          },
+          "dateOccurred": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       },
@@ -844,18 +1184,6 @@
             "format": "date-time"
           }
         }
-      },
-      "TransactionType": {
-        "type": "integer",
-        "description": "",
-        "x-enumNames": [
-          "Expense",
-          "Income"
-        ],
-        "enum": [
-          0,
-          1
-        ]
       },
       "CreateTransactionSubscription": {
         "type": "object",

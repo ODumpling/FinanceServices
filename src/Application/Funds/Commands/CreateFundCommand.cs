@@ -56,7 +56,7 @@ namespace FinanceServices.Application.Funds.Commands
                 await _context.SaveChangesAsync(cancellationToken);
                 var userid = _userService.UserId;
 
-                _logger.LogInformation("User with Id:{Id} created a new Fund with FundId:{FundId}", userid , fund.Id);
+                _logger.LogInformation("DomainUser with Id:{Id} created a new Fund with FundId:{FundId}", userid , fund.Id);
 
                 return fund.Id;
             }

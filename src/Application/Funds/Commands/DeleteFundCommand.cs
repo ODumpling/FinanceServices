@@ -53,7 +53,7 @@ namespace FinanceServices.Application.Funds.Commands
 
                 _context.Funds.Remove(fund);
                 await _context.SaveChangesAsync(cancellationToken);
-                _logger.LogInformation("User with Id:{Id} has deleted the fund with Id:{FundId}",_userService.UserId, fund.Id);
+                _logger.LogInformation("DomainUser with Id:{Id} has deleted the fund with Id:{FundId}",_userService.UserId, fund.Id);
 
                 return Unit.Value;
             }

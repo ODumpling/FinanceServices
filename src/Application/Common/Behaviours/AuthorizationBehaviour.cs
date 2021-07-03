@@ -77,7 +77,7 @@ namespace FinanceServices.Application.Common.Behaviours
                 }
             }
 
-            // User is authorized / authorization not required
+            // DomainUser is authorized / authorization not required
             return await next();
         }
     }

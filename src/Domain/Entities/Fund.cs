@@ -12,9 +12,9 @@ namespace FinanceServices.Domain.Entities
         public decimal Income { get; set; }
         public decimal Balance { get; set; }
         public string ManagerId { get; set; }
-        public UserInfo Manager { get; set; }
+        public DomainUser Manager { get; set; }
         public IList<Transaction> Transactions { get; set; } = new List<Transaction>();
-        public IList<UserInfo> Users { get; set; } = new List<UserInfo>();
+        public IList<DomainUser> Users { get; set; } = new List<DomainUser>();
         public IList<Membership> Memberships { get; set; } = new List<Membership>();
         public List<DomainEvent> DomainEvents { get; set; } = new List<DomainEvent>();
     }

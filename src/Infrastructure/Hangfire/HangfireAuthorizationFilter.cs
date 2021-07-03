@@ -9,7 +9,7 @@ namespace FinanceServices.Infrastructure.Hangfire
 
             var http = context.GetHttpContext();
 
-            // return http.User.IsInRole("Administrator");
+            // return http.DomainUser.IsInRole("Administrator");
             return true;
         }
     }

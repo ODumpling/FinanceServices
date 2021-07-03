@@ -32,8 +32,10 @@ namespace FinanceServices.Infrastructure.Persistence
                 await userManager.CreateAsync(administrator, "Administrator1!");
                 await userManager.AddToRolesAsync(administrator, new[] {administratorRole.Name});
                 await userManager.AddClaimsAsync(administrator, claims());
-                context.UserInformation.Add(new UserInfo(administrator.Id, "App", "Admin",
-                    "administrator@localhost"));
+                context.DomainUsers.Add(new DomainUser
+                {
+                    Id = administrator.Id 
+                });
                 await context.SaveChangesAsync(CancellationToken.None);
             }
         }
@@ -49,19 +51,20 @@ namespace FinanceServices.Infrastructure.Persistence
         public static async Task SeedSampleDataAsync(UserManager<ApplicationUser> userManager,
             ApplicationDbContext context)
         {
-            var user = context.UserInformation.FirstOrDefault(x => x.Email == "administrator@localhost");
+            var user = userManager.Users.FirstOrDefault(x => x.Email == "administrator@localhost");
+            var domainuser = context.DomainUsers.FirstOrDefault(x => x.Id == user.Id);
             // Seed, if necessary
             if (!context.Funds.Any())
             {
-                if (user != null)
+                if (user != null && domainuser != null)
                     context.Add(new Fund
                     {
                         Name = "Bills",
-                        ManagerId = user.Id,
+                        ManagerId = domainuser.Id,
                         Balance = 50000,
                         Users =
                         {
-                            user,  
+                            domainuser,  
                         },
                         Transactions =
                         {

@@ -33,7 +33,7 @@ namespace FinanceServices.Infrastructure.Persistence
         }
 
         public DbSet<Transaction> Transactions { get; set; }
-        public DbSet<UserInfo> UserInformation { get; set; }
+        public DbSet<DomainUser> DomainUsers { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<CategoryTransaction> CategoryTransactions { get; set; }
         public DbSet<Fund> Funds { get; set; }

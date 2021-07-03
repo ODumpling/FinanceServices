@@ -47,7 +47,7 @@ namespace FinanceServices.Application.Funds.Queries.ExportFund
                 vm.ContentType = "text/csv";
                 vm.FileName = $"Fund-{fund.Name}-{DateTime.Now}.csv";
 
-                _logger.LogInformation("User with Id:{Id} has exported data from Fund with Id:{FundId}", _currentUser.UserId, request.Id);
+                _logger.LogInformation("DomainUser with Id:{Id} has exported data from Fund with Id:{FundId}", _currentUser.UserId, request.Id);
                 return await Task.FromResult(vm);
             }
 

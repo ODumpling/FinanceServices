@@ -64,9 +64,20 @@ namespace FinanceServices.Infrastructure.Persistence.Migrations
                     b.ToTable("CategoryTransactions");
                 });
 
+            modelBuilder.Entity("FinanceServices.Domain.Entities.DomainUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DomainUsers");
+                });
+
             modelBuilder.Entity("FinanceServices.Domain.Entities.Fund", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("Balance")
@@ -136,6 +147,7 @@ namespace FinanceServices.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("FinanceServices.Domain.Entities.Transaction", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("Amount")
@@ -171,28 +183,6 @@ namespace FinanceServices.Infrastructure.Persistence.Migrations
                     b.HasIndex("FundId");
 
                     b.ToTable("Transactions");
-                });
-
-            modelBuilder.Entity("FinanceServices.Domain.Entities.UserInfo", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FullName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UserInformation");
                 });
 
             modelBuilder.Entity("FinanceServices.Infrastructure.Identity.ApplicationUser", b =>
@@ -528,7 +518,7 @@ namespace FinanceServices.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FinanceServices.Domain.Entities.Fund", b =>
                 {
-                    b.HasOne("FinanceServices.Domain.Entities.UserInfo", "Manager")
+                    b.HasOne("FinanceServices.Domain.Entities.DomainUser", "Manager")
                         .WithMany("ManagingFunds")
                         .HasForeignKey("ManagerId")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -544,15 +534,15 @@ namespace FinanceServices.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FinanceServices.Domain.Entities.UserInfo", "User")
+                    b.HasOne("FinanceServices.Domain.Entities.DomainUser", "DomainUser")
                         .WithMany("Memberships")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Fund");
+                    b.Navigation("DomainUser");
 
-                    b.Navigation("User");
+                    b.Navigation("Fund");
                 });
 
             modelBuilder.Entity("FinanceServices.Domain.Entities.Transaction", b =>
@@ -620,6 +610,13 @@ namespace FinanceServices.Infrastructure.Persistence.Migrations
                     b.Navigation("CategoryTransactions");
                 });
 
+            modelBuilder.Entity("FinanceServices.Domain.Entities.DomainUser", b =>
+                {
+                    b.Navigation("ManagingFunds");
+
+                    b.Navigation("Memberships");
+                });
+
             modelBuilder.Entity("FinanceServices.Domain.Entities.Fund", b =>
                 {
                     b.Navigation("Memberships");
@@ -630,13 +627,6 @@ namespace FinanceServices.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("FinanceServices.Domain.Entities.Transaction", b =>
                 {
                     b.Navigation("CategoryTransactions");
-                });
-
-            modelBuilder.Entity("FinanceServices.Domain.Entities.UserInfo", b =>
-                {
-                    b.Navigation("ManagingFunds");
-
-                    b.Navigation("Memberships");
                 });
 #pragma warning restore 612, 618
         }

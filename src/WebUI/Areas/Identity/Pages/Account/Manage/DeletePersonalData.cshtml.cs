@@ -39,10 +39,10 @@ namespace FinanceServices.WebUI.Areas.Identity.Pages.Account.Manage
 
         public IActionResult OnGet()
         {
-            // var user = await _userManager.GetUserAsync(User);
+            // var user = await _userManager.GetUserAsync(DomainUser);
             // if (user == null)
             // {
-            //     return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            //     return NotFound($"Unable to load user with ID '{_userManager.GetUserId(DomainUser)}'.");
             // }
             //
             // RequirePassword = await _userManager.HasPasswordAsync(user);
@@ -54,10 +54,10 @@ namespace FinanceServices.WebUI.Areas.Identity.Pages.Account.Manage
         public IActionResult OnPostAsync()
         {
             return Redirect("/");
-            // var user = await _userManager.GetUserAsync(User);
+            // var user = await _userManager.GetUserAsync(DomainUser);
             // if (user == null)
             // {
-            //     return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            //     return NotFound($"Unable to load user with ID '{_userManager.GetUserId(DomainUser)}'.");
             // }
             //
             // RequirePassword = await _userManager.HasPasswordAsync(user);
@@ -79,7 +79,7 @@ namespace FinanceServices.WebUI.Areas.Identity.Pages.Account.Manage
             //
             // await _signInManager.SignOutAsync();
             //
-            // _logger.LogInformation("User with ID '{UserId}' deleted themselves.", userId);
+            // _logger.LogInformation("DomainUser with ID '{UserId}' deleted themselves.", userId);
             //
             // return Redirect("~/");
         }

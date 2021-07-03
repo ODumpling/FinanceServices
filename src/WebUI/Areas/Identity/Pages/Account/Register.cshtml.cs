@@ -6,7 +6,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using FinanceServices.Application.UserInfos.Commands;
+using FinanceServices.Application.DomainUsers.Commands;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using FinanceServices.Infrastructure.Identity;
@@ -100,8 +100,8 @@ namespace FinanceServices.WebUI.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     await _userManager.AddClaimsAsync(user, BaseClaims());
-                    _logger.LogInformation("User created a new account with password");
-                    await _sender.Send(new CreateUserInfoCommand
+                    _logger.LogInformation("DomainUser created a new account with password");
+                    await _sender.Send(new CreateDomainUserCommand
                     {
                         Id = user.Id,
                         FirstName = Input.FirstName,

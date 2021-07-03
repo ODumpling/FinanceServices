@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinanceServices.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210702204305_GuidtoString_Flattened")]
-    partial class GuidtoString_Flattened
+    [Migration("20210703155803_Update_DomainUsers")]
+    partial class Update_DomainUsers
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -66,9 +66,20 @@ namespace FinanceServices.Infrastructure.Persistence.Migrations
                     b.ToTable("CategoryTransactions");
                 });
 
+            modelBuilder.Entity("FinanceServices.Domain.Entities.DomainUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DomainUsers");
+                });
+
             modelBuilder.Entity("FinanceServices.Domain.Entities.Fund", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("Balance")
@@ -138,6 +149,7 @@ namespace FinanceServices.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("FinanceServices.Domain.Entities.Transaction", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("Amount")
@@ -173,28 +185,6 @@ namespace FinanceServices.Infrastructure.Persistence.Migrations
                     b.HasIndex("FundId");
 
                     b.ToTable("Transactions");
-                });
-
-            modelBuilder.Entity("FinanceServices.Domain.Entities.DomainUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FullName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("DomainUsers");
                 });
 
             modelBuilder.Entity("FinanceServices.Infrastructure.Identity.ApplicationUser", b =>
@@ -552,9 +542,9 @@ namespace FinanceServices.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Fund");
-
                     b.Navigation("DomainUser");
+
+                    b.Navigation("Fund");
                 });
 
             modelBuilder.Entity("FinanceServices.Domain.Entities.Transaction", b =>
@@ -622,6 +612,13 @@ namespace FinanceServices.Infrastructure.Persistence.Migrations
                     b.Navigation("CategoryTransactions");
                 });
 
+            modelBuilder.Entity("FinanceServices.Domain.Entities.DomainUser", b =>
+                {
+                    b.Navigation("ManagingFunds");
+
+                    b.Navigation("Memberships");
+                });
+
             modelBuilder.Entity("FinanceServices.Domain.Entities.Fund", b =>
                 {
                     b.Navigation("Memberships");
@@ -632,13 +629,6 @@ namespace FinanceServices.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("FinanceServices.Domain.Entities.Transaction", b =>
                 {
                     b.Navigation("CategoryTransactions");
-                });
-
-            modelBuilder.Entity("FinanceServices.Domain.Entities.DomainUser", b =>
-                {
-                    b.Navigation("ManagingFunds");
-
-                    b.Navigation("Memberships");
                 });
 #pragma warning restore 612, 618
         }
