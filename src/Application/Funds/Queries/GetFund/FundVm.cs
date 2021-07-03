@@ -35,7 +35,7 @@ namespace FinanceServices.Application.Funds.Queries.GetFund
             public decimal Amount { get; set; }
             public string Description { get; set; }
             public DateTime Date { get; set; }
-            public IList<Category> Categories { get; set; }
+            public IList<CategoryDto> Categories { get; set; }
             public void Mapping(Profile profile)
             {
                 profile.CreateMap<Transaction, TransactionDto>()
