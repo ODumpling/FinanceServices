@@ -1,43 +1,14 @@
 import Pagination from "../../components/Pagination";
-import React, {useEffect} from "react";
-import {useAppDispatch, useAppSelector} from "../../hooks";
-import {useQuery} from "../../hooks/useQuery";
-import {Link, useHistory} from "react-router-dom";
-import {fetchFunds} from "./fundsSlice";
+import React from "react";
+import {Link} from "react-router-dom";
+import {IPaginatedListOfFundDto} from "../../api/web-api-client";
 
-export function FundsTable() {
+interface IProps extends IPaginatedListOfFundDto {
+    currentPage: (page: string | number) => void
+}
 
-    const query = useQuery();
-    const page = query.get("page");
-    const history = useHistory();
-    const dispatch = useAppDispatch();
-
-    const {items, totalCount, pageIndex, totalPages} = useAppSelector((state) => state.funds.listOfFunds);
-
-    useEffect(() => {
-        async function getfunds(page: number = 1, size: number = 10) {
-            await dispatch(fetchFunds({page, size}));
-        }
-
-        const current = page ? parseInt(page) : 1;
-        getfunds(current).then();
-    }, [page, dispatch]);
-
-    function changePage(page: number | string) {
-
-        if (page === "..") {
-            const current = query.get("page");
-            page = parseInt(current! ? current! : "1") - 2;
-        }
-
-        if (page === "...") {
-            const current = query.get("page");
-            page = parseInt(current! ? current! : "1") + 3;
-        }
-        query.set("page", page.toString());
-        history.push("?" + query.toString());
-    }
-
+export function FundsTable({items, totalCount, pageIndex, totalPages, currentPage}: IProps) {
+    
     return (
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
             <div className="flex flex-col">
@@ -98,7 +69,8 @@ export function FundsTable() {
                                                 {fund.balance}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                <Link to={"funds/" + fund.id} className="text-cyan-600 hover:text-cyan-900">
+                                                <Link to={"funds/" + fund.id}
+                                                      className="text-cyan-600 hover:text-cyan-900">
                                                     View
                                                 </Link>
                                             </td>
@@ -112,8 +84,8 @@ export function FundsTable() {
                                     currentPage={pageIndex}
                                     totalPages={totalPages}
                                     totalCount={totalCount}
-                                    onPageChange={(data) => changePage(data)}
-                                />) : "" }
+                                    onPageChange={(data) => currentPage(data)}
+                                />) : ""}
                         </div>
                     </div>
                 </div>

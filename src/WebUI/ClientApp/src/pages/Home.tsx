@@ -15,36 +15,14 @@ export const fundFormSchema = object({
 type fundSubmission = z.infer<typeof fundFormSchema>;
 
 export function Home() {
-    const query = useQuery();
-    const page = query.get("page");
-    const history = useHistory();
-    const [isOpen, setIsOpen] = useState<boolean>(false);
+    
 
-    const dispatch = useAppDispatch();
-    const {listOfFunds: funds} = useAppSelector((state) => state.funds);
 
-    useEffect(() => {
-        async function getfunds(page: number = 1, size: number = 10) {
-            await dispatch(fetchFunds({page, size}));
-        }
-
-        const current = page ? parseInt(page) : 1;
-        getfunds(current).then();
-    }, [page, dispatch]);
-
-    const {
-        register,
-        handleSubmit,
-        reset,
-        formState: {errors},
-    } = useForm({
-        resolver: zodResolver(fundFormSchema),
-    });
 
 
     return (
         <Fragment>
-            <FundsTable/>
+            <FundsTable currentPage={(data) => console.log(data)}/>
 
         </Fragment>
     );
