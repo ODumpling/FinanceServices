@@ -34,7 +34,7 @@ namespace FinanceServices.Infrastructure.Persistence
                 await userManager.AddClaimsAsync(administrator, claims());
                 context.DomainUsers.Add(new DomainUser
                 {
-                    Id = administrator.Id 
+                    Id = administrator.Id
                 });
                 await context.SaveChangesAsync(CancellationToken.None);
             }
@@ -57,21 +57,86 @@ namespace FinanceServices.Infrastructure.Persistence
             if (!context.Funds.Any())
             {
                 if (user != null && domainuser != null)
-                    context.Add(new Fund
+                {
+                    for (int i = 0; i < 20; i++)
                     {
-                        Name = "Bills",
-                        ManagerId = domainuser.Id,
-                        Balance = 50000,
-                        Users =
+                        context.Funds.Add(new Fund
                         {
-                            domainuser,  
-                        },
-                        Transactions =
-                        {
-                            new Transaction{Amount = 50000, Description = "Starting Amount", Type = TransactionType.Income, Date = DateTime.Now }
-                        }
-                    });
-                await context.SaveChangesAsync();
+                            Name = "Bills",
+                            ManagerId = domainuser.Id,
+                            Balance = 50000,
+                            Users =
+                            {
+                                domainuser,
+                            },
+                            Transactions =
+                            {
+                                new Transaction
+                                {
+                                    Amount = 500, Description = "Starting Amount", Type = TransactionType.Income,
+                                    Date = DateTime.Now
+                                },
+                                new Transaction
+                                {
+                                    Amount = 500, Description = "Starting Amount", Type = TransactionType.Income,
+                                    Date = DateTime.Now
+                                },
+                                new Transaction
+                                {
+                                    Amount = 500, Description = "Starting Amount", Type = TransactionType.Income,
+                                    Date = DateTime.Now
+                                },
+                                new Transaction
+                                {
+                                    Amount = 500, Description = "Starting Amount", Type = TransactionType.Income,
+                                    Date = DateTime.Now
+                                },
+                                new Transaction
+                                {
+                                    Amount = 500, Description = "Starting Amount", Type = TransactionType.Income,
+                                    Date = DateTime.Now
+                                },
+                                new Transaction
+                                {
+                                    Amount = 500, Description = "Starting Amount", Type = TransactionType.Income,
+                                    Date = DateTime.Now
+                                },
+                                new Transaction
+                                {
+                                    Amount = 500, Description = "Starting Amount", Type = TransactionType.Income,
+                                    Date = DateTime.Now
+                                },
+                                new Transaction
+                                {
+                                    Amount = 500, Description = "Starting Amount", Type = TransactionType.Income,
+                                    Date = DateTime.Now
+                                },
+                                new Transaction
+                                {
+                                    Amount = 500, Description = "Starting Amount", Type = TransactionType.Income,
+                                    Date = DateTime.Now
+                                },
+                                new Transaction
+                                {
+                                    Amount = 500, Description = "Starting Amount", Type = TransactionType.Income,
+                                    Date = DateTime.Now
+                                },
+                                new Transaction
+                                {
+                                    Amount = 500, Description = "Starting Amount", Type = TransactionType.Income,
+                                    Date = DateTime.Now
+                                },
+                                new Transaction
+                                {
+                                    Amount = 500, Description = "Starting Amount", Type = TransactionType.Income,
+                                    Date = DateTime.Now
+                                },
+                            }
+                        });
+                    }
+
+                    await context.SaveChangesAsync();
+                }
             }
         }
     }
