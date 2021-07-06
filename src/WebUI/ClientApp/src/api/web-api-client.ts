@@ -15,7 +15,7 @@ export interface IClient {
     funds_UpdateFund(command: UpdateFundCommand): Promise<FileResponse>;
     funds_DeleteFund(command: DeleteFundCommand): Promise<FileResponse>;
     funds_GetFund(id: string | null, page: number | undefined, pageSize: number | undefined): Promise<FundVm>;
-    funds_GetFundMembers(id: string | null): Promise<MemberDto[]>;
+    funds_GetFundMembers(id: string | null): Promise<GetFundMembersVm>;
     funds_UploadTransactionToFund(id: string | null, type: string | null, file: FileParameter | null | undefined): Promise<FileResponse>;
     memberships_GetMembers(name: string | null | undefined): Promise<MemberDto[]>;
     memberships_CreateMembership(command: CreateMembershipCommand): Promise<FileResponse>;
@@ -303,7 +303,7 @@ export class Client implements IClient {
         return Promise.resolve<FundVm>(<any>null);
     }
 
-    funds_GetFundMembers(id: string | null , cancelToken?: CancelToken | undefined): Promise<MemberDto[]> {
+    funds_GetFundMembers(id: string | null , cancelToken?: CancelToken | undefined): Promise<GetFundMembersVm> {
         let url_ = this.baseUrl + "/api/Funds/{id}/Members";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -330,7 +330,7 @@ export class Client implements IClient {
         });
     }
 
-    protected processFunds_GetFundMembers(response: AxiosResponse): Promise<MemberDto[]> {
+    protected processFunds_GetFundMembers(response: AxiosResponse): Promise<GetFundMembersVm> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -344,20 +344,13 @@ export class Client implements IClient {
             const _responseText = response.data;
             let result200: any = null;
             let resultData200  = _responseText;
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(MemberDto.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
+            result200 = GetFundMembersVm.fromJS(resultData200);
             return result200;
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<MemberDto[]>(<any>null);
+        return Promise.resolve<GetFundMembersVm>(<any>null);
     }
 
     funds_UploadTransactionToFund(id: string | null, type: string | null, file: FileParameter | null | undefined , cancelToken?: CancelToken | undefined): Promise<FileResponse> {
@@ -1286,6 +1279,57 @@ export class TypeDto implements ITypeDto {
 export interface ITypeDto {
     value?: number;
     name?: string | undefined;
+}
+
+export class GetFundMembersVm implements IGetFundMembersVm {
+    members?: MemberDto[] | undefined;
+
+    constructor(data?: IGetFundMembersVm) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+            if (data.members) {
+                this.members = [];
+                for (let i = 0; i < data.members.length; i++) {
+                    let item = data.members[i];
+                    this.members[i] = item && !(<any>item).toJSON ? new MemberDto(item) : <MemberDto>item;
+                }
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["members"])) {
+                this.members = [] as any;
+                for (let item of _data["members"])
+                    this.members!.push(MemberDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): GetFundMembersVm {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetFundMembersVm();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.members)) {
+            data["members"] = [];
+            for (let item of this.members)
+                data["members"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IGetFundMembersVm {
+    members?: IMemberDto[] | undefined;
 }
 
 export class MemberDto implements IMemberDto {

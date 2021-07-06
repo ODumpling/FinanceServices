@@ -214,10 +214,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/MemberDto"
-                  }
+                  "$ref": "#/components/schemas/GetFundMembersVm"
                 }
               }
             }
@@ -744,6 +741,19 @@
           "name": {
             "type": "string",
             "nullable": true
+          }
+        }
+      },
+      "GetFundMembersVm": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "members": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/MemberDto"
+            }
           }
         }
       },
