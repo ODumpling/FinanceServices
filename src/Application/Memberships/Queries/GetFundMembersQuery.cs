@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,11 +8,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FinanceServices.Application.Memberships.Queries
 {
-    public class GetFundMembersQuery : IRequest<IList<MemberDto>>
+    public class GetFundMembersQuery : IRequest<GetFundMembersVm>
     {
         public string FundId { get; set; }
 
-        public class GetFundMemberQueryHandler : IRequestHandler<GetFundMembersQuery, IList<MemberDto>>
+        public class GetFundMemberQueryHandler : IRequestHandler<GetFundMembersQuery, GetFundMembersVm>
         {
             private readonly IApplicationDbContext _context;
 
@@ -22,7 +21,7 @@ namespace FinanceServices.Application.Memberships.Queries
                 _context = context;
             }
 
-            public async Task<IList<MemberDto>> Handle(GetFundMembersQuery request, CancellationToken cancellationToken)
+            public async Task<GetFundMembersVm> Handle(GetFundMembersQuery request, CancellationToken cancellationToken)
             {
                 var users = await _context.Memberships
                     .Where(x => x.FundId == request.FundId)
@@ -39,7 +38,10 @@ namespace FinanceServices.Application.Memberships.Queries
                     })
                     .ToListAsync(cancellationToken: cancellationToken);
 
-                return result;
+                return new GetFundMembersVm
+                {
+                    Members = result
+                };
             }
         }
     }

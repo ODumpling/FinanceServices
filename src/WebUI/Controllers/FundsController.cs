@@ -32,7 +32,7 @@ namespace FinanceServices.WebUI.Controllers
         }
 
         [HttpGet("{id}/Members")]
-        public async Task<IList<MemberDto>> GetFundMembers(string id)
+        public async Task<GetFundMembersVm> GetFundMembers(string id)
         {
             return await Mediator.Send(new GetFundMembersQuery
             {
