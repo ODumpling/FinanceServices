@@ -8,7 +8,7 @@ interface IProps {
   currentPage?: number;
   totalCount?: number;
   totalPages?: number;
-  onPageChange: (page: number | string) => void;
+  onPageChange: (page: number) => void;
 }
 
 export default function Pagination({
@@ -49,6 +49,20 @@ export default function Pagination({
 
     return range;
   }
+
+  function changePage(page: number | string) {
+    const current = currentPage!;
+    if (page === "..") {
+      page = current === 1 ? current : current - 2;
+    }
+
+    if (page === "...") {
+      page = current ? current : current + 3;
+    }
+
+    onPageChange(page as number);
+  }
+
   return (
     <nav className="border-t border-gray-200 px-6 flex items-center justify-between sm:px-0 my-3">
       <div className="-mt-px w-0 flex-1 flex">
@@ -69,7 +83,7 @@ export default function Pagination({
 
         {pages().map((page) => (
           <button
-            onClick={() => onPageChange(page)}
+            onClick={() => changePage(page)}
             key={page}
             className={classNames(
               currentPage === page
