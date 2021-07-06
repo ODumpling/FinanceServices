@@ -11,7 +11,7 @@ interface IProps {
   formName: string;
 }
 
-export default function Slideover({
+export default function Slider({
   children,
   title,
   description,
