@@ -1,17 +1,27 @@
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {IFundVm, IPaginatedListOfFundDto} from "../../api/web-api-client";
+import {
+    IFundsVm,
+    IFundVm, IGetFundMembersVm, IMemberDto,
+    IPaginatedListOfFundDto,
+} from "../../api/web-api-client";
 import {financeApi} from "../../api/financeApi";
+import {AppDispatch} from "../../store/store";
+import {setMembers} from "../member/memberSlice";
 
 // Define a type for the slice state
 interface FundState {
     listOfFunds: IPaginatedListOfFundDto;
     selectedFund: IFundVm;
+    members: IMemberDto[];
+    createFundSlider: {
+        isOpen: boolean
+    }
 }
 
 // Define the initial state using that type
 const initialState: FundState = {
-    listOfFunds : {
-        items : [],
+    listOfFunds: {
+        items: [],
         pageIndex: 0,
         totalPages: 0,
         totalCount: 0,
@@ -19,6 +29,10 @@ const initialState: FundState = {
         hasNextPage: false,
     },
     selectedFund: {},
+    members: [],
+    createFundSlider: {
+        isOpen: false
+    }
 };
 
 interface IPaginationProps {
@@ -50,12 +64,23 @@ export const fetchFund = createAsyncThunk(
 );
 
 export const fundsSlice = createSlice({
-    name         : "funds",
+    name: "funds",
     initialState,
-    reducers     : {
-        setFunds: function(state, action: PayloadAction<IPaginatedListOfFundDto>) {
-            state.listOfFunds = action.payload;
+    reducers: {
+        setFunds: function (state, action: PayloadAction<IFundsVm>) {
+            const {funds} = action.payload;
+            state.listOfFunds = funds!;
         },
+        setSelectedFund: function (state, action: PayloadAction<IFundVm>) {
+            state.selectedFund = action.payload;
+        },
+        setFundMembers: function (state, action: PayloadAction<IGetFundMembersVm>) {
+            const {members} = action.payload;
+            state.members = members!;
+        },
+        isCreateSliderOpen: function (state, action: PayloadAction<boolean>) {
+            state.createFundSlider.isOpen = action.payload;
+        }
     },
     extraReducers: function (builder) {
         builder.addCase(fetchFunds.fulfilled, function (state, action) {
@@ -67,6 +92,38 @@ export const fundsSlice = createSlice({
     },
 });
 
-export const {setFunds} = fundsSlice.actions;
+export const {setFunds, setSelectedFund, setFundMembers, isCreateSliderOpen} = fundsSlice.actions;
 
 export default fundsSlice.reducer;
+
+export const getFunds =
+    (page: number, size: number) => async (dispatch: AppDispatch) => {
+        try {
+            const response = await (await financeApi()).funds_ListFunds(page, size);
+
+            dispatch(setFunds(response.toJSON()));
+        } catch (e) {
+            return console.error(e.message);
+        }
+    };
+
+export const getFundById =
+    (id: string, page: number, size: number) => async (dispatch: AppDispatch) => {
+        try {
+            const response = await (await financeApi()).funds_GetFund(id, page, size);
+
+            dispatch(setSelectedFund(response.toJSON()));
+        } catch (e) {
+            return console.error(e.message);
+        }
+    };
+
+export const getFundMembers = (id: string) => async (dispatch: AppDispatch) => {
+    try {
+        const response = await (await financeApi()).funds_GetFundMembers(id);
+
+        dispatch(setFundMembers(response.toJSON()));
+    } catch (e) {
+        return console.error(e.message);
+    }
+}
