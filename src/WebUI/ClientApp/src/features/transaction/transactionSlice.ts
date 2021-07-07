@@ -1,28 +1,30 @@
-﻿import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-
+﻿import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface IState {
-    createTransactionSlider: {
-        isOpen: boolean
-    }
+  createTransactionSlider: {
+    isOpen: boolean;
+  };
 }
 
 const initialState: IState = {
-    createTransactionSlider: {
-        isOpen: false,
-    }
-}
+  createTransactionSlider: {
+    isOpen: false,
+  },
+};
 
 export const transactionSlice = createSlice({
-    name: "transactions",
-    initialState,
-    reducers: {
-        isCreateTransactionSliderOpen: function (state, action: PayloadAction<boolean>) {
-             state.createTransactionSlider.isOpen = action.payload
-        }
+  name: "transactions",
+  initialState,
+  reducers: {
+    isCreateTransactionSliderOpen: function (
+      state,
+      action: PayloadAction<boolean>
+    ) {
+      state.createTransactionSlider.isOpen = action.payload;
     },
+  },
 });
 
-export const {isCreateTransactionSliderOpen} = transactionSlice.actions;
+export const { isCreateTransactionSliderOpen } = transactionSlice.actions;
 
 export default transactionSlice.reducer;
