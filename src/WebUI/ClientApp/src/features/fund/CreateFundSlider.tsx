@@ -1,4 +1,4 @@
-﻿import { useAppDispatch, useAppSelector } from "../../hooks";
+import { useAppDispatch, useAppSelector } from "../../hooks";
 import { createFund, getFunds, isCreateFundSliderOpen } from "./fundsSlice";
 import { useForm } from "react-hook-form";
 import { ICreateFundCommand } from "../../api/web-api-client";

@@ -1,4 +1,4 @@
-﻿import Pagination from "../../components/Pagination";
+import Pagination from "../../components/Pagination";
 import React, { useState } from "react";
 import { ITransactionDto } from "../../api/web-api-client";
 import moment from "moment";

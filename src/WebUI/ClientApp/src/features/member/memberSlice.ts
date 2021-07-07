@@ -1,4 +1,4 @@
-﻿import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IMemberDto } from "../../api/web-api-client";
 import { AppDispatch } from "../../store/store";
 import { financeApi } from "../../api/financeApi";
