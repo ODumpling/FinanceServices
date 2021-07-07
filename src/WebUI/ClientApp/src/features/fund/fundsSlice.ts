@@ -1,12 +1,14 @@
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {
+    ICategoryDto,
     IFundsVm,
     IFundVm, IGetFundMembersVm, IMemberDto,
-    IPaginatedListOfFundDto,
+    IPaginatedListOfFundDto, ITransactionDto,
 } from "../../api/web-api-client";
 import {financeApi} from "../../api/financeApi";
 import {AppDispatch} from "../../store/store";
 import {setMembers} from "../member/memberSlice";
+import {string} from "zod";
 
 // Define a type for the slice state
 interface FundState {
@@ -14,7 +16,7 @@ interface FundState {
     selectedFund: IFundVm;
     members: IMemberDto[];
     createFundSlider: {
-        isOpen: boolean
+        isOpen: boolean;
     }
 }
 
@@ -28,10 +30,20 @@ const initialState: FundState = {
         hasPreviousPage: false,
         hasNextPage: false,
     },
-    selectedFund: {},
+    selectedFund: {
+        fund: {
+            id: "",
+            name: "",
+            expenses: 0,
+            income: 0,
+            balance: 0,
+            transactions: [],
+            categories: [],
+        }
+    },
     members: [],
     createFundSlider: {
-        isOpen: false
+        isOpen: false,
     }
 };
 
@@ -78,9 +90,9 @@ export const fundsSlice = createSlice({
             const {members} = action.payload;
             state.members = members!;
         },
-        isCreateSliderOpen: function (state, action: PayloadAction<boolean>) {
+        isCreateFundSliderOpen: function (state, action: PayloadAction<boolean>) {
             state.createFundSlider.isOpen = action.payload;
-        }
+        },
     },
     extraReducers: function (builder) {
         builder.addCase(fetchFunds.fulfilled, function (state, action) {
@@ -92,7 +104,7 @@ export const fundsSlice = createSlice({
     },
 });
 
-export const {setFunds, setSelectedFund, setFundMembers, isCreateSliderOpen} = fundsSlice.actions;
+export const {setFunds, setSelectedFund, setFundMembers, isCreateFundSliderOpen} = fundsSlice.actions;
 
 export default fundsSlice.reducer;
 
