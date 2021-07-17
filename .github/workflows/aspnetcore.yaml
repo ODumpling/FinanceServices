@@ -27,3 +27,20 @@ jobs:
         run: dotnet tool install --global dotnet-ef
       - name: Build with dotnet
         run: dotnet build --configuration Release FinanceServices.sln
+
+  test:
+    runs-on: ubuntu-latest
+    services:
+      sql:
+        image: mcr.microsoft.com/mssql/server
+        ports:
+          - 1433:1433
+        env:
+          SA_PASSWORD: testing123
+          ACCEPT_EULA: Y
+    steps:
+      - uses: actions/checkout@v2
+      - name: run tests
+        run: dotnet test FinanceServices.sln --configuration Release
+        env:
+          ConnectionStrings__DefaultConnection: Server=.;Database=FinanceServicesDb_test;User=sa;Password=testing123;MultipleActiveResultSets=true
