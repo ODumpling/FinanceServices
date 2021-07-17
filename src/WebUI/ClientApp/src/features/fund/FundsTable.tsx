@@ -6,11 +6,12 @@ import { IPaginatedListOfFundDto } from "../../api/web-api-client";
 interface IProps {
   funds: IPaginatedListOfFundDto;
   currentPage: (page: number) => void;
+  editFund:(id: string) => void;
 }
 
 export function FundsTable({
   funds: { items = [], totalCount, pageIndex, totalPages },
-  currentPage,
+  currentPage, editFund
 }: IProps) {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
@@ -65,9 +66,14 @@ export function FundsTable({
                         {fund.balance}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button
+                            onClick={() => editFund(fund.id!)}
+                            className="text-cyan-600 hover:text-cyan-900 font-medium">
+                          Edit
+                        </button>
                         <Link
                           to={"funds/" + fund.id}
-                          className="text-cyan-600 hover:text-cyan-900"
+                          className="text-cyan-600 hover:text-cyan-900 ml-2"
                         >
                           View
                         </Link>

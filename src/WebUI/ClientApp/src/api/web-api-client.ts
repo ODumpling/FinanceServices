@@ -7,2335 +7,1959 @@
 //----------------------
 // ReSharper disable InconsistentNaming
 
-import axios, {
-  AxiosError,
-  AxiosInstance,
-  AxiosRequestConfig,
-  AxiosResponse,
-  CancelToken,
-} from "axios";
+import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, CancelToken } from 'axios';
 
 export interface IClient {
-  funds_ListFunds(
-    pageNumber: number | undefined,
-    pageSize: number | undefined
-  ): Promise<FundsVm>;
-  funds_CreateFund(command: CreateFundCommand): Promise<string>;
-  funds_UpdateFund(command: UpdateFundCommand): Promise<FileResponse>;
-  funds_DeleteFund(command: DeleteFundCommand): Promise<FileResponse>;
-  funds_GetFund(
-    id: string | null,
-    page: number | undefined,
-    pageSize: number | undefined
-  ): Promise<FundVm>;
-  funds_GetFundMembers(id: string | null): Promise<GetFundMembersVm>;
-  funds_UploadTransactionToFund(
-    id: string | null,
-    type: string | null,
-    file: FileParameter | null | undefined
-  ): Promise<FileResponse>;
-  memberships_GetMembers(name: string | null | undefined): Promise<MemberDto[]>;
-  memberships_CreateMembership(
-    command: CreateMembershipCommand
-  ): Promise<FileResponse>;
-  memberships_DeleteMembership(
-    command: DeleteMembershipCommand
-  ): Promise<FileResponse>;
-  transactions_CreateTransaction(
-    command: CreateTransactionCommand
-  ): Promise<string>;
-  transactions_UpdateTransaction(
-    command: UpdateTransactionCommand
-  ): Promise<FileResponse>;
-  transactions_DeleteTransaction(
-    command: DeleteTransactionCommand
-  ): Promise<FileResponse>;
-  transactions_CreateTransactionSubscription(
-    command: CreateTransactionSubscription
-  ): Promise<FileResponse>;
-  transactions_ListRecurringTransactions(
-    id: string | null,
-    page: number | undefined,
-    pageSize: number | undefined
-  ): Promise<RecurringTransactionsVm>;
+    funds_ListFunds(pageNumber: number | undefined, pageSize: number | undefined): Promise<FundsVm>;
+    funds_CreateFund(command: CreateFundCommand): Promise<string>;
+    funds_UpdateFund(command: UpdateFundCommand): Promise<FileResponse>;
+    funds_DeleteFund(command: DeleteFundCommand): Promise<FileResponse>;
+    funds_GetFund(id: string | null, page: number | undefined, pageSize: number | undefined): Promise<FundVm>;
+    funds_GetFundMembers(id: string | null): Promise<GetFundMembersVm>;
+    funds_UploadTransactionToFund(id: string | null, type: string | null, file: FileParameter | null | undefined): Promise<FileResponse>;
+    memberships_GetMembers(name: string | null | undefined): Promise<MemberDto[]>;
+    memberships_CreateMembership(command: CreateMembershipCommand): Promise<FileResponse>;
+    memberships_DeleteMembership(command: DeleteMembershipCommand): Promise<FileResponse>;
+    transactions_CreateTransaction(command: CreateTransactionCommand): Promise<string>;
+    transactions_UpdateTransaction(command: UpdateTransactionCommand): Promise<FileResponse>;
+    transactions_DeleteTransaction(command: DeleteTransactionCommand): Promise<FileResponse>;
+    transactions_CreateTransactionSubscription(command: CreateTransactionSubscription): Promise<FileResponse>;
+    transactions_ListRecurringTransactions(id: string | null, page: number | undefined, pageSize: number | undefined): Promise<RecurringTransactionsVm>;
 }
 
 export class Client implements IClient {
-  private instance: AxiosInstance;
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined =
-    undefined;
+    private instance: AxiosInstance;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
-  constructor(baseUrl?: string, instance?: AxiosInstance) {
-    this.instance = instance ? instance : axios.create();
-    this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
-  }
-
-  funds_ListFunds(
-    pageNumber: number | undefined,
-    pageSize: number | undefined,
-    cancelToken?: CancelToken | undefined
-  ): Promise<FundsVm> {
-    let url_ = this.baseUrl + "/api/Funds?";
-    if (pageNumber === null)
-      throw new Error("The parameter 'pageNumber' cannot be null.");
-    else if (pageNumber !== undefined)
-      url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
-    if (pageSize === null)
-      throw new Error("The parameter 'pageSize' cannot be null.");
-    else if (pageSize !== undefined)
-      url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
-    url_ = url_.replace(/[?&]$/, "");
-
-    let options_ = <AxiosRequestConfig>{
-      method: "GET",
-      url: url_,
-      headers: {
-        Accept: "application/json",
-      },
-      cancelToken,
-    };
-
-    return this.instance
-      .request(options_)
-      .catch((_error: any) => {
-        if (isAxiosError(_error) && _error.response) {
-          return _error.response;
-        } else {
-          throw _error;
-        }
-      })
-      .then((_response: AxiosResponse) => {
-        return this.processFunds_ListFunds(_response);
-      });
-  }
-
-  protected processFunds_ListFunds(response: AxiosResponse): Promise<FundsVm> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && typeof response.headers === "object") {
-      for (let k in response.headers) {
-        if (response.headers.hasOwnProperty(k)) {
-          _headers[k] = response.headers[k];
-        }
-      }
+    constructor(baseUrl?: string, instance?: AxiosInstance) {
+        this.instance = instance ? instance : axios.create();
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
-    if (status === 200) {
-      const _responseText = response.data;
-      let result200: any = null;
-      let resultData200 = _responseText;
-      result200 = FundsVm.fromJS(resultData200);
-      return result200;
-    } else if (status !== 200 && status !== 204) {
-      const _responseText = response.data;
-      return throwException(
-        "An unexpected server error occurred.",
-        status,
-        _responseText,
-        _headers
-      );
+
+    funds_ListFunds(pageNumber: number | undefined, pageSize: number | undefined , cancelToken?: CancelToken | undefined): Promise<FundsVm> {
+        let url_ = this.baseUrl + "/api/Funds?";
+        if (pageNumber === null)
+            throw new Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <AxiosRequestConfig>{
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "application/json"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processFunds_ListFunds(_response);
+        });
     }
-    return Promise.resolve<FundsVm>(<any>null);
-  }
 
-  funds_CreateFund(
-    command: CreateFundCommand,
-    cancelToken?: CancelToken | undefined
-  ): Promise<string> {
-    let url_ = this.baseUrl + "/api/Funds";
-    url_ = url_.replace(/[?&]$/, "");
-
-    const content_ = JSON.stringify(command);
-
-    let options_ = <AxiosRequestConfig>{
-      data: content_,
-      method: "POST",
-      url: url_,
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      cancelToken,
-    };
-
-    return this.instance
-      .request(options_)
-      .catch((_error: any) => {
-        if (isAxiosError(_error) && _error.response) {
-          return _error.response;
-        } else {
-          throw _error;
+    protected processFunds_ListFunds(response: AxiosResponse): Promise<FundsVm> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
         }
-      })
-      .then((_response: AxiosResponse) => {
-        return this.processFunds_CreateFund(_response);
-      });
-  }
-
-  protected processFunds_CreateFund(response: AxiosResponse): Promise<string> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && typeof response.headers === "object") {
-      for (let k in response.headers) {
-        if (response.headers.hasOwnProperty(k)) {
-          _headers[k] = response.headers[k];
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = FundsVm.fromJS(resultData200);
+            return result200;
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-      }
+        return Promise.resolve<FundsVm>(<any>null);
     }
-    if (status === 200) {
-      const _responseText = response.data;
-      let result200: any = null;
-      let resultData200 = _responseText;
-      result200 = resultData200 !== undefined ? resultData200 : <any>null;
-      return result200;
-    } else if (status !== 200 && status !== 204) {
-      const _responseText = response.data;
-      return throwException(
-        "An unexpected server error occurred.",
-        status,
-        _responseText,
-        _headers
-      );
+
+    funds_CreateFund(command: CreateFundCommand , cancelToken?: CancelToken | undefined): Promise<string> {
+        let url_ = this.baseUrl + "/api/Funds";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <AxiosRequestConfig>{
+            data: content_,
+            method: "POST",
+            url: url_,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processFunds_CreateFund(_response);
+        });
     }
-    return Promise.resolve<string>(<any>null);
-  }
 
-  funds_UpdateFund(
-    command: UpdateFundCommand,
-    cancelToken?: CancelToken | undefined
-  ): Promise<FileResponse> {
-    let url_ = this.baseUrl + "/api/Funds";
-    url_ = url_.replace(/[?&]$/, "");
-
-    const content_ = JSON.stringify(command);
-
-    let options_ = <AxiosRequestConfig>{
-      data: content_,
-      responseType: "blob",
-      method: "PATCH",
-      url: url_,
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/octet-stream",
-      },
-      cancelToken,
-    };
-
-    return this.instance
-      .request(options_)
-      .catch((_error: any) => {
-        if (isAxiosError(_error) && _error.response) {
-          return _error.response;
-        } else {
-          throw _error;
+    protected processFunds_CreateFund(response: AxiosResponse): Promise<string> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
         }
-      })
-      .then((_response: AxiosResponse) => {
-        return this.processFunds_UpdateFund(_response);
-      });
-  }
-
-  protected processFunds_UpdateFund(
-    response: AxiosResponse
-  ): Promise<FileResponse> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && typeof response.headers === "object") {
-      for (let k in response.headers) {
-        if (response.headers.hasOwnProperty(k)) {
-          _headers[k] = response.headers[k];
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-      }
+        return Promise.resolve<string>(<any>null);
     }
-    if (status === 200 || status === 206) {
-      const contentDisposition = response.headers
-        ? response.headers["content-disposition"]
-        : undefined;
-      const fileNameMatch = contentDisposition
-        ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition)
-        : undefined;
-      const fileName =
-        fileNameMatch && fileNameMatch.length > 1
-          ? fileNameMatch[1]
-          : undefined;
-      return Promise.resolve({
-        fileName: fileName,
-        status: status,
-        data: response.data as Blob,
-        headers: _headers,
-      });
-    } else if (status !== 200 && status !== 204) {
-      const _responseText = response.data;
-      return throwException(
-        "An unexpected server error occurred.",
-        status,
-        _responseText,
-        _headers
-      );
+
+    funds_UpdateFund(command: UpdateFundCommand , cancelToken?: CancelToken | undefined): Promise<FileResponse> {
+        let url_ = this.baseUrl + "/api/Funds";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <AxiosRequestConfig>{
+            data: content_,
+            responseType: "blob",
+            method: "PATCH",
+            url: url_,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/octet-stream"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processFunds_UpdateFund(_response);
+        });
     }
-    return Promise.resolve<FileResponse>(<any>null);
-  }
 
-  funds_DeleteFund(
-    command: DeleteFundCommand,
-    cancelToken?: CancelToken | undefined
-  ): Promise<FileResponse> {
-    let url_ = this.baseUrl + "/api/Funds";
-    url_ = url_.replace(/[?&]$/, "");
-
-    const content_ = JSON.stringify(command);
-
-    let options_ = <AxiosRequestConfig>{
-      data: content_,
-      responseType: "blob",
-      method: "DELETE",
-      url: url_,
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/octet-stream",
-      },
-      cancelToken,
-    };
-
-    return this.instance
-      .request(options_)
-      .catch((_error: any) => {
-        if (isAxiosError(_error) && _error.response) {
-          return _error.response;
-        } else {
-          throw _error;
+    protected processFunds_UpdateFund(response: AxiosResponse): Promise<FileResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
         }
-      })
-      .then((_response: AxiosResponse) => {
-        return this.processFunds_DeleteFund(_response);
-      });
-  }
-
-  protected processFunds_DeleteFund(
-    response: AxiosResponse
-  ): Promise<FileResponse> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && typeof response.headers === "object") {
-      for (let k in response.headers) {
-        if (response.headers.hasOwnProperty(k)) {
-          _headers[k] = response.headers[k];
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers["content-disposition"] : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return Promise.resolve({ fileName: fileName, status: status, data: response.data as Blob, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-      }
+        return Promise.resolve<FileResponse>(<any>null);
     }
-    if (status === 200 || status === 206) {
-      const contentDisposition = response.headers
-        ? response.headers["content-disposition"]
-        : undefined;
-      const fileNameMatch = contentDisposition
-        ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition)
-        : undefined;
-      const fileName =
-        fileNameMatch && fileNameMatch.length > 1
-          ? fileNameMatch[1]
-          : undefined;
-      return Promise.resolve({
-        fileName: fileName,
-        status: status,
-        data: response.data as Blob,
-        headers: _headers,
-      });
-    } else if (status !== 200 && status !== 204) {
-      const _responseText = response.data;
-      return throwException(
-        "An unexpected server error occurred.",
-        status,
-        _responseText,
-        _headers
-      );
+
+    funds_DeleteFund(command: DeleteFundCommand , cancelToken?: CancelToken | undefined): Promise<FileResponse> {
+        let url_ = this.baseUrl + "/api/Funds";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <AxiosRequestConfig>{
+            data: content_,
+            responseType: "blob",
+            method: "DELETE",
+            url: url_,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/octet-stream"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processFunds_DeleteFund(_response);
+        });
     }
-    return Promise.resolve<FileResponse>(<any>null);
-  }
 
-  funds_GetFund(
-    id: string | null,
-    page: number | undefined,
-    pageSize: number | undefined,
-    cancelToken?: CancelToken | undefined
-  ): Promise<FundVm> {
-    let url_ = this.baseUrl + "/api/Funds/{id}?";
-    if (id === undefined || id === null)
-      throw new Error("The parameter 'id' must be defined.");
-    url_ = url_.replace("{id}", encodeURIComponent("" + id));
-    if (page === null) throw new Error("The parameter 'page' cannot be null.");
-    else if (page !== undefined)
-      url_ += "page=" + encodeURIComponent("" + page) + "&";
-    if (pageSize === null)
-      throw new Error("The parameter 'pageSize' cannot be null.");
-    else if (pageSize !== undefined)
-      url_ += "pageSize=" + encodeURIComponent("" + pageSize) + "&";
-    url_ = url_.replace(/[?&]$/, "");
-
-    let options_ = <AxiosRequestConfig>{
-      method: "GET",
-      url: url_,
-      headers: {
-        Accept: "application/json",
-      },
-      cancelToken,
-    };
-
-    return this.instance
-      .request(options_)
-      .catch((_error: any) => {
-        if (isAxiosError(_error) && _error.response) {
-          return _error.response;
-        } else {
-          throw _error;
+    protected processFunds_DeleteFund(response: AxiosResponse): Promise<FileResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
         }
-      })
-      .then((_response: AxiosResponse) => {
-        return this.processFunds_GetFund(_response);
-      });
-  }
-
-  protected processFunds_GetFund(response: AxiosResponse): Promise<FundVm> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && typeof response.headers === "object") {
-      for (let k in response.headers) {
-        if (response.headers.hasOwnProperty(k)) {
-          _headers[k] = response.headers[k];
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers["content-disposition"] : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return Promise.resolve({ fileName: fileName, status: status, data: response.data as Blob, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-      }
+        return Promise.resolve<FileResponse>(<any>null);
     }
-    if (status === 200) {
-      const _responseText = response.data;
-      let result200: any = null;
-      let resultData200 = _responseText;
-      result200 = FundVm.fromJS(resultData200);
-      return result200;
-    } else if (status !== 200 && status !== 204) {
-      const _responseText = response.data;
-      return throwException(
-        "An unexpected server error occurred.",
-        status,
-        _responseText,
-        _headers
-      );
+
+    funds_GetFund(id: string | null, page: number | undefined, pageSize: number | undefined , cancelToken?: CancelToken | undefined): Promise<FundVm> {
+        let url_ = this.baseUrl + "/api/Funds/{id}?";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (page === null)
+            throw new Error("The parameter 'page' cannot be null.");
+        else if (page !== undefined)
+            url_ += "page=" + encodeURIComponent("" + page) + "&";
+        if (pageSize === null)
+            throw new Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "pageSize=" + encodeURIComponent("" + pageSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <AxiosRequestConfig>{
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "application/json"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processFunds_GetFund(_response);
+        });
     }
-    return Promise.resolve<FundVm>(<any>null);
-  }
 
-  funds_GetFundMembers(
-    id: string | null,
-    cancelToken?: CancelToken | undefined
-  ): Promise<GetFundMembersVm> {
-    let url_ = this.baseUrl + "/api/Funds/{id}/Members";
-    if (id === undefined || id === null)
-      throw new Error("The parameter 'id' must be defined.");
-    url_ = url_.replace("{id}", encodeURIComponent("" + id));
-    url_ = url_.replace(/[?&]$/, "");
-
-    let options_ = <AxiosRequestConfig>{
-      method: "GET",
-      url: url_,
-      headers: {
-        Accept: "application/json",
-      },
-      cancelToken,
-    };
-
-    return this.instance
-      .request(options_)
-      .catch((_error: any) => {
-        if (isAxiosError(_error) && _error.response) {
-          return _error.response;
-        } else {
-          throw _error;
+    protected processFunds_GetFund(response: AxiosResponse): Promise<FundVm> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
         }
-      })
-      .then((_response: AxiosResponse) => {
-        return this.processFunds_GetFundMembers(_response);
-      });
-  }
-
-  protected processFunds_GetFundMembers(
-    response: AxiosResponse
-  ): Promise<GetFundMembersVm> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && typeof response.headers === "object") {
-      for (let k in response.headers) {
-        if (response.headers.hasOwnProperty(k)) {
-          _headers[k] = response.headers[k];
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = FundVm.fromJS(resultData200);
+            return result200;
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-      }
+        return Promise.resolve<FundVm>(<any>null);
     }
-    if (status === 200) {
-      const _responseText = response.data;
-      let result200: any = null;
-      let resultData200 = _responseText;
-      result200 = GetFundMembersVm.fromJS(resultData200);
-      return result200;
-    } else if (status !== 200 && status !== 204) {
-      const _responseText = response.data;
-      return throwException(
-        "An unexpected server error occurred.",
-        status,
-        _responseText,
-        _headers
-      );
+
+    funds_GetFundMembers(id: string | null , cancelToken?: CancelToken | undefined): Promise<GetFundMembersVm> {
+        let url_ = this.baseUrl + "/api/Funds/{id}/Members";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <AxiosRequestConfig>{
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "application/json"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processFunds_GetFundMembers(_response);
+        });
     }
-    return Promise.resolve<GetFundMembersVm>(<any>null);
-  }
 
-  funds_UploadTransactionToFund(
-    id: string | null,
-    type: string | null,
-    file: FileParameter | null | undefined,
-    cancelToken?: CancelToken | undefined
-  ): Promise<FileResponse> {
-    let url_ = this.baseUrl + "/api/Funds/{id}/Upload/{type}";
-    if (id === undefined || id === null)
-      throw new Error("The parameter 'id' must be defined.");
-    url_ = url_.replace("{id}", encodeURIComponent("" + id));
-    if (type === undefined || type === null)
-      throw new Error("The parameter 'type' must be defined.");
-    url_ = url_.replace("{type}", encodeURIComponent("" + type));
-    url_ = url_.replace(/[?&]$/, "");
-
-    const content_ = new FormData();
-    if (file !== null && file !== undefined)
-      content_.append(
-        "file",
-        file.data,
-        file.fileName ? file.fileName : "file"
-      );
-
-    let options_ = <AxiosRequestConfig>{
-      data: content_,
-      responseType: "blob",
-      method: "POST",
-      url: url_,
-      headers: {
-        Accept: "application/octet-stream",
-      },
-      cancelToken,
-    };
-
-    return this.instance
-      .request(options_)
-      .catch((_error: any) => {
-        if (isAxiosError(_error) && _error.response) {
-          return _error.response;
-        } else {
-          throw _error;
+    protected processFunds_GetFundMembers(response: AxiosResponse): Promise<GetFundMembersVm> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
         }
-      })
-      .then((_response: AxiosResponse) => {
-        return this.processFunds_UploadTransactionToFund(_response);
-      });
-  }
-
-  protected processFunds_UploadTransactionToFund(
-    response: AxiosResponse
-  ): Promise<FileResponse> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && typeof response.headers === "object") {
-      for (let k in response.headers) {
-        if (response.headers.hasOwnProperty(k)) {
-          _headers[k] = response.headers[k];
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = GetFundMembersVm.fromJS(resultData200);
+            return result200;
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-      }
+        return Promise.resolve<GetFundMembersVm>(<any>null);
     }
-    if (status === 200 || status === 206) {
-      const contentDisposition = response.headers
-        ? response.headers["content-disposition"]
-        : undefined;
-      const fileNameMatch = contentDisposition
-        ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition)
-        : undefined;
-      const fileName =
-        fileNameMatch && fileNameMatch.length > 1
-          ? fileNameMatch[1]
-          : undefined;
-      return Promise.resolve({
-        fileName: fileName,
-        status: status,
-        data: response.data as Blob,
-        headers: _headers,
-      });
-    } else if (status !== 200 && status !== 204) {
-      const _responseText = response.data;
-      return throwException(
-        "An unexpected server error occurred.",
-        status,
-        _responseText,
-        _headers
-      );
+
+    funds_UploadTransactionToFund(id: string | null, type: string | null, file: FileParameter | null | undefined , cancelToken?: CancelToken | undefined): Promise<FileResponse> {
+        let url_ = this.baseUrl + "/api/Funds/{id}/Upload/{type}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (type === undefined || type === null)
+            throw new Error("The parameter 'type' must be defined.");
+        url_ = url_.replace("{type}", encodeURIComponent("" + type));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = new FormData();
+        if (file !== null && file !== undefined)
+            content_.append("file", file.data, file.fileName ? file.fileName : "file");
+
+        let options_ = <AxiosRequestConfig>{
+            data: content_,
+            responseType: "blob",
+            method: "POST",
+            url: url_,
+            headers: {
+                "Accept": "application/octet-stream"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processFunds_UploadTransactionToFund(_response);
+        });
     }
-    return Promise.resolve<FileResponse>(<any>null);
-  }
 
-  memberships_GetMembers(
-    name: string | null | undefined,
-    cancelToken?: CancelToken | undefined
-  ): Promise<MemberDto[]> {
-    let url_ = this.baseUrl + "/api/Memberships?";
-    if (name !== undefined && name !== null)
-      url_ += "Name=" + encodeURIComponent("" + name) + "&";
-    url_ = url_.replace(/[?&]$/, "");
-
-    let options_ = <AxiosRequestConfig>{
-      method: "GET",
-      url: url_,
-      headers: {
-        Accept: "application/json",
-      },
-      cancelToken,
-    };
-
-    return this.instance
-      .request(options_)
-      .catch((_error: any) => {
-        if (isAxiosError(_error) && _error.response) {
-          return _error.response;
-        } else {
-          throw _error;
+    protected processFunds_UploadTransactionToFund(response: AxiosResponse): Promise<FileResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
         }
-      })
-      .then((_response: AxiosResponse) => {
-        return this.processMemberships_GetMembers(_response);
-      });
-  }
-
-  protected processMemberships_GetMembers(
-    response: AxiosResponse
-  ): Promise<MemberDto[]> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && typeof response.headers === "object") {
-      for (let k in response.headers) {
-        if (response.headers.hasOwnProperty(k)) {
-          _headers[k] = response.headers[k];
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers["content-disposition"] : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return Promise.resolve({ fileName: fileName, status: status, data: response.data as Blob, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-      }
+        return Promise.resolve<FileResponse>(<any>null);
     }
-    if (status === 200) {
-      const _responseText = response.data;
-      let result200: any = null;
-      let resultData200 = _responseText;
-      if (Array.isArray(resultData200)) {
-        result200 = [] as any;
-        for (let item of resultData200) result200!.push(MemberDto.fromJS(item));
-      } else {
-        result200 = <any>null;
-      }
-      return result200;
-    } else if (status !== 200 && status !== 204) {
-      const _responseText = response.data;
-      return throwException(
-        "An unexpected server error occurred.",
-        status,
-        _responseText,
-        _headers
-      );
+
+    memberships_GetMembers(name: string | null | undefined , cancelToken?: CancelToken | undefined): Promise<MemberDto[]> {
+        let url_ = this.baseUrl + "/api/Memberships?";
+        if (name !== undefined && name !== null)
+            url_ += "Name=" + encodeURIComponent("" + name) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <AxiosRequestConfig>{
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "application/json"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processMemberships_GetMembers(_response);
+        });
     }
-    return Promise.resolve<MemberDto[]>(<any>null);
-  }
 
-  memberships_CreateMembership(
-    command: CreateMembershipCommand,
-    cancelToken?: CancelToken | undefined
-  ): Promise<FileResponse> {
-    let url_ = this.baseUrl + "/api/Memberships";
-    url_ = url_.replace(/[?&]$/, "");
-
-    const content_ = JSON.stringify(command);
-
-    let options_ = <AxiosRequestConfig>{
-      data: content_,
-      responseType: "blob",
-      method: "POST",
-      url: url_,
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/octet-stream",
-      },
-      cancelToken,
-    };
-
-    return this.instance
-      .request(options_)
-      .catch((_error: any) => {
-        if (isAxiosError(_error) && _error.response) {
-          return _error.response;
-        } else {
-          throw _error;
+    protected processMemberships_GetMembers(response: AxiosResponse): Promise<MemberDto[]> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
         }
-      })
-      .then((_response: AxiosResponse) => {
-        return this.processMemberships_CreateMembership(_response);
-      });
-  }
-
-  protected processMemberships_CreateMembership(
-    response: AxiosResponse
-  ): Promise<FileResponse> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && typeof response.headers === "object") {
-      for (let k in response.headers) {
-        if (response.headers.hasOwnProperty(k)) {
-          _headers[k] = response.headers[k];
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(MemberDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-      }
+        return Promise.resolve<MemberDto[]>(<any>null);
     }
-    if (status === 200 || status === 206) {
-      const contentDisposition = response.headers
-        ? response.headers["content-disposition"]
-        : undefined;
-      const fileNameMatch = contentDisposition
-        ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition)
-        : undefined;
-      const fileName =
-        fileNameMatch && fileNameMatch.length > 1
-          ? fileNameMatch[1]
-          : undefined;
-      return Promise.resolve({
-        fileName: fileName,
-        status: status,
-        data: response.data as Blob,
-        headers: _headers,
-      });
-    } else if (status !== 200 && status !== 204) {
-      const _responseText = response.data;
-      return throwException(
-        "An unexpected server error occurred.",
-        status,
-        _responseText,
-        _headers
-      );
+
+    memberships_CreateMembership(command: CreateMembershipCommand , cancelToken?: CancelToken | undefined): Promise<FileResponse> {
+        let url_ = this.baseUrl + "/api/Memberships";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <AxiosRequestConfig>{
+            data: content_,
+            responseType: "blob",
+            method: "POST",
+            url: url_,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/octet-stream"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processMemberships_CreateMembership(_response);
+        });
     }
-    return Promise.resolve<FileResponse>(<any>null);
-  }
 
-  memberships_DeleteMembership(
-    command: DeleteMembershipCommand,
-    cancelToken?: CancelToken | undefined
-  ): Promise<FileResponse> {
-    let url_ = this.baseUrl + "/api/Memberships";
-    url_ = url_.replace(/[?&]$/, "");
-
-    const content_ = JSON.stringify(command);
-
-    let options_ = <AxiosRequestConfig>{
-      data: content_,
-      responseType: "blob",
-      method: "DELETE",
-      url: url_,
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/octet-stream",
-      },
-      cancelToken,
-    };
-
-    return this.instance
-      .request(options_)
-      .catch((_error: any) => {
-        if (isAxiosError(_error) && _error.response) {
-          return _error.response;
-        } else {
-          throw _error;
+    protected processMemberships_CreateMembership(response: AxiosResponse): Promise<FileResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
         }
-      })
-      .then((_response: AxiosResponse) => {
-        return this.processMemberships_DeleteMembership(_response);
-      });
-  }
-
-  protected processMemberships_DeleteMembership(
-    response: AxiosResponse
-  ): Promise<FileResponse> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && typeof response.headers === "object") {
-      for (let k in response.headers) {
-        if (response.headers.hasOwnProperty(k)) {
-          _headers[k] = response.headers[k];
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers["content-disposition"] : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return Promise.resolve({ fileName: fileName, status: status, data: response.data as Blob, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-      }
+        return Promise.resolve<FileResponse>(<any>null);
     }
-    if (status === 200 || status === 206) {
-      const contentDisposition = response.headers
-        ? response.headers["content-disposition"]
-        : undefined;
-      const fileNameMatch = contentDisposition
-        ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition)
-        : undefined;
-      const fileName =
-        fileNameMatch && fileNameMatch.length > 1
-          ? fileNameMatch[1]
-          : undefined;
-      return Promise.resolve({
-        fileName: fileName,
-        status: status,
-        data: response.data as Blob,
-        headers: _headers,
-      });
-    } else if (status !== 200 && status !== 204) {
-      const _responseText = response.data;
-      return throwException(
-        "An unexpected server error occurred.",
-        status,
-        _responseText,
-        _headers
-      );
+
+    memberships_DeleteMembership(command: DeleteMembershipCommand , cancelToken?: CancelToken | undefined): Promise<FileResponse> {
+        let url_ = this.baseUrl + "/api/Memberships";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <AxiosRequestConfig>{
+            data: content_,
+            responseType: "blob",
+            method: "DELETE",
+            url: url_,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/octet-stream"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processMemberships_DeleteMembership(_response);
+        });
     }
-    return Promise.resolve<FileResponse>(<any>null);
-  }
 
-  transactions_CreateTransaction(
-    command: CreateTransactionCommand,
-    cancelToken?: CancelToken | undefined
-  ): Promise<string> {
-    let url_ = this.baseUrl + "/api/Transactions";
-    url_ = url_.replace(/[?&]$/, "");
-
-    const content_ = JSON.stringify(command);
-
-    let options_ = <AxiosRequestConfig>{
-      data: content_,
-      method: "POST",
-      url: url_,
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      cancelToken,
-    };
-
-    return this.instance
-      .request(options_)
-      .catch((_error: any) => {
-        if (isAxiosError(_error) && _error.response) {
-          return _error.response;
-        } else {
-          throw _error;
+    protected processMemberships_DeleteMembership(response: AxiosResponse): Promise<FileResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
         }
-      })
-      .then((_response: AxiosResponse) => {
-        return this.processTransactions_CreateTransaction(_response);
-      });
-  }
-
-  protected processTransactions_CreateTransaction(
-    response: AxiosResponse
-  ): Promise<string> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && typeof response.headers === "object") {
-      for (let k in response.headers) {
-        if (response.headers.hasOwnProperty(k)) {
-          _headers[k] = response.headers[k];
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers["content-disposition"] : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return Promise.resolve({ fileName: fileName, status: status, data: response.data as Blob, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-      }
+        return Promise.resolve<FileResponse>(<any>null);
     }
-    if (status === 200) {
-      const _responseText = response.data;
-      let result200: any = null;
-      let resultData200 = _responseText;
-      result200 = resultData200 !== undefined ? resultData200 : <any>null;
-      return result200;
-    } else if (status !== 200 && status !== 204) {
-      const _responseText = response.data;
-      return throwException(
-        "An unexpected server error occurred.",
-        status,
-        _responseText,
-        _headers
-      );
+
+    transactions_CreateTransaction(command: CreateTransactionCommand , cancelToken?: CancelToken | undefined): Promise<string> {
+        let url_ = this.baseUrl + "/api/Transactions";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <AxiosRequestConfig>{
+            data: content_,
+            method: "POST",
+            url: url_,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processTransactions_CreateTransaction(_response);
+        });
     }
-    return Promise.resolve<string>(<any>null);
-  }
 
-  transactions_UpdateTransaction(
-    command: UpdateTransactionCommand,
-    cancelToken?: CancelToken | undefined
-  ): Promise<FileResponse> {
-    let url_ = this.baseUrl + "/api/Transactions";
-    url_ = url_.replace(/[?&]$/, "");
-
-    const content_ = JSON.stringify(command);
-
-    let options_ = <AxiosRequestConfig>{
-      data: content_,
-      responseType: "blob",
-      method: "PATCH",
-      url: url_,
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/octet-stream",
-      },
-      cancelToken,
-    };
-
-    return this.instance
-      .request(options_)
-      .catch((_error: any) => {
-        if (isAxiosError(_error) && _error.response) {
-          return _error.response;
-        } else {
-          throw _error;
+    protected processTransactions_CreateTransaction(response: AxiosResponse): Promise<string> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
         }
-      })
-      .then((_response: AxiosResponse) => {
-        return this.processTransactions_UpdateTransaction(_response);
-      });
-  }
-
-  protected processTransactions_UpdateTransaction(
-    response: AxiosResponse
-  ): Promise<FileResponse> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && typeof response.headers === "object") {
-      for (let k in response.headers) {
-        if (response.headers.hasOwnProperty(k)) {
-          _headers[k] = response.headers[k];
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-      }
+        return Promise.resolve<string>(<any>null);
     }
-    if (status === 200 || status === 206) {
-      const contentDisposition = response.headers
-        ? response.headers["content-disposition"]
-        : undefined;
-      const fileNameMatch = contentDisposition
-        ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition)
-        : undefined;
-      const fileName =
-        fileNameMatch && fileNameMatch.length > 1
-          ? fileNameMatch[1]
-          : undefined;
-      return Promise.resolve({
-        fileName: fileName,
-        status: status,
-        data: response.data as Blob,
-        headers: _headers,
-      });
-    } else if (status !== 200 && status !== 204) {
-      const _responseText = response.data;
-      return throwException(
-        "An unexpected server error occurred.",
-        status,
-        _responseText,
-        _headers
-      );
+
+    transactions_UpdateTransaction(command: UpdateTransactionCommand , cancelToken?: CancelToken | undefined): Promise<FileResponse> {
+        let url_ = this.baseUrl + "/api/Transactions";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <AxiosRequestConfig>{
+            data: content_,
+            responseType: "blob",
+            method: "PATCH",
+            url: url_,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/octet-stream"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processTransactions_UpdateTransaction(_response);
+        });
     }
-    return Promise.resolve<FileResponse>(<any>null);
-  }
 
-  transactions_DeleteTransaction(
-    command: DeleteTransactionCommand,
-    cancelToken?: CancelToken | undefined
-  ): Promise<FileResponse> {
-    let url_ = this.baseUrl + "/api/Transactions";
-    url_ = url_.replace(/[?&]$/, "");
-
-    const content_ = JSON.stringify(command);
-
-    let options_ = <AxiosRequestConfig>{
-      data: content_,
-      responseType: "blob",
-      method: "DELETE",
-      url: url_,
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/octet-stream",
-      },
-      cancelToken,
-    };
-
-    return this.instance
-      .request(options_)
-      .catch((_error: any) => {
-        if (isAxiosError(_error) && _error.response) {
-          return _error.response;
-        } else {
-          throw _error;
+    protected processTransactions_UpdateTransaction(response: AxiosResponse): Promise<FileResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
         }
-      })
-      .then((_response: AxiosResponse) => {
-        return this.processTransactions_DeleteTransaction(_response);
-      });
-  }
-
-  protected processTransactions_DeleteTransaction(
-    response: AxiosResponse
-  ): Promise<FileResponse> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && typeof response.headers === "object") {
-      for (let k in response.headers) {
-        if (response.headers.hasOwnProperty(k)) {
-          _headers[k] = response.headers[k];
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers["content-disposition"] : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return Promise.resolve({ fileName: fileName, status: status, data: response.data as Blob, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-      }
+        return Promise.resolve<FileResponse>(<any>null);
     }
-    if (status === 200 || status === 206) {
-      const contentDisposition = response.headers
-        ? response.headers["content-disposition"]
-        : undefined;
-      const fileNameMatch = contentDisposition
-        ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition)
-        : undefined;
-      const fileName =
-        fileNameMatch && fileNameMatch.length > 1
-          ? fileNameMatch[1]
-          : undefined;
-      return Promise.resolve({
-        fileName: fileName,
-        status: status,
-        data: response.data as Blob,
-        headers: _headers,
-      });
-    } else if (status !== 200 && status !== 204) {
-      const _responseText = response.data;
-      return throwException(
-        "An unexpected server error occurred.",
-        status,
-        _responseText,
-        _headers
-      );
+
+    transactions_DeleteTransaction(command: DeleteTransactionCommand , cancelToken?: CancelToken | undefined): Promise<FileResponse> {
+        let url_ = this.baseUrl + "/api/Transactions";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <AxiosRequestConfig>{
+            data: content_,
+            responseType: "blob",
+            method: "DELETE",
+            url: url_,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/octet-stream"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processTransactions_DeleteTransaction(_response);
+        });
     }
-    return Promise.resolve<FileResponse>(<any>null);
-  }
 
-  transactions_CreateTransactionSubscription(
-    command: CreateTransactionSubscription,
-    cancelToken?: CancelToken | undefined
-  ): Promise<FileResponse> {
-    let url_ = this.baseUrl + "/api/Transactions/subscription";
-    url_ = url_.replace(/[?&]$/, "");
-
-    const content_ = JSON.stringify(command);
-
-    let options_ = <AxiosRequestConfig>{
-      data: content_,
-      responseType: "blob",
-      method: "POST",
-      url: url_,
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/octet-stream",
-      },
-      cancelToken,
-    };
-
-    return this.instance
-      .request(options_)
-      .catch((_error: any) => {
-        if (isAxiosError(_error) && _error.response) {
-          return _error.response;
-        } else {
-          throw _error;
+    protected processTransactions_DeleteTransaction(response: AxiosResponse): Promise<FileResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
         }
-      })
-      .then((_response: AxiosResponse) => {
-        return this.processTransactions_CreateTransactionSubscription(
-          _response
-        );
-      });
-  }
-
-  protected processTransactions_CreateTransactionSubscription(
-    response: AxiosResponse
-  ): Promise<FileResponse> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && typeof response.headers === "object") {
-      for (let k in response.headers) {
-        if (response.headers.hasOwnProperty(k)) {
-          _headers[k] = response.headers[k];
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers["content-disposition"] : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return Promise.resolve({ fileName: fileName, status: status, data: response.data as Blob, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-      }
+        return Promise.resolve<FileResponse>(<any>null);
     }
-    if (status === 200 || status === 206) {
-      const contentDisposition = response.headers
-        ? response.headers["content-disposition"]
-        : undefined;
-      const fileNameMatch = contentDisposition
-        ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition)
-        : undefined;
-      const fileName =
-        fileNameMatch && fileNameMatch.length > 1
-          ? fileNameMatch[1]
-          : undefined;
-      return Promise.resolve({
-        fileName: fileName,
-        status: status,
-        data: response.data as Blob,
-        headers: _headers,
-      });
-    } else if (status !== 200 && status !== 204) {
-      const _responseText = response.data;
-      return throwException(
-        "An unexpected server error occurred.",
-        status,
-        _responseText,
-        _headers
-      );
+
+    transactions_CreateTransactionSubscription(command: CreateTransactionSubscription , cancelToken?: CancelToken | undefined): Promise<FileResponse> {
+        let url_ = this.baseUrl + "/api/Transactions/subscription";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <AxiosRequestConfig>{
+            data: content_,
+            responseType: "blob",
+            method: "POST",
+            url: url_,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/octet-stream"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processTransactions_CreateTransactionSubscription(_response);
+        });
     }
-    return Promise.resolve<FileResponse>(<any>null);
-  }
 
-  transactions_ListRecurringTransactions(
-    id: string | null,
-    page: number | undefined,
-    pageSize: number | undefined,
-    cancelToken?: CancelToken | undefined
-  ): Promise<RecurringTransactionsVm> {
-    let url_ = this.baseUrl + "/api/Transactions/subscriptions/{id}?";
-    if (id === undefined || id === null)
-      throw new Error("The parameter 'id' must be defined.");
-    url_ = url_.replace("{id}", encodeURIComponent("" + id));
-    if (page === null) throw new Error("The parameter 'page' cannot be null.");
-    else if (page !== undefined)
-      url_ += "page=" + encodeURIComponent("" + page) + "&";
-    if (pageSize === null)
-      throw new Error("The parameter 'pageSize' cannot be null.");
-    else if (pageSize !== undefined)
-      url_ += "pageSize=" + encodeURIComponent("" + pageSize) + "&";
-    url_ = url_.replace(/[?&]$/, "");
-
-    let options_ = <AxiosRequestConfig>{
-      method: "GET",
-      url: url_,
-      headers: {
-        Accept: "application/json",
-      },
-      cancelToken,
-    };
-
-    return this.instance
-      .request(options_)
-      .catch((_error: any) => {
-        if (isAxiosError(_error) && _error.response) {
-          return _error.response;
-        } else {
-          throw _error;
+    protected processTransactions_CreateTransactionSubscription(response: AxiosResponse): Promise<FileResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
         }
-      })
-      .then((_response: AxiosResponse) => {
-        return this.processTransactions_ListRecurringTransactions(_response);
-      });
-  }
-
-  protected processTransactions_ListRecurringTransactions(
-    response: AxiosResponse
-  ): Promise<RecurringTransactionsVm> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && typeof response.headers === "object") {
-      for (let k in response.headers) {
-        if (response.headers.hasOwnProperty(k)) {
-          _headers[k] = response.headers[k];
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers["content-disposition"] : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return Promise.resolve({ fileName: fileName, status: status, data: response.data as Blob, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-      }
+        return Promise.resolve<FileResponse>(<any>null);
     }
-    if (status === 200) {
-      const _responseText = response.data;
-      let result200: any = null;
-      let resultData200 = _responseText;
-      result200 = RecurringTransactionsVm.fromJS(resultData200);
-      return result200;
-    } else if (status !== 200 && status !== 204) {
-      const _responseText = response.data;
-      return throwException(
-        "An unexpected server error occurred.",
-        status,
-        _responseText,
-        _headers
-      );
+
+    transactions_ListRecurringTransactions(id: string | null, page: number | undefined, pageSize: number | undefined , cancelToken?: CancelToken | undefined): Promise<RecurringTransactionsVm> {
+        let url_ = this.baseUrl + "/api/Transactions/subscriptions/{id}?";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (page === null)
+            throw new Error("The parameter 'page' cannot be null.");
+        else if (page !== undefined)
+            url_ += "page=" + encodeURIComponent("" + page) + "&";
+        if (pageSize === null)
+            throw new Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "pageSize=" + encodeURIComponent("" + pageSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <AxiosRequestConfig>{
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "application/json"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processTransactions_ListRecurringTransactions(_response);
+        });
     }
-    return Promise.resolve<RecurringTransactionsVm>(<any>null);
-  }
+
+    protected processTransactions_ListRecurringTransactions(response: AxiosResponse): Promise<RecurringTransactionsVm> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = RecurringTransactionsVm.fromJS(resultData200);
+            return result200;
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<RecurringTransactionsVm>(<any>null);
+    }
 }
 
 export class FundsVm implements IFundsVm {
-  funds?: PaginatedListOfFundDto | undefined;
+    funds?: PaginatedListOfFundDto | undefined;
 
-  constructor(data?: IFundsVm) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
-      this.funds =
-        data.funds && !(<any>data.funds).toJSON
-          ? new PaginatedListOfFundDto(data.funds)
-          : <PaginatedListOfFundDto>this.funds;
+    constructor(data?: IFundsVm) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+            this.funds = data.funds && !(<any>data.funds).toJSON ? new PaginatedListOfFundDto(data.funds) : <PaginatedListOfFundDto>this.funds; 
+        }
     }
-  }
 
-  init(_data?: any) {
-    if (_data) {
-      this.funds = _data["funds"]
-        ? PaginatedListOfFundDto.fromJS(_data["funds"])
-        : <any>undefined;
+    init(_data?: any) {
+        if (_data) {
+            this.funds = _data["funds"] ? PaginatedListOfFundDto.fromJS(_data["funds"]) : <any>undefined;
+        }
     }
-  }
 
-  static fromJS(data: any): FundsVm {
-    data = typeof data === "object" ? data : {};
-    let result = new FundsVm();
-    result.init(data);
-    return result;
-  }
+    static fromJS(data: any): FundsVm {
+        data = typeof data === 'object' ? data : {};
+        let result = new FundsVm();
+        result.init(data);
+        return result;
+    }
 
-  toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    data["funds"] = this.funds ? this.funds.toJSON() : <any>undefined;
-    return data;
-  }
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["funds"] = this.funds ? this.funds.toJSON() : <any>undefined;
+        return data; 
+    }
 }
 
 export interface IFundsVm {
-  funds?: IPaginatedListOfFundDto | undefined;
+    funds?: IPaginatedListOfFundDto | undefined;
 }
 
 export class PaginatedListOfFundDto implements IPaginatedListOfFundDto {
-  items?: FundDto[] | undefined;
-  pageIndex?: number;
-  totalPages?: number;
-  totalCount?: number;
-  hasPreviousPage?: boolean;
-  hasNextPage?: boolean;
+    items?: FundDto[] | undefined;
+    pageIndex?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
 
-  constructor(data?: IPaginatedListOfFundDto) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
-      if (data.items) {
-        this.items = [];
-        for (let i = 0; i < data.items.length; i++) {
-          let item = data.items[i];
-          this.items[i] =
-            item && !(<any>item).toJSON ? new FundDto(item) : <FundDto>item;
+    constructor(data?: IPaginatedListOfFundDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+            if (data.items) {
+                this.items = [];
+                for (let i = 0; i < data.items.length; i++) {
+                    let item = data.items[i];
+                    this.items[i] = item && !(<any>item).toJSON ? new FundDto(item) : <FundDto>item;
+                }
+            }
         }
-      }
     }
-  }
 
-  init(_data?: any) {
-    if (_data) {
-      if (Array.isArray(_data["items"])) {
-        this.items = [] as any;
-        for (let item of _data["items"]) this.items!.push(FundDto.fromJS(item));
-      }
-      this.pageIndex = _data["pageIndex"];
-      this.totalPages = _data["totalPages"];
-      this.totalCount = _data["totalCount"];
-      this.hasPreviousPage = _data["hasPreviousPage"];
-      this.hasNextPage = _data["hasNextPage"];
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(FundDto.fromJS(item));
+            }
+            this.pageIndex = _data["pageIndex"];
+            this.totalPages = _data["totalPages"];
+            this.totalCount = _data["totalCount"];
+            this.hasPreviousPage = _data["hasPreviousPage"];
+            this.hasNextPage = _data["hasNextPage"];
+        }
     }
-  }
 
-  static fromJS(data: any): PaginatedListOfFundDto {
-    data = typeof data === "object" ? data : {};
-    let result = new PaginatedListOfFundDto();
-    result.init(data);
-    return result;
-  }
-
-  toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    if (Array.isArray(this.items)) {
-      data["items"] = [];
-      for (let item of this.items) data["items"].push(item.toJSON());
+    static fromJS(data: any): PaginatedListOfFundDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PaginatedListOfFundDto();
+        result.init(data);
+        return result;
     }
-    data["pageIndex"] = this.pageIndex;
-    data["totalPages"] = this.totalPages;
-    data["totalCount"] = this.totalCount;
-    data["hasPreviousPage"] = this.hasPreviousPage;
-    data["hasNextPage"] = this.hasNextPage;
-    return data;
-  }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["pageIndex"] = this.pageIndex;
+        data["totalPages"] = this.totalPages;
+        data["totalCount"] = this.totalCount;
+        data["hasPreviousPage"] = this.hasPreviousPage;
+        data["hasNextPage"] = this.hasNextPage;
+        return data; 
+    }
 }
 
 export interface IPaginatedListOfFundDto {
-  items?: IFundDto[] | undefined;
-  pageIndex?: number;
-  totalPages?: number;
-  totalCount?: number;
-  hasPreviousPage?: boolean;
-  hasNextPage?: boolean;
+    items?: IFundDto[] | undefined;
+    pageIndex?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
 }
 
 export class FundDto implements IFundDto {
-  id?: string | undefined;
-  name?: string | undefined;
-  balance?: number;
+    id?: string | undefined;
+    name?: string | undefined;
+    balance?: number;
 
-  constructor(data?: IFundDto) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
+    constructor(data?: IFundDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
     }
-  }
 
-  init(_data?: any) {
-    if (_data) {
-      this.id = _data["id"];
-      this.name = _data["name"];
-      this.balance = _data["balance"];
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.balance = _data["balance"];
+        }
     }
-  }
 
-  static fromJS(data: any): FundDto {
-    data = typeof data === "object" ? data : {};
-    let result = new FundDto();
-    result.init(data);
-    return result;
-  }
+    static fromJS(data: any): FundDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new FundDto();
+        result.init(data);
+        return result;
+    }
 
-  toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    data["id"] = this.id;
-    data["name"] = this.name;
-    data["balance"] = this.balance;
-    return data;
-  }
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["balance"] = this.balance;
+        return data; 
+    }
 }
 
 export interface IFundDto {
-  id?: string | undefined;
-  name?: string | undefined;
-  balance?: number;
+    id?: string | undefined;
+    name?: string | undefined;
+    balance?: number;
 }
 
 export class FundVm implements IFundVm {
-  fund?: FundDto2 | undefined;
-  transactionTypes?: TypeDto[] | undefined;
+    fund?: FundDto2 | undefined;
+    transactionTypes?: TypeDto[] | undefined;
 
-  constructor(data?: IFundVm) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
-      this.fund =
-        data.fund && !(<any>data.fund).toJSON
-          ? new FundDto2(data.fund)
-          : <FundDto2>this.fund;
-      if (data.transactionTypes) {
-        this.transactionTypes = [];
-        for (let i = 0; i < data.transactionTypes.length; i++) {
-          let item = data.transactionTypes[i];
-          this.transactionTypes[i] =
-            item && !(<any>item).toJSON ? new TypeDto(item) : <TypeDto>item;
+    constructor(data?: IFundVm) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+            this.fund = data.fund && !(<any>data.fund).toJSON ? new FundDto2(data.fund) : <FundDto2>this.fund; 
+            if (data.transactionTypes) {
+                this.transactionTypes = [];
+                for (let i = 0; i < data.transactionTypes.length; i++) {
+                    let item = data.transactionTypes[i];
+                    this.transactionTypes[i] = item && !(<any>item).toJSON ? new TypeDto(item) : <TypeDto>item;
+                }
+            }
         }
-      }
     }
-  }
 
-  init(_data?: any) {
-    if (_data) {
-      this.fund = _data["fund"]
-        ? FundDto2.fromJS(_data["fund"])
-        : <any>undefined;
-      if (Array.isArray(_data["transactionTypes"])) {
-        this.transactionTypes = [] as any;
-        for (let item of _data["transactionTypes"])
-          this.transactionTypes!.push(TypeDto.fromJS(item));
-      }
+    init(_data?: any) {
+        if (_data) {
+            this.fund = _data["fund"] ? FundDto2.fromJS(_data["fund"]) : <any>undefined;
+            if (Array.isArray(_data["transactionTypes"])) {
+                this.transactionTypes = [] as any;
+                for (let item of _data["transactionTypes"])
+                    this.transactionTypes!.push(TypeDto.fromJS(item));
+            }
+        }
     }
-  }
 
-  static fromJS(data: any): FundVm {
-    data = typeof data === "object" ? data : {};
-    let result = new FundVm();
-    result.init(data);
-    return result;
-  }
-
-  toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    data["fund"] = this.fund ? this.fund.toJSON() : <any>undefined;
-    if (Array.isArray(this.transactionTypes)) {
-      data["transactionTypes"] = [];
-      for (let item of this.transactionTypes)
-        data["transactionTypes"].push(item.toJSON());
+    static fromJS(data: any): FundVm {
+        data = typeof data === 'object' ? data : {};
+        let result = new FundVm();
+        result.init(data);
+        return result;
     }
-    return data;
-  }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["fund"] = this.fund ? this.fund.toJSON() : <any>undefined;
+        if (Array.isArray(this.transactionTypes)) {
+            data["transactionTypes"] = [];
+            for (let item of this.transactionTypes)
+                data["transactionTypes"].push(item.toJSON());
+        }
+        return data; 
+    }
 }
 
 export interface IFundVm {
-  fund?: IFundDto2 | undefined;
-  transactionTypes?: ITypeDto[] | undefined;
+    fund?: IFundDto2 | undefined;
+    transactionTypes?: ITypeDto[] | undefined;
 }
 
 export class FundDto2 implements IFundDto2 {
-  id?: string | undefined;
-  name?: string | undefined;
-  expenses?: number;
-  income?: number;
-  balance?: number;
-  transactions?: TransactionDto[] | undefined;
-  categories?: CategoryDto[] | undefined;
+    id?: string | undefined;
+    name?: string | undefined;
+    expenses?: number;
+    income?: number;
+    balance?: number;
+    transactions?: TransactionDto[] | undefined;
+    categories?: CategoryDto[] | undefined;
 
-  constructor(data?: IFundDto2) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
-      if (data.transactions) {
-        this.transactions = [];
-        for (let i = 0; i < data.transactions.length; i++) {
-          let item = data.transactions[i];
-          this.transactions[i] =
-            item && !(<any>item).toJSON
-              ? new TransactionDto(item)
-              : <TransactionDto>item;
+    constructor(data?: IFundDto2) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+            if (data.transactions) {
+                this.transactions = [];
+                for (let i = 0; i < data.transactions.length; i++) {
+                    let item = data.transactions[i];
+                    this.transactions[i] = item && !(<any>item).toJSON ? new TransactionDto(item) : <TransactionDto>item;
+                }
+            }
+            if (data.categories) {
+                this.categories = [];
+                for (let i = 0; i < data.categories.length; i++) {
+                    let item = data.categories[i];
+                    this.categories[i] = item && !(<any>item).toJSON ? new CategoryDto(item) : <CategoryDto>item;
+                }
+            }
         }
-      }
-      if (data.categories) {
-        this.categories = [];
-        for (let i = 0; i < data.categories.length; i++) {
-          let item = data.categories[i];
-          this.categories[i] =
-            item && !(<any>item).toJSON
-              ? new CategoryDto(item)
-              : <CategoryDto>item;
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.expenses = _data["expenses"];
+            this.income = _data["income"];
+            this.balance = _data["balance"];
+            if (Array.isArray(_data["transactions"])) {
+                this.transactions = [] as any;
+                for (let item of _data["transactions"])
+                    this.transactions!.push(TransactionDto.fromJS(item));
+            }
+            if (Array.isArray(_data["categories"])) {
+                this.categories = [] as any;
+                for (let item of _data["categories"])
+                    this.categories!.push(CategoryDto.fromJS(item));
+            }
         }
-      }
     }
-  }
 
-  init(_data?: any) {
-    if (_data) {
-      this.id = _data["id"];
-      this.name = _data["name"];
-      this.expenses = _data["expenses"];
-      this.income = _data["income"];
-      this.balance = _data["balance"];
-      if (Array.isArray(_data["transactions"])) {
-        this.transactions = [] as any;
-        for (let item of _data["transactions"])
-          this.transactions!.push(TransactionDto.fromJS(item));
-      }
-      if (Array.isArray(_data["categories"])) {
-        this.categories = [] as any;
-        for (let item of _data["categories"])
-          this.categories!.push(CategoryDto.fromJS(item));
-      }
+    static fromJS(data: any): FundDto2 {
+        data = typeof data === 'object' ? data : {};
+        let result = new FundDto2();
+        result.init(data);
+        return result;
     }
-  }
 
-  static fromJS(data: any): FundDto2 {
-    data = typeof data === "object" ? data : {};
-    let result = new FundDto2();
-    result.init(data);
-    return result;
-  }
-
-  toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    data["id"] = this.id;
-    data["name"] = this.name;
-    data["expenses"] = this.expenses;
-    data["income"] = this.income;
-    data["balance"] = this.balance;
-    if (Array.isArray(this.transactions)) {
-      data["transactions"] = [];
-      for (let item of this.transactions)
-        data["transactions"].push(item.toJSON());
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["expenses"] = this.expenses;
+        data["income"] = this.income;
+        data["balance"] = this.balance;
+        if (Array.isArray(this.transactions)) {
+            data["transactions"] = [];
+            for (let item of this.transactions)
+                data["transactions"].push(item.toJSON());
+        }
+        if (Array.isArray(this.categories)) {
+            data["categories"] = [];
+            for (let item of this.categories)
+                data["categories"].push(item.toJSON());
+        }
+        return data; 
     }
-    if (Array.isArray(this.categories)) {
-      data["categories"] = [];
-      for (let item of this.categories) data["categories"].push(item.toJSON());
-    }
-    return data;
-  }
 }
 
 export interface IFundDto2 {
-  id?: string | undefined;
-  name?: string | undefined;
-  expenses?: number;
-  income?: number;
-  balance?: number;
-  transactions?: ITransactionDto[] | undefined;
-  categories?: ICategoryDto[] | undefined;
+    id?: string | undefined;
+    name?: string | undefined;
+    expenses?: number;
+    income?: number;
+    balance?: number;
+    transactions?: ITransactionDto[] | undefined;
+    categories?: ICategoryDto[] | undefined;
 }
 
 export class TransactionDto implements ITransactionDto {
-  id?: string | undefined;
-  type?: string | undefined;
-  amount?: number;
-  description?: string | undefined;
-  date?: Date;
-  categories?: CategoryDto[] | undefined;
+    id?: string | undefined;
+    type?: string | undefined;
+    amount?: number;
+    description?: string | undefined;
+    date?: Date;
+    categories?: CategoryDto[] | undefined;
 
-  constructor(data?: ITransactionDto) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
-      if (data.categories) {
-        this.categories = [];
-        for (let i = 0; i < data.categories.length; i++) {
-          let item = data.categories[i];
-          this.categories[i] =
-            item && !(<any>item).toJSON
-              ? new CategoryDto(item)
-              : <CategoryDto>item;
+    constructor(data?: ITransactionDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+            if (data.categories) {
+                this.categories = [];
+                for (let i = 0; i < data.categories.length; i++) {
+                    let item = data.categories[i];
+                    this.categories[i] = item && !(<any>item).toJSON ? new CategoryDto(item) : <CategoryDto>item;
+                }
+            }
         }
-      }
     }
-  }
 
-  init(_data?: any) {
-    if (_data) {
-      this.id = _data["id"];
-      this.type = _data["type"];
-      this.amount = _data["amount"];
-      this.description = _data["description"];
-      this.date = _data["date"]
-        ? new Date(_data["date"].toString())
-        : <any>undefined;
-      if (Array.isArray(_data["categories"])) {
-        this.categories = [] as any;
-        for (let item of _data["categories"])
-          this.categories!.push(CategoryDto.fromJS(item));
-      }
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.type = _data["type"];
+            this.amount = _data["amount"];
+            this.description = _data["description"];
+            this.date = _data["date"] ? new Date(_data["date"].toString()) : <any>undefined;
+            if (Array.isArray(_data["categories"])) {
+                this.categories = [] as any;
+                for (let item of _data["categories"])
+                    this.categories!.push(CategoryDto.fromJS(item));
+            }
+        }
     }
-  }
 
-  static fromJS(data: any): TransactionDto {
-    data = typeof data === "object" ? data : {};
-    let result = new TransactionDto();
-    result.init(data);
-    return result;
-  }
-
-  toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    data["id"] = this.id;
-    data["type"] = this.type;
-    data["amount"] = this.amount;
-    data["description"] = this.description;
-    data["date"] = this.date ? this.date.toISOString() : <any>undefined;
-    if (Array.isArray(this.categories)) {
-      data["categories"] = [];
-      for (let item of this.categories) data["categories"].push(item.toJSON());
+    static fromJS(data: any): TransactionDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new TransactionDto();
+        result.init(data);
+        return result;
     }
-    return data;
-  }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["type"] = this.type;
+        data["amount"] = this.amount;
+        data["description"] = this.description;
+        data["date"] = this.date ? this.date.toISOString() : <any>undefined;
+        if (Array.isArray(this.categories)) {
+            data["categories"] = [];
+            for (let item of this.categories)
+                data["categories"].push(item.toJSON());
+        }
+        return data; 
+    }
 }
 
 export interface ITransactionDto {
-  id?: string | undefined;
-  type?: string | undefined;
-  amount?: number;
-  description?: string | undefined;
-  date?: Date;
-  categories?: ICategoryDto[] | undefined;
+    id?: string | undefined;
+    type?: string | undefined;
+    amount?: number;
+    description?: string | undefined;
+    date?: Date;
+    categories?: ICategoryDto[] | undefined;
 }
 
 export class CategoryDto implements ICategoryDto {
-  id?: string | undefined;
-  name?: string | undefined;
+    id?: string | undefined;
+    name?: string | undefined;
 
-  constructor(data?: ICategoryDto) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
+    constructor(data?: ICategoryDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
     }
-  }
 
-  init(_data?: any) {
-    if (_data) {
-      this.id = _data["id"];
-      this.name = _data["name"];
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+        }
     }
-  }
 
-  static fromJS(data: any): CategoryDto {
-    data = typeof data === "object" ? data : {};
-    let result = new CategoryDto();
-    result.init(data);
-    return result;
-  }
+    static fromJS(data: any): CategoryDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CategoryDto();
+        result.init(data);
+        return result;
+    }
 
-  toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    data["id"] = this.id;
-    data["name"] = this.name;
-    return data;
-  }
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        return data; 
+    }
 }
 
 export interface ICategoryDto {
-  id?: string | undefined;
-  name?: string | undefined;
+    id?: string | undefined;
+    name?: string | undefined;
 }
 
 export class TypeDto implements ITypeDto {
-  value?: number;
-  name?: string | undefined;
+    value?: number;
+    name?: string | undefined;
 
-  constructor(data?: ITypeDto) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
+    constructor(data?: ITypeDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
     }
-  }
 
-  init(_data?: any) {
-    if (_data) {
-      this.value = _data["value"];
-      this.name = _data["name"];
+    init(_data?: any) {
+        if (_data) {
+            this.value = _data["value"];
+            this.name = _data["name"];
+        }
     }
-  }
 
-  static fromJS(data: any): TypeDto {
-    data = typeof data === "object" ? data : {};
-    let result = new TypeDto();
-    result.init(data);
-    return result;
-  }
+    static fromJS(data: any): TypeDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new TypeDto();
+        result.init(data);
+        return result;
+    }
 
-  toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    data["value"] = this.value;
-    data["name"] = this.name;
-    return data;
-  }
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["value"] = this.value;
+        data["name"] = this.name;
+        return data; 
+    }
 }
 
 export interface ITypeDto {
-  value?: number;
-  name?: string | undefined;
+    value?: number;
+    name?: string | undefined;
 }
 
 export class GetFundMembersVm implements IGetFundMembersVm {
-  members?: MemberDto[] | undefined;
+    members?: MemberDto[] | undefined;
 
-  constructor(data?: IGetFundMembersVm) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
-      if (data.members) {
-        this.members = [];
-        for (let i = 0; i < data.members.length; i++) {
-          let item = data.members[i];
-          this.members[i] =
-            item && !(<any>item).toJSON ? new MemberDto(item) : <MemberDto>item;
+    constructor(data?: IGetFundMembersVm) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+            if (data.members) {
+                this.members = [];
+                for (let i = 0; i < data.members.length; i++) {
+                    let item = data.members[i];
+                    this.members[i] = item && !(<any>item).toJSON ? new MemberDto(item) : <MemberDto>item;
+                }
+            }
         }
-      }
     }
-  }
 
-  init(_data?: any) {
-    if (_data) {
-      if (Array.isArray(_data["members"])) {
-        this.members = [] as any;
-        for (let item of _data["members"])
-          this.members!.push(MemberDto.fromJS(item));
-      }
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["members"])) {
+                this.members = [] as any;
+                for (let item of _data["members"])
+                    this.members!.push(MemberDto.fromJS(item));
+            }
+        }
     }
-  }
 
-  static fromJS(data: any): GetFundMembersVm {
-    data = typeof data === "object" ? data : {};
-    let result = new GetFundMembersVm();
-    result.init(data);
-    return result;
-  }
-
-  toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    if (Array.isArray(this.members)) {
-      data["members"] = [];
-      for (let item of this.members) data["members"].push(item.toJSON());
+    static fromJS(data: any): GetFundMembersVm {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetFundMembersVm();
+        result.init(data);
+        return result;
     }
-    return data;
-  }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.members)) {
+            data["members"] = [];
+            for (let item of this.members)
+                data["members"].push(item.toJSON());
+        }
+        return data; 
+    }
 }
 
 export interface IGetFundMembersVm {
-  members?: IMemberDto[] | undefined;
+    members?: IMemberDto[] | undefined;
 }
 
 export class MemberDto implements IMemberDto {
-  id?: string;
-  fullName?: string | undefined;
-  initials?: string | undefined;
+    id?: string;
+    fullName?: string | undefined;
+    initials?: string | undefined;
 
-  constructor(data?: IMemberDto) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
+    constructor(data?: IMemberDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
     }
-  }
 
-  init(_data?: any) {
-    if (_data) {
-      this.id = _data["id"];
-      this.fullName = _data["fullName"];
-      this.initials = _data["initials"];
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.fullName = _data["fullName"];
+            this.initials = _data["initials"];
+        }
     }
-  }
 
-  static fromJS(data: any): MemberDto {
-    data = typeof data === "object" ? data : {};
-    let result = new MemberDto();
-    result.init(data);
-    return result;
-  }
+    static fromJS(data: any): MemberDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MemberDto();
+        result.init(data);
+        return result;
+    }
 
-  toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    data["id"] = this.id;
-    data["fullName"] = this.fullName;
-    data["initials"] = this.initials;
-    return data;
-  }
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["fullName"] = this.fullName;
+        data["initials"] = this.initials;
+        return data; 
+    }
 }
 
 export interface IMemberDto {
-  id?: string;
-  fullName?: string | undefined;
-  initials?: string | undefined;
+    id?: string;
+    fullName?: string | undefined;
+    initials?: string | undefined;
 }
 
 export class CreateFundCommand implements ICreateFundCommand {
-  name?: string | undefined;
+    name?: string | undefined;
 
-  constructor(data?: ICreateFundCommand) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
+    constructor(data?: ICreateFundCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
     }
-  }
 
-  init(_data?: any) {
-    if (_data) {
-      this.name = _data["name"];
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+        }
     }
-  }
 
-  static fromJS(data: any): CreateFundCommand {
-    data = typeof data === "object" ? data : {};
-    let result = new CreateFundCommand();
-    result.init(data);
-    return result;
-  }
+    static fromJS(data: any): CreateFundCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateFundCommand();
+        result.init(data);
+        return result;
+    }
 
-  toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    data["name"] = this.name;
-    return data;
-  }
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        return data; 
+    }
 }
 
 export interface ICreateFundCommand {
-  name?: string | undefined;
+    name?: string | undefined;
 }
 
 export class UpdateFundCommand implements IUpdateFundCommand {
-  id?: string | undefined;
-  name?: string | undefined;
+    id?: string | undefined;
+    name?: string | undefined;
 
-  constructor(data?: IUpdateFundCommand) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
+    constructor(data?: IUpdateFundCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
     }
-  }
 
-  init(_data?: any) {
-    if (_data) {
-      this.id = _data["id"];
-      this.name = _data["name"];
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+        }
     }
-  }
 
-  static fromJS(data: any): UpdateFundCommand {
-    data = typeof data === "object" ? data : {};
-    let result = new UpdateFundCommand();
-    result.init(data);
-    return result;
-  }
+    static fromJS(data: any): UpdateFundCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateFundCommand();
+        result.init(data);
+        return result;
+    }
 
-  toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    data["id"] = this.id;
-    data["name"] = this.name;
-    return data;
-  }
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        return data; 
+    }
 }
 
 export interface IUpdateFundCommand {
-  id?: string | undefined;
-  name?: string | undefined;
+    id?: string | undefined;
+    name?: string | undefined;
 }
 
 export class DeleteFundCommand implements IDeleteFundCommand {
-  id?: string | undefined;
+    id?: string | undefined;
 
-  constructor(data?: IDeleteFundCommand) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
+    constructor(data?: IDeleteFundCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
     }
-  }
 
-  init(_data?: any) {
-    if (_data) {
-      this.id = _data["id"];
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+        }
     }
-  }
 
-  static fromJS(data: any): DeleteFundCommand {
-    data = typeof data === "object" ? data : {};
-    let result = new DeleteFundCommand();
-    result.init(data);
-    return result;
-  }
+    static fromJS(data: any): DeleteFundCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeleteFundCommand();
+        result.init(data);
+        return result;
+    }
 
-  toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    data["id"] = this.id;
-    return data;
-  }
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        return data; 
+    }
 }
 
 export interface IDeleteFundCommand {
-  id?: string | undefined;
+    id?: string | undefined;
 }
 
 export class CreateMembershipCommand implements ICreateMembershipCommand {
-  userId?: string | undefined;
-  fundId?: string | undefined;
+    userId?: string | undefined;
+    fundId?: string | undefined;
 
-  constructor(data?: ICreateMembershipCommand) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
+    constructor(data?: ICreateMembershipCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
     }
-  }
 
-  init(_data?: any) {
-    if (_data) {
-      this.userId = _data["userId"];
-      this.fundId = _data["fundId"];
+    init(_data?: any) {
+        if (_data) {
+            this.userId = _data["userId"];
+            this.fundId = _data["fundId"];
+        }
     }
-  }
 
-  static fromJS(data: any): CreateMembershipCommand {
-    data = typeof data === "object" ? data : {};
-    let result = new CreateMembershipCommand();
-    result.init(data);
-    return result;
-  }
+    static fromJS(data: any): CreateMembershipCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateMembershipCommand();
+        result.init(data);
+        return result;
+    }
 
-  toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    data["userId"] = this.userId;
-    data["fundId"] = this.fundId;
-    return data;
-  }
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userId"] = this.userId;
+        data["fundId"] = this.fundId;
+        return data; 
+    }
 }
 
 export interface ICreateMembershipCommand {
-  userId?: string | undefined;
-  fundId?: string | undefined;
+    userId?: string | undefined;
+    fundId?: string | undefined;
 }
 
 export class DeleteMembershipCommand implements IDeleteMembershipCommand {
-  fundId?: string | undefined;
-  userId?: string | undefined;
+    fundId?: string | undefined;
+    userId?: string | undefined;
 
-  constructor(data?: IDeleteMembershipCommand) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
+    constructor(data?: IDeleteMembershipCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
     }
-  }
 
-  init(_data?: any) {
-    if (_data) {
-      this.fundId = _data["fundId"];
-      this.userId = _data["userId"];
+    init(_data?: any) {
+        if (_data) {
+            this.fundId = _data["fundId"];
+            this.userId = _data["userId"];
+        }
     }
-  }
 
-  static fromJS(data: any): DeleteMembershipCommand {
-    data = typeof data === "object" ? data : {};
-    let result = new DeleteMembershipCommand();
-    result.init(data);
-    return result;
-  }
+    static fromJS(data: any): DeleteMembershipCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeleteMembershipCommand();
+        result.init(data);
+        return result;
+    }
 
-  toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    data["fundId"] = this.fundId;
-    data["userId"] = this.userId;
-    return data;
-  }
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["fundId"] = this.fundId;
+        data["userId"] = this.userId;
+        return data; 
+    }
 }
 
 export interface IDeleteMembershipCommand {
-  fundId?: string | undefined;
-  userId?: string | undefined;
+    fundId?: string | undefined;
+    userId?: string | undefined;
 }
 
 export class CreateTransactionCommand implements ICreateTransactionCommand {
-  fundId?: string | undefined;
-  amount?: number;
-  type?: TransactionType;
-  description?: string | undefined;
-  date?: Date;
+    fundId?: string | undefined;
+    amount?: number;
+    type?: TransactionType;
+    description?: string | undefined;
+    date?: Date;
 
-  constructor(data?: ICreateTransactionCommand) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
+    constructor(data?: ICreateTransactionCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
     }
-  }
 
-  init(_data?: any) {
-    if (_data) {
-      this.fundId = _data["fundId"];
-      this.amount = _data["amount"];
-      this.type = _data["type"];
-      this.description = _data["description"];
-      this.date = _data["date"]
-        ? new Date(_data["date"].toString())
-        : <any>undefined;
+    init(_data?: any) {
+        if (_data) {
+            this.fundId = _data["fundId"];
+            this.amount = _data["amount"];
+            this.type = _data["type"];
+            this.description = _data["description"];
+            this.date = _data["date"] ? new Date(_data["date"].toString()) : <any>undefined;
+        }
     }
-  }
 
-  static fromJS(data: any): CreateTransactionCommand {
-    data = typeof data === "object" ? data : {};
-    let result = new CreateTransactionCommand();
-    result.init(data);
-    return result;
-  }
+    static fromJS(data: any): CreateTransactionCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateTransactionCommand();
+        result.init(data);
+        return result;
+    }
 
-  toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    data["fundId"] = this.fundId;
-    data["amount"] = this.amount;
-    data["type"] = this.type;
-    data["description"] = this.description;
-    data["date"] = this.date ? this.date.toISOString() : <any>undefined;
-    return data;
-  }
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["fundId"] = this.fundId;
+        data["amount"] = this.amount;
+        data["type"] = this.type;
+        data["description"] = this.description;
+        data["date"] = this.date ? this.date.toISOString() : <any>undefined;
+        return data; 
+    }
 }
 
 export interface ICreateTransactionCommand {
-  fundId?: string | undefined;
-  amount?: number;
-  type?: TransactionType;
-  description?: string | undefined;
-  date?: Date;
+    fundId?: string | undefined;
+    amount?: number;
+    type?: TransactionType;
+    description?: string | undefined;
+    date?: Date;
 }
 
 export enum TransactionType {
-  Expense = 0,
-  Income = 1,
+    Expense = 0,
+    Income = 1,
 }
 
-export class CreateTransactionSubscription
-  implements ICreateTransactionSubscription
-{
-  id?: string;
-  type?: string | undefined;
+export class CreateTransactionSubscription implements ICreateTransactionSubscription {
+    id?: string;
+    type?: string | undefined;
 
-  constructor(data?: ICreateTransactionSubscription) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
+    constructor(data?: ICreateTransactionSubscription) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
     }
-  }
 
-  init(_data?: any) {
-    if (_data) {
-      this.id = _data["id"];
-      this.type = _data["type"];
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.type = _data["type"];
+        }
     }
-  }
 
-  static fromJS(data: any): CreateTransactionSubscription {
-    data = typeof data === "object" ? data : {};
-    let result = new CreateTransactionSubscription();
-    result.init(data);
-    return result;
-  }
+    static fromJS(data: any): CreateTransactionSubscription {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateTransactionSubscription();
+        result.init(data);
+        return result;
+    }
 
-  toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    data["id"] = this.id;
-    data["type"] = this.type;
-    return data;
-  }
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["type"] = this.type;
+        return data; 
+    }
 }
 
 export interface ICreateTransactionSubscription {
-  id?: string;
-  type?: string | undefined;
+    id?: string;
+    type?: string | undefined;
 }
 
 export class RecurringTransactionsVm implements IRecurringTransactionsVm {
-  transactions?: PaginatedListOfTransactionDto | undefined;
+    transactions?: PaginatedListOfTransactionDto | undefined;
 
-  constructor(data?: IRecurringTransactionsVm) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
-      this.transactions =
-        data.transactions && !(<any>data.transactions).toJSON
-          ? new PaginatedListOfTransactionDto(data.transactions)
-          : <PaginatedListOfTransactionDto>this.transactions;
+    constructor(data?: IRecurringTransactionsVm) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+            this.transactions = data.transactions && !(<any>data.transactions).toJSON ? new PaginatedListOfTransactionDto(data.transactions) : <PaginatedListOfTransactionDto>this.transactions; 
+        }
     }
-  }
 
-  init(_data?: any) {
-    if (_data) {
-      this.transactions = _data["transactions"]
-        ? PaginatedListOfTransactionDto.fromJS(_data["transactions"])
-        : <any>undefined;
+    init(_data?: any) {
+        if (_data) {
+            this.transactions = _data["transactions"] ? PaginatedListOfTransactionDto.fromJS(_data["transactions"]) : <any>undefined;
+        }
     }
-  }
 
-  static fromJS(data: any): RecurringTransactionsVm {
-    data = typeof data === "object" ? data : {};
-    let result = new RecurringTransactionsVm();
-    result.init(data);
-    return result;
-  }
+    static fromJS(data: any): RecurringTransactionsVm {
+        data = typeof data === 'object' ? data : {};
+        let result = new RecurringTransactionsVm();
+        result.init(data);
+        return result;
+    }
 
-  toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    data["transactions"] = this.transactions
-      ? this.transactions.toJSON()
-      : <any>undefined;
-    return data;
-  }
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["transactions"] = this.transactions ? this.transactions.toJSON() : <any>undefined;
+        return data; 
+    }
 }
 
 export interface IRecurringTransactionsVm {
-  transactions?: IPaginatedListOfTransactionDto | undefined;
+    transactions?: IPaginatedListOfTransactionDto | undefined;
 }
 
-export class PaginatedListOfTransactionDto
-  implements IPaginatedListOfTransactionDto
-{
-  items?: TransactionDto2[] | undefined;
-  pageIndex?: number;
-  totalPages?: number;
-  totalCount?: number;
-  hasPreviousPage?: boolean;
-  hasNextPage?: boolean;
+export class PaginatedListOfTransactionDto implements IPaginatedListOfTransactionDto {
+    items?: TransactionDto2[] | undefined;
+    pageIndex?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
 
-  constructor(data?: IPaginatedListOfTransactionDto) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
-      if (data.items) {
-        this.items = [];
-        for (let i = 0; i < data.items.length; i++) {
-          let item = data.items[i];
-          this.items[i] =
-            item && !(<any>item).toJSON
-              ? new TransactionDto2(item)
-              : <TransactionDto2>item;
+    constructor(data?: IPaginatedListOfTransactionDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+            if (data.items) {
+                this.items = [];
+                for (let i = 0; i < data.items.length; i++) {
+                    let item = data.items[i];
+                    this.items[i] = item && !(<any>item).toJSON ? new TransactionDto2(item) : <TransactionDto2>item;
+                }
+            }
         }
-      }
     }
-  }
 
-  init(_data?: any) {
-    if (_data) {
-      if (Array.isArray(_data["items"])) {
-        this.items = [] as any;
-        for (let item of _data["items"])
-          this.items!.push(TransactionDto2.fromJS(item));
-      }
-      this.pageIndex = _data["pageIndex"];
-      this.totalPages = _data["totalPages"];
-      this.totalCount = _data["totalCount"];
-      this.hasPreviousPage = _data["hasPreviousPage"];
-      this.hasNextPage = _data["hasNextPage"];
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(TransactionDto2.fromJS(item));
+            }
+            this.pageIndex = _data["pageIndex"];
+            this.totalPages = _data["totalPages"];
+            this.totalCount = _data["totalCount"];
+            this.hasPreviousPage = _data["hasPreviousPage"];
+            this.hasNextPage = _data["hasNextPage"];
+        }
     }
-  }
 
-  static fromJS(data: any): PaginatedListOfTransactionDto {
-    data = typeof data === "object" ? data : {};
-    let result = new PaginatedListOfTransactionDto();
-    result.init(data);
-    return result;
-  }
-
-  toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    if (Array.isArray(this.items)) {
-      data["items"] = [];
-      for (let item of this.items) data["items"].push(item.toJSON());
+    static fromJS(data: any): PaginatedListOfTransactionDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PaginatedListOfTransactionDto();
+        result.init(data);
+        return result;
     }
-    data["pageIndex"] = this.pageIndex;
-    data["totalPages"] = this.totalPages;
-    data["totalCount"] = this.totalCount;
-    data["hasPreviousPage"] = this.hasPreviousPage;
-    data["hasNextPage"] = this.hasNextPage;
-    return data;
-  }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["pageIndex"] = this.pageIndex;
+        data["totalPages"] = this.totalPages;
+        data["totalCount"] = this.totalCount;
+        data["hasPreviousPage"] = this.hasPreviousPage;
+        data["hasNextPage"] = this.hasNextPage;
+        return data; 
+    }
 }
 
 export interface IPaginatedListOfTransactionDto {
-  items?: ITransactionDto2[] | undefined;
-  pageIndex?: number;
-  totalPages?: number;
-  totalCount?: number;
-  hasPreviousPage?: boolean;
-  hasNextPage?: boolean;
+    items?: ITransactionDto2[] | undefined;
+    pageIndex?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
 }
 
 export class TransactionDto2 implements ITransactionDto2 {
-  id?: string;
-  fundId?: string;
-  type?: string | undefined;
-  amount?: number;
-  description?: string | undefined;
-  date?: Date;
+    id?: string;
+    fundId?: string;
+    type?: string | undefined;
+    amount?: number;
+    description?: string | undefined;
+    date?: Date;
 
-  constructor(data?: ITransactionDto2) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
+    constructor(data?: ITransactionDto2) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
     }
-  }
 
-  init(_data?: any) {
-    if (_data) {
-      this.id = _data["id"];
-      this.fundId = _data["fundId"];
-      this.type = _data["type"];
-      this.amount = _data["amount"];
-      this.description = _data["description"];
-      this.date = _data["date"]
-        ? new Date(_data["date"].toString())
-        : <any>undefined;
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.fundId = _data["fundId"];
+            this.type = _data["type"];
+            this.amount = _data["amount"];
+            this.description = _data["description"];
+            this.date = _data["date"] ? new Date(_data["date"].toString()) : <any>undefined;
+        }
     }
-  }
 
-  static fromJS(data: any): TransactionDto2 {
-    data = typeof data === "object" ? data : {};
-    let result = new TransactionDto2();
-    result.init(data);
-    return result;
-  }
+    static fromJS(data: any): TransactionDto2 {
+        data = typeof data === 'object' ? data : {};
+        let result = new TransactionDto2();
+        result.init(data);
+        return result;
+    }
 
-  toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    data["id"] = this.id;
-    data["fundId"] = this.fundId;
-    data["type"] = this.type;
-    data["amount"] = this.amount;
-    data["description"] = this.description;
-    data["date"] = this.date ? this.date.toISOString() : <any>undefined;
-    return data;
-  }
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["fundId"] = this.fundId;
+        data["type"] = this.type;
+        data["amount"] = this.amount;
+        data["description"] = this.description;
+        data["date"] = this.date ? this.date.toISOString() : <any>undefined;
+        return data; 
+    }
 }
 
 export interface ITransactionDto2 {
-  id?: string;
-  fundId?: string;
-  type?: string | undefined;
-  amount?: number;
-  description?: string | undefined;
-  date?: Date;
+    id?: string;
+    fundId?: string;
+    type?: string | undefined;
+    amount?: number;
+    description?: string | undefined;
+    date?: Date;
 }
 
 export class UpdateTransactionCommand implements IUpdateTransactionCommand {
-  id?: string | undefined;
-  amount?: number;
-  type?: TransactionType;
-  description?: string | undefined;
-  date?: Date;
+    id?: string | undefined;
+    amount?: number;
+    type?: TransactionType;
+    description?: string | undefined;
+    date?: Date;
 
-  constructor(data?: IUpdateTransactionCommand) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
+    constructor(data?: IUpdateTransactionCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
     }
-  }
 
-  init(_data?: any) {
-    if (_data) {
-      this.id = _data["id"];
-      this.amount = _data["amount"];
-      this.type = _data["type"];
-      this.description = _data["description"];
-      this.date = _data["date"]
-        ? new Date(_data["date"].toString())
-        : <any>undefined;
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.amount = _data["amount"];
+            this.type = _data["type"];
+            this.description = _data["description"];
+            this.date = _data["date"] ? new Date(_data["date"].toString()) : <any>undefined;
+        }
     }
-  }
 
-  static fromJS(data: any): UpdateTransactionCommand {
-    data = typeof data === "object" ? data : {};
-    let result = new UpdateTransactionCommand();
-    result.init(data);
-    return result;
-  }
+    static fromJS(data: any): UpdateTransactionCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateTransactionCommand();
+        result.init(data);
+        return result;
+    }
 
-  toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    data["id"] = this.id;
-    data["amount"] = this.amount;
-    data["type"] = this.type;
-    data["description"] = this.description;
-    data["date"] = this.date ? this.date.toISOString() : <any>undefined;
-    return data;
-  }
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["amount"] = this.amount;
+        data["type"] = this.type;
+        data["description"] = this.description;
+        data["date"] = this.date ? this.date.toISOString() : <any>undefined;
+        return data; 
+    }
 }
 
 export interface IUpdateTransactionCommand {
-  id?: string | undefined;
-  amount?: number;
-  type?: TransactionType;
-  description?: string | undefined;
-  date?: Date;
+    id?: string | undefined;
+    amount?: number;
+    type?: TransactionType;
+    description?: string | undefined;
+    date?: Date;
 }
 
 export class DeleteTransactionCommand implements IDeleteTransactionCommand {
-  id?: string | undefined;
+    id?: string | undefined;
 
-  constructor(data?: IDeleteTransactionCommand) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
+    constructor(data?: IDeleteTransactionCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
     }
-  }
 
-  init(_data?: any) {
-    if (_data) {
-      this.id = _data["id"];
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+        }
     }
-  }
 
-  static fromJS(data: any): DeleteTransactionCommand {
-    data = typeof data === "object" ? data : {};
-    let result = new DeleteTransactionCommand();
-    result.init(data);
-    return result;
-  }
+    static fromJS(data: any): DeleteTransactionCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeleteTransactionCommand();
+        result.init(data);
+        return result;
+    }
 
-  toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    data["id"] = this.id;
-    return data;
-  }
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        return data; 
+    }
 }
 
 export interface IDeleteTransactionCommand {
-  id?: string | undefined;
+    id?: string | undefined;
 }
 
 export interface FileParameter {
-  data: any;
-  fileName: string;
+    data: any;
+    fileName: string;
 }
 
 export interface FileResponse {
-  data: Blob;
-  status: number;
-  fileName?: string;
-  headers?: { [name: string]: any };
+    data: Blob;
+    status: number;
+    fileName?: string;
+    headers?: { [name: string]: any };
 }
 
 export class SwaggerException extends Error {
-  message: string;
-  status: number;
-  response: string;
-  headers: { [key: string]: any };
-  result: any;
+    message: string;
+    status: number;
+    response: string;
+    headers: { [key: string]: any; };
+    result: any;
 
-  constructor(
-    message: string,
-    status: number,
-    response: string,
-    headers: { [key: string]: any },
-    result: any
-  ) {
-    super();
+    constructor(message: string, status: number, response: string, headers: { [key: string]: any; }, result: any) {
+        super();
 
-    this.message = message;
-    this.status = status;
-    this.response = response;
-    this.headers = headers;
-    this.result = result;
-  }
+        this.message = message;
+        this.status = status;
+        this.response = response;
+        this.headers = headers;
+        this.result = result;
+    }
 
-  protected isSwaggerException = true;
+    protected isSwaggerException = true;
 
-  static isSwaggerException(obj: any): obj is SwaggerException {
-    return obj.isSwaggerException === true;
-  }
+    static isSwaggerException(obj: any): obj is SwaggerException {
+        return obj.isSwaggerException === true;
+    }
 }
 
-function throwException(
-  message: string,
-  status: number,
-  response: string,
-  headers: { [key: string]: any },
-  result?: any
-): any {
-  if (result !== null && result !== undefined) throw result;
-  else throw new SwaggerException(message, status, response, headers, null);
+function throwException(message: string, status: number, response: string, headers: { [key: string]: any; }, result?: any): any {
+    if (result !== null && result !== undefined)
+        throw result;
+    else
+        throw new SwaggerException(message, status, response, headers, null);
 }
 
 function isAxiosError(obj: any | undefined): obj is AxiosError {
-  return obj && obj.isAxiosError === true;
+    return obj && obj.isAxiosError === true;
 }

@@ -14,7 +14,7 @@ import {
 } from "@heroicons/react/outline";
 import { SearchIcon } from "@heroicons/react/solid";
 import { classNames } from "../utils";
-import { Link, NavLink } from "react-router-dom";
+import {Link, NavLink, Switch} from "react-router-dom";
 import { ProfileMenu } from "../auth/ProfileMenu";
 import authService from "../auth/AuthorizeService";
 
@@ -257,7 +257,9 @@ export default function Layout({ children }: IProps) {
             </div>
           </div>
           <main className="flex-1 relative pb-8 z-0 overflow-y-auto">
-            {children}
+            <Switch>
+              {children}
+            </Switch>
           </main>
         </div>
       </div>
